@@ -1,5 +1,5 @@
 ﻿import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -9,16 +9,15 @@ class LocationService {
   factory LocationService() => _instance;
   LocationService._internal();
 
-  /// Industry-grade location fetch (like Zomato/Swiggy)
   Future<LocationResult> getCurrentLocation() async {
     try {
-      // Step 1: Check if location service is enabled (GPS ON)
+      // Step 1: Check GPS enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         return LocationResult(
           success: false,
           errorType: LocationErrorType.serviceDisabled,
-          message: 'GPS is OFF. Please enable Location services in Settings.',
+          message: 'GPS is OFF. Please enable Location services.',
           actionLabel: 'Enable GPS',
         );
       }
@@ -27,14 +26,12 @@ class LocationService {
       LocationPermission permission = await Geolocator.checkPermission();
 
       if (permission == LocationPermission.denied) {
-        // Request permission
         permission = await Geolocator.requestPermission();
-
         if (permission == LocationPermission.denied) {
           return LocationResult(
             success: false,
             errorType: LocationErrorType.permissionDenied,
-            message: 'Location permission denied. Please allow location access.',
+            message: 'Location permission denied.',
             actionLabel: 'Grant Permission',
           );
         }
@@ -49,48 +46,41 @@ class LocationService {
         );
       }
 
-      // Step 3: Try to get LAST KNOWN position first (FAST - 0 sec)
+      // Step 3: Try last known position first
       Position? lastKnown;
       try {
         lastKnown = await Geolocator.getLastKnownPosition();
       } catch (_) {}
 
-      // Step 4: Get CURRENT position with HIGH accuracy
+      // Step 4: Get current position with HIGH accuracy
       Position position;
       try {
         position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-            timeLimit: Duration(seconds: 15),
-          ),
+          desiredAccuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 15),
         );
       } catch (timeoutError) {
-        // Fallback to last known if timeout
         if (lastKnown != null) {
           position = lastKnown;
         } else {
-          // Try with lower accuracy as final fallback
           try {
             position = await Geolocator.getCurrentPosition(
-              locationSettings: const LocationSettings(
-                accuracy: LocationAccuracy.medium,
-                timeLimit: Duration(seconds: 10),
-              ),
+              desiredAccuracy: LocationAccuracy.medium,
+              timeLimit: const Duration(seconds: 10),
             );
           } catch (_) {
             return LocationResult(
               success: false,
               errorType: LocationErrorType.timeout,
-              message: 'Location timeout. Make sure you have GPS signal (try going outside).',
+              message: 'Location timeout. Try going outside for better GPS signal.',
               actionLabel: 'Try Again',
             );
           }
         }
       }
 
-      // Step 5: Reverse geocode (get address from lat/lng)
-      final addressData = await _reverseGeocode(
-        position.latitude, position.longitude);
+      // Step 5: Reverse geocode
+      final addressData = await _reverseGeocode(position.latitude, position.longitude);
 
       return LocationResult(
         success: true,
@@ -109,16 +99,14 @@ class LocationService {
       return LocationResult(
         success: false,
         errorType: LocationErrorType.unknown,
-        message: 'Could not get location: ${e.toString()}',
+        message: 'Error: ${e.toString()}',
         actionLabel: 'Try Again',
       );
     }
   }
 
-  /// Free reverse geocoding using OpenStreetMap
   Future<Map<String, String>> _reverseGeocode(double lat, double lng) async {
     try {
-      // Try multiple geocoding services for reliability
       final result = await _tryNominatim(lat, lng);
       if (result != null) return result;
 
@@ -126,7 +114,6 @@ class LocationService {
       if (result2 != null) return result2;
     } catch (_) {}
 
-    // Final fallback - just lat/lng
     return {
       'fullAddress': '${lat.toStringAsFixed(6)}, ${lng.toStringAsFixed(6)}',
       'line1':       '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}',
@@ -137,15 +124,12 @@ class LocationService {
     };
   }
 
-  /// Try Nominatim (OpenStreetMap) - Free, no API key
   Future<Map<String, String>?> _tryNominatim(double lat, double lng) async {
     try {
       final response = await http.get(
         Uri.parse('https://nominatim.openstreetmap.org/reverse?'
             'format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1'),
-        headers: {
-          'User-Agent': 'KohliStore/2.0 (kohli.store@grocery.com)',
-        },
+        headers: {'User-Agent': 'KohliStore/2.0'},
       ).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
@@ -159,7 +143,7 @@ class LocationService {
         if (address['suburb']       != null) parts.add(address['suburb']);
 
         final line1 = parts.isEmpty
-            ? (address['display_name'] ?? '').toString().split(',').take(2).join(',').trim()
+            ? (data['display_name'] ?? '').toString().split(',').take(2).join(',').trim()
             : parts.join(', ');
 
         return {
@@ -178,7 +162,6 @@ class LocationService {
     return null;
   }
 
-  /// Backup - BigDataCloud (Free, no API key)
   Future<Map<String, String>?> _tryBigDataCloud(double lat, double lng) async {
     try {
       final response = await http.get(
@@ -201,23 +184,19 @@ class LocationService {
     return null;
   }
 
-  /// Check current permission status
   Future<LocationPermission> checkPermission() async {
     return await Geolocator.checkPermission();
   }
 
-  /// Open device location settings
   Future<bool> openLocationSettings() async {
     return await Geolocator.openLocationSettings();
   }
 
-  /// Open app settings to grant permission
   Future<bool> openAppSettings() async {
-    return await openAppSettings();
+    return await ph.openAppSettings();
   }
 }
 
-/// Result class for clean error handling
 class LocationResult {
   final bool                success;
   final double?             latitude;

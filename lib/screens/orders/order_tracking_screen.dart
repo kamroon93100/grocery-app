@@ -2,6 +2,7 @@
 import 'dart:async';
 import '../../models/order_model.dart';
 import '../../services/order_service.dart';
+import '../../services/invoice_service.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
   final String orderId;
@@ -68,9 +69,39 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         title: const Text('Track Order'),
         actions: [
           IconButton(
-            icon:     const Icon(Icons.refresh),
+            icon:    const Icon(Icons.refresh),
             onPressed: _loadOrder,
           ),
+          if (_order != null)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (val) async {
+                if (val == 'download') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Generating invoice...'),
+                      duration: Duration(seconds: 1)));
+                  await InvoiceService().downloadInvoice(_order!);
+                } else if (val == 'print') {
+                  await InvoiceService().printInvoice(_order!);
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'download',
+                  child: Row(children: [
+                    Icon(Icons.download, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text('Download Invoice'),
+                  ])),
+                const PopupMenuItem(
+                  value: 'print',
+                  child: Row(children: [
+                    Icon(Icons.print, color: Colors.blue),
+                    SizedBox(width: 8),
+                    Text('Print Invoice'),
+                  ])),
+              ],
+            ),
         ],
       ),
       body: _loading
@@ -455,3 +486,4 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     );
   }
 }
+

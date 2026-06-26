@@ -5,6 +5,7 @@ import '../../models/order_model.dart';
 import 'order_tracking_screen.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/product_service.dart';
+import '../../services/invoice_service.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -206,6 +207,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: OutlinedButton.icon(
+                                    icon: const Icon(Icons.download, size: 18),
+                                    label: const Text('Invoice'),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.green,
+                                      side: const BorderSide(color: Colors.green)),
+                                    onPressed: () async {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Generating invoice...')));
+                                      await InvoiceService().downloadInvoice(o);
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
                                     icon: const Icon(Icons.location_searching),
                                     label: const Text('Track Order'),
                                     onPressed: () => Navigator.push(context,
@@ -224,4 +241,5 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 }
+
 

@@ -6,6 +6,7 @@ import '../../providers/product_provider.dart';
 import '../cart/cart_screen.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../widgets/reviews_section.dart';
+import '../../widgets/recommended_products.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
@@ -304,6 +305,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   _feature(Icons.replay_outlined,
                     'Easy Returns', 'Not happy? Return it'),
 
+                  const SizedBox(height: 20),
+
+                  // Recommended Products
+                  RecommendedProducts(
+                    excludeProductId: p.id,
+                    title: '🛍️ You May Also Like',
+                  ),
+
                   const SizedBox(height: 100),
                 ],
               ),
@@ -438,5 +447,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 }
+
 
 

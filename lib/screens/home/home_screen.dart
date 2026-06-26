@@ -6,6 +6,8 @@ import '../../providers/product_provider.dart';
 import '../../models/product_model.dart';
 import '../../widgets/home_banners.dart';
 import '../../widgets/search_filter_sheet.dart';
+import '../../widgets/delivery_eta_badge.dart';
+import '../../widgets/recommended_products.dart';
 import '../cart/cart_screen.dart';
 import '../orders/orders_screen.dart';
 import '../profile/profile_screen.dart';
@@ -166,6 +168,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
+        // ETA Badge
+        if (_searchCtrl.text.isEmpty)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: DeliveryEtaBadge(),
+            ),
+          ),
+
         // Banners (only show when not searching)
         if (_searchCtrl.text.isEmpty)
           const SliverToBoxAdapter(
@@ -240,6 +251,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+            ),
+          ),
+
+        // Recommended Products
+        if (_searchCtrl.text.isEmpty)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: RecommendedProducts(),
             ),
           ),
 
@@ -439,5 +459,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
 
 

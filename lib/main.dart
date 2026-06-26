@@ -11,11 +11,19 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize notifications
   await NotificationService().init();
-
   runApp(const GroceryApp());
+}
+
+class AppColors {
+  static const Color primary      = Color(0xFF1BA672);
+  static const Color primaryDark  = Color(0xFF0F8559);
+  static const Color primaryLight = Color(0xFFE8F5E9);
+  static const Color textDark     = Color(0xFF1C1C1C);
+  static const Color textGrey     = Color(0xFF6B6B6B);
+  static const Color background   = Color(0xFFFAFAFA);
+  static const Color cardBg       = Colors.white;
+  static const Color border       = Color(0xFFE5E5E5);
 }
 
 class GroceryApp extends StatelessWidget {
@@ -32,33 +40,54 @@ class GroceryApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: MaterialApp(
-        title:                     'Local Grocery Store',
+        title:                     'Kohli Store',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch:  Colors.green,
-          useMaterial3:   true,
-          colorScheme:    ColorScheme.fromSeed(seedColor: Colors.green),
-          fontFamily:     'Roboto',
+          primaryColor:    AppColors.primary,
+          scaffoldBackgroundColor: AppColors.background,
+          useMaterial3:    true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor:  AppColors.primary,
+            primary:    AppColors.primary,
+            surface:    Colors.white,
+          ),
+          fontFamily: 'Roboto',
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
+            backgroundColor: AppColors.primaryLight,
+            foregroundColor: AppColors.textDark,
             elevation:       0,
+            iconTheme: IconThemeData(color: AppColors.textDark),
+            titleTextStyle: TextStyle(
+              color:      AppColors.textDark,
+              fontSize:   18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
+              elevation: 0,
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
+              borderSide:   BorderSide(color: Colors.grey.shade300),
             ),
             filled:    true,
-            fillColor: Colors.grey.shade50,
+            fillColor: Colors.white,
+          ),
+          cardTheme: CardThemeData(
+            color: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.grey.shade200, width: 1),
+            ),
           ),
         ),
         home: const SplashScreen(),
@@ -66,4 +95,3 @@ class GroceryApp extends StatelessWidget {
     );
   }
 }
-

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
 import '../../constants/api_constants.dart';
+import '../../services/image_upload_service.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -327,8 +328,69 @@ class _AdminScreenState extends State<AdminScreen>
                 decoration: const InputDecoration(labelText: 'Stock',
                   border: OutlineInputBorder())),
               const SizedBox(height: 8),
-              TextField(controller: imgCtrl,
-                decoration: const InputDecoration(labelText: 'Emoji',
+              Row(
+                  children: [
+                    Expanded(
+                      child: TextField(controller: imgCtrl,
+                        decoration: const InputDecoration(
+                          labelText: 'Image URL or Emoji',
+                          border: OutlineInputBorder())),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(8)),
+                      child: IconButton(
+                        icon: const Icon(Icons.camera_alt, color: Colors.white),
+                        onPressed: () async {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Uploading image...')));
+                          final url = await ImageUploadService().pickAndUpload(fromCamera: true);
+                          if (url != null) {
+                            imgCtrl.text = url;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Image uploaded!'),
+                                backgroundColor: Colors.green));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Upload failed'),
+                                backgroundColor: Colors.red));
+                          }
+                        }),
+                    ),
+                    const SizedBox(width: 4),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(8)),
+                      child: IconButton(
+                        icon: const Icon(Icons.photo_library, color: Colors.white),
+                        onPressed: () async {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Uploading image...')));
+                          final url = await ImageUploadService().pickAndUpload();
+                          if (url != null) {
+                            imgCtrl.text = url;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Image uploaded!'),
+                                backgroundColor: Colors.green));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Upload failed'),
+                                backgroundColor: Colors.red));
+                          }
+                        }),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text('📸 Camera takes new photo | 📁 Gallery picks existing',
+                  style: TextStyle(color: Colors.grey, fontSize: 11)),
+                Visibility(
+                  visible: false,
+                  child: TextField(controller: imgCtrl,
+                    decoration: const InputDecoration(labelText: 'Emoji',
                   border: OutlineInputBorder())),
             ],
           ),
@@ -461,3 +523,4 @@ class _AdminScreenState extends State<AdminScreen>
     );
   }
 }
+

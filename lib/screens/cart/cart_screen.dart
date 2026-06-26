@@ -50,8 +50,7 @@ class CartScreen extends StatelessWidget {
                                       child: Image.network(item.product.displayImage,
                                         height: 50, width: 50, fit: BoxFit.cover,
                                         errorBuilder: (_, __, ___) =>
-                                          const Icon(Icons.image, size: 40)),
-                                    )
+                                          const Icon(Icons.image, size: 40)))
                                   : Text(item.product.displayImage.isNotEmpty
                                       ? item.product.displayImage : '🛒',
                                       style: const TextStyle(fontSize: 40)),
@@ -121,8 +120,7 @@ class CartScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 14),
                       SizedBox(
-                        width: double.infinity,
-                        height: 55,
+                        width: double.infinity, height: 55,
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.shopping_bag_outlined),
                           label: const Text('Proceed to Checkout',
@@ -149,10 +147,11 @@ class CartScreen extends StatelessWidget {
     nameCtrl.text  = auth.userName;
     phoneCtrl.text = auth.userPhone;
 
-    double? latitude;
-    double? longitude;
-    String? googleMapsLink;
-    bool detecting = false;
+    double?  latitude;
+    double?  longitude;
+    double?  accuracy;
+    String?  googleMapsLink;
+    bool     detecting = false;
 
     showModalBottomSheet(
       context:            context,
@@ -160,157 +159,298 @@ class CartScreen extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) => StatefulBuilder(
-        builder: (context, setS) => Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 20, right: 20, top: 24),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize:       MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Checkout',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                    IconButton(
-                      onPressed: () => Navigator.pop(ctx),
-                      icon: const Icon(Icons.close)),
-                  ],
+        builder: (context, setS) {
+
+          Future<void> detectLocation() async {
+            setS(() => detecting = true);
+
+            // Show progress
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(children: [
+                  SizedBox(width: 20, height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Colors.white)),
+                  SizedBox(width: 12),
+                  Text('Detecting your location...'),
+                ]),
+                duration: Duration(seconds: 20),
+              ),
+            );
+
+            final result = await LocationService().getCurrentLocation();
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+            setS(() => detecting = false);
+
+            if (!context.mounted) return;
+
+            if (result.success) {
+              setS(() {
+                latitude       = result.latitude;
+                longitude      = result.longitude;
+                accuracy       = result.accuracy;
+                googleMapsLink = result.googleMapsUrl;
+                addressCtrl.text = result.line1.isNotEmpty
+                    ? result.line1
+                    : result.fullAddress;
+                cityCtrl.text  = result.city;
+              });
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(children: [
+                    const Icon(Icons.check_circle, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(
+                      'Location captured! Accuracy: ${result.accuracy?.toStringAsFixed(0) ?? "?"}m')),
+                  ]),
+                  backgroundColor: Colors.green,
                 ),
-                const Divider(),
-
-                // GPS Location Button
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: googleMapsLink != null
-                        ? Colors.green.shade50 : Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: googleMapsLink != null ? Colors.green : Colors.blue),
-                  ),
-                  child: Column(
+              );
+            } else {
+              // Show error dialog with action
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                  title: const Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            googleMapsLink != null
-                                ? Icons.check_circle : Icons.my_location,
-                            color: googleMapsLink != null ? Colors.green : Colors.blue,
-                            size: 28),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  googleMapsLink != null
-                                      ? '✅ Live Location Captured'
-                                      : 'Use Live Location',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: googleMapsLink != null
-                                        ? Colors.green : Colors.blue,
-                                    fontSize: 14)),
-                                Text(
-                                  googleMapsLink != null
-                                      ? 'Store will see exact location'
-                                      : 'For accurate delivery',
-                                  style: const TextStyle(color: Colors.grey, fontSize: 11)),
-                              ],
-                            ),
-                          ),
-                          if (detecting)
-                            const SizedBox(
-                              width: 20, height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.blue))
-                          else
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: googleMapsLink != null
-                                    ? Colors.green : Colors.blue,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              ),
-                              onPressed: () async {
-                                setS(() => detecting = true);
-                                final location = await LocationService()
-                                    .getCurrentLocation();
-                                setS(() => detecting = false);
-
-                                if (location != null) {
-                                  latitude       = location['latitude'];
-                                  longitude      = location['longitude'];
-                                  googleMapsLink = location['googleMapsUrl'];
-                                  addressCtrl.text = location['fullAddress'] ?? '';
-                                  cityCtrl.text    = location['city'] ?? '';
-                                  setS(() {});
-
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('📍 Location captured!'),
-                                        backgroundColor: Colors.green));
-                                  }
-                                } else {
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Could not get location - check GPS'),
-                                        backgroundColor: Colors.red));
-                                  }
-                                }
-                              },
-                              child: Text(
-                                googleMapsLink != null ? 'Update' : 'Detect',
-                                style: const TextStyle(
-                                  color: Colors.white, fontSize: 12)),
-                            ),
-                        ],
+                      Icon(Icons.location_off, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Location Error'),
+                    ],
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(result.message),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(8)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text('💡 Tips:',
+                              style: TextStyle(fontWeight: FontWeight.bold,
+                                color: Colors.blue)),
+                            SizedBox(height: 4),
+                            Text('1. Turn on GPS (Quick settings)',
+                              style: TextStyle(fontSize: 12)),
+                            Text('2. Allow location permission',
+                              style: TextStyle(fontSize: 12)),
+                            Text('3. Go outside for better signal',
+                              style: TextStyle(fontSize: 12)),
+                            Text('4. Try again',
+                              style: TextStyle(fontSize: 12)),
+                          ],
+                        ),
                       ),
                     ],
                   ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel')),
+                    if (result.errorType == LocationErrorType.serviceDisabled)
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.settings),
+                        label: const Text('Enable GPS'),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await LocationService().openLocationSettings();
+                        }),
+                    if (result.errorType == LocationErrorType.permissionDeniedForever)
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.settings),
+                        label: const Text('Open Settings'),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await LocationService().openAppSettings();
+                        }),
+                    if (result.errorType != LocationErrorType.serviceDisabled &&
+                        result.errorType != LocationErrorType.permissionDeniedForever)
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Try Again'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          detectLocation();
+                        }),
+                  ],
                 ),
-                const SizedBox(height: 16),
+              );
+            }
+          }
 
-                const Text('📍 Delivery Details',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                const SizedBox(height: 12),
-                _field(nameCtrl, 'Full Name *', Icons.person_outline),
-                const SizedBox(height: 10),
-                _field(phoneCtrl, 'Phone Number *', Icons.phone_outlined,
-                  type: TextInputType.phone),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: addressCtrl,
-                  maxLines:   2,
-                  decoration: InputDecoration(
-                    labelText: 'Delivery Address *',
-                    prefixIcon: const Icon(Icons.location_on_outlined,
-                      color: Colors.green),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _field(cityCtrl, 'City *', Icons.location_city_outlined),
-                const SizedBox(height: 10),
-                _field(notesCtrl, 'Order Notes (optional)', Icons.note_outlined),
-                const SizedBox(height: 16),
-
-                // COD Box
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green)),
-                  child: const Row(
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 20, right: 20, top: 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Text('Checkout',
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        icon: const Icon(Icons.close)),
+                    ],
+                  ),
+                  const Divider(),
+
+                  // GPS Card - Industry style
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: googleMapsLink != null
+                            ? [Colors.green.shade50, Colors.green.shade100]
+                            : [Colors.blue.shade50, Colors.blue.shade100],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: googleMapsLink != null ? Colors.green : Colors.blue,
+                        width: 2),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: googleMapsLink != null
+                                    ? Colors.green : Colors.blue,
+                                shape: BoxShape.circle),
+                              child: Icon(
+                                googleMapsLink != null
+                                    ? Icons.check : Icons.my_location,
+                                color: Colors.white, size: 24),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    googleMapsLink != null
+                                        ? '✅ Location Captured'
+                                        : '📍 Use Live Location',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: googleMapsLink != null
+                                          ? Colors.green : Colors.blue,
+                                      fontSize: 15)),
+                                  if (googleMapsLink != null && accuracy != null)
+                                    Text(
+                                      'Accuracy: ${accuracy!.toStringAsFixed(0)}m • Tap to update',
+                                      style: const TextStyle(
+                                        color: Colors.grey, fontSize: 11))
+                                  else
+                                    const Text(
+                                      'Fast & accurate like Zomato/Swiggy',
+                                      style: TextStyle(
+                                        color: Colors.grey, fontSize: 11)),
+                                ],
+                              ),
+                            ),
+                            if (detecting)
+                              const SizedBox(
+                                width: 24, height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5, color: Colors.blue))
+                            else
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: googleMapsLink != null
+                                      ? Colors.green : Colors.blue,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                ),
+                                onPressed: detectLocation,
+                                child: Text(
+                                  googleMapsLink != null ? 'Update' : 'Detect',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13)),
+                              ),
+                          ],
+                        ),
+                        if (googleMapsLink != null) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.map, color: Colors.blue, size: 18),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    'Lat: ${latitude!.toStringAsFixed(4)}, Lng: ${longitude!.toStringAsFixed(4)}',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'monospace')),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  const Text('📍 Delivery Details',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  const SizedBox(height: 12),
+                  _field(nameCtrl, 'Full Name *', Icons.person_outline),
+                  const SizedBox(height: 10),
+                  _field(phoneCtrl, 'Phone Number *', Icons.phone_outlined,
+                    type: TextInputType.phone),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: addressCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Delivery Address *',
+                      prefixIcon: const Icon(Icons.location_on_outlined,
+                        color: Colors.green),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _field(cityCtrl, 'City *', Icons.location_city_outlined),
+                  const SizedBox(height: 10),
+                  _field(notesCtrl, 'Order Notes (optional)', Icons.note_outlined),
+                  const SizedBox(height: 16),
+
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green)),
+                    child: const Row(children: [
                       Icon(Icons.money, color: Colors.green, size: 28),
                       SizedBox(width: 12),
                       Expanded(
@@ -327,178 +467,101 @@ class CartScreen extends StatelessWidget {
                         ),
                       ),
                       Icon(Icons.check_circle, color: Colors.green),
-                    ],
+                    ]),
                   ),
-                ),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
-                // WhatsApp info
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.teal.shade50,
-                    borderRadius: BorderRadius.circular(12)),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.send, color: Colors.teal, size: 20),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Order details auto-sent to store via WhatsApp with your location',
-                          style: TextStyle(color: Colors.teal, fontSize: 12)),
+                  SizedBox(
+                    width: double.infinity, height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
+                      onPressed: () async {
+                        if (nameCtrl.text.trim().isEmpty ||
+                            phoneCtrl.text.trim().isEmpty ||
+                            addressCtrl.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Fill all required fields'),
+                              backgroundColor: Colors.red));
+                          return;
+                        }
 
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        final orderProvider = context.read<OrderProvider>();
+                        final result = await orderProvider.placeOrder(
+                          items: cart.items,
+                          deliveryAddress: {
+                            'name':    nameCtrl.text.trim(),
+                            'phone':   phoneCtrl.text.trim(),
+                            'line1':   addressCtrl.text.trim(),
+                            'city':    cityCtrl.text.trim().isEmpty
+                                ? 'City' : cityCtrl.text.trim(),
+                            'state':   'State',
+                            'pincode': '000000',
+                            'country': 'India',
+                            'latitude':  latitude,
+                            'longitude': longitude,
+                          },
+                          paymentMethod: 'cod',
+                          couponCode:    cart.couponCode,
+                          notes:         notesCtrl.text.trim(),
+                        );
+
+                        if (!context.mounted) return;
+                        if (result['success'] == true) {
+                          final order    = result['data']?['order'];
+                          final orderNum = order?['orderNumber'] ?? '';
+                          final totalAmt = cart.totalAmount;
+
+                          cart.clearCart();
+                          Navigator.pop(ctx);
+                          Navigator.pop(context);
+
+                          try {
+                            if (order != null && orderProvider.orders.isNotEmpty) {
+                              await WhatsAppService().sendOrderToStore(
+                                order: orderProvider.orders.first,
+                                customerName:   nameCtrl.text.trim(),
+                                customerPhone:  phoneCtrl.text.trim(),
+                                address:        '${addressCtrl.text.trim()}, ${cityCtrl.text.trim()}',
+                                googleMapsLink: googleMapsLink,
+                                latitude:       latitude,
+                                longitude:      longitude,
+                              );
+                            }
+                          } catch (_) {}
+
+                          NotificationService().showOrderPlacedNotification(
+                            orderNum, totalAmt);
+
+                          _showSuccess(context, orderNum);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'] ?? 'Failed'),
+                              backgroundColor: Colors.red));
+                        }
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('Items'),
-                          Text('${cart.itemCount}'),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Subtotal'),
-                          Text('${AppConstants.currency}${cart.subtotal.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Delivery'),
-                          Text(cart.deliveryFee > 0
-                              ? '${AppConstants.currency}${cart.deliveryFee.toStringAsFixed(2)}'
-                              : 'FREE',
+                          Icon(Icons.send, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text('Place Order & Notify Store',
                             style: TextStyle(
-                              color: cart.deliveryFee == 0 ? Colors.green : null)),
+                              fontSize: 16, color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Total',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          Text('${AppConstants.currency}${cart.totalAmount.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18, color: Colors.green)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    ),
-                    onPressed: () async {
-                      if (nameCtrl.text.trim().isEmpty ||
-                          phoneCtrl.text.trim().isEmpty ||
-                          addressCtrl.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Fill all required fields'),
-                            backgroundColor: Colors.red));
-                        return;
-                      }
-
-                      final orderProvider = context.read<OrderProvider>();
-                      final result = await orderProvider.placeOrder(
-                        items: cart.items,
-                        deliveryAddress: {
-                          'name':    nameCtrl.text.trim(),
-                          'phone':   phoneCtrl.text.trim(),
-                          'line1':   addressCtrl.text.trim(),
-                          'city':    cityCtrl.text.trim().isEmpty
-                              ? 'City' : cityCtrl.text.trim(),
-                          'state':   'State',
-                          'pincode': '000000',
-                          'country': 'India',
-                          'latitude':  latitude,
-                          'longitude': longitude,
-                        },
-                        paymentMethod: 'cod',
-                        couponCode:    cart.couponCode,
-                        notes:         notesCtrl.text.trim(),
-                      );
-
-                      if (!context.mounted) return;
-                      if (result['success'] == true) {
-                        final order    = result['data']?['order'];
-                        final orderNum = order?['orderNumber'] ?? '';
-                        final totalAmt = cart.totalAmount;
-
-                        cart.clearCart();
-                        Navigator.pop(ctx);
-                        Navigator.pop(context);
-
-                        // Auto-send to store WhatsApp
-                        try {
-                          if (order != null) {
-                            await WhatsAppService().sendOrderToStore(
-                              order: orderProvider.orders.isNotEmpty
-                                  ? orderProvider.orders.first
-                                  : null!,
-                              customerName:   nameCtrl.text.trim(),
-                              customerPhone:  phoneCtrl.text.trim(),
-                              address:        '${addressCtrl.text.trim()}, ${cityCtrl.text.trim()}',
-                              googleMapsLink: googleMapsLink,
-                              latitude:       latitude,
-                              longitude:      longitude,
-                            );
-                          }
-                        } catch (_) {}
-
-                        NotificationService().showOrderPlacedNotification(
-                          orderNum, totalAmt);
-
-                        _showSuccess(context, orderNum);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result['message'] ?? 'Failed'),
-                            backgroundColor: Colors.red));
-                      }
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.send, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text('Place Order & Notify Store',
-                          style: TextStyle(
-                            fontSize: 16, color: Colors.white,
-                            fontWeight: FontWeight.bold)),
-                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -506,10 +569,10 @@ class CartScreen extends StatelessWidget {
   Widget _field(TextEditingController ctrl, String label, IconData icon,
     {TextInputType type = TextInputType.text}) {
     return TextField(
-      controller:   ctrl,
+      controller: ctrl,
       keyboardType: type,
       decoration: InputDecoration(
-        labelText:  label,
+        labelText: label,
         prefixIcon: Icon(icon, color: Colors.green),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -552,7 +615,7 @@ class CartScreen extends StatelessWidget {
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Store notified via WhatsApp with your full details + live location',
+                      'Store notified via WhatsApp with full details + live location',
                       style: TextStyle(color: Colors.teal, fontSize: 12))),
                 ],
               ),

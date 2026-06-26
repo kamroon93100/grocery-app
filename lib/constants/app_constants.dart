@@ -1,14 +1,15 @@
 ﻿class AppConstants {
-  // ================================
-  // CHANGE THESE TO YOUR STORE INFO
-  // ================================
-  static const String storeName      = 'My Grocery Store';
-  static const String storePhone     = '+1234567890';
-  static const String storeWhatsApp  = '1234567890'; // without + sign
-  static const String storeAddress   = '123 Main Street, City';
-  static const String storeEmail     = 'store@mygrocery.com';
-  static const String currency       = '\$';
-  static const String version        = '2.0.0';
+  // ========================================
+  // 🏪 YOUR STORE INFORMATION
+  // ========================================
+  static const String storeName     = 'Kohli Store';
+  static const String storeTagline  = 'Fresh products at your door';
+  static const String storePhone    = '919310053756';
+  static const String storeWhatsApp = '919310053756';
+  static const String storeAddress  = 'B-433, lajpat nagar , sahibabad, ghaziabad 201005';
+  static const String storeEmail    = 'karmansingh93100@gmail.com';
+  static const String currency      = 'Rs';
+  static const String version       = '2.0.0';
 
   // Storage Keys
   static const String keyToken        = 'access_token';

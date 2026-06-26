@@ -102,6 +102,43 @@ class AuthService {
     });
   }
 
+  Future<Map<String, dynamic>> sendOTP(String phone) async {
+    return await _api.post(
+      ApiConstants.sendOTP,
+      {'phone': phone},
+      auth: false,
+    );
+  }
+
+  Future<Map<String, dynamic>> verifyOTP({
+    required String phone,
+    required String otp,
+    String? name,
+    String? email,
+  }) async {
+    final body = <String, dynamic>{'phone': phone, 'otp': otp};
+    if (name  != null) body['name']  = name;
+    if (email != null) body['email'] = email;
+
+    final result = await _api.post(ApiConstants.verifyOTP, body, auth: false);
+    if (result['success'] == true) {
+      final user  = UserModel.fromJson(result['data']['user']);
+      final token = result['data']['accessToken'];
+      final refreshToken = result['data']['refreshToken'];
+      await _saveSession(user, token, refreshToken);
+      _api.setToken(token);
+    }
+    return result;
+  }
+
+  Future<Map<String, dynamic>> resendOTP(String phone) async {
+    return await _api.post(
+      ApiConstants.resendOTP,
+      {'phone': phone},
+      auth: false,
+    );
+  }
+
   Future<Map<String, dynamic>> updateProfile(
     String name, String phone) async {
     return await _api.put(ApiConstants.updateProfile, {
@@ -110,3 +147,4 @@ class AuthService {
     });
   }
 }
+

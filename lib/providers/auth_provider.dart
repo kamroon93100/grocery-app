@@ -71,6 +71,36 @@ class AuthProvider extends ChangeNotifier {
     return result;
   }
 
+  Future<Map<String, dynamic>> sendOTP(String phone) async {
+    _isLoading = true; notifyListeners();
+    final result = await _auth.sendOTP(phone);
+    _isLoading = false; notifyListeners();
+    return result;
+  }
+
+  Future<Map<String, dynamic>> verifyOTP({
+    required String phone,
+    required String otp,
+    String? name,
+    String? email,
+  }) async {
+    _isLoading = true; notifyListeners();
+    final result = await _auth.verifyOTP(
+      phone: phone, otp: otp, name: name, email: email,
+    );
+    if (result['success'] == true) {
+      _currentUser = await _auth.getCurrentUser();
+    } else {
+      _error = result['message'];
+    }
+    _isLoading = false; notifyListeners();
+    return result;
+  }
+
+  Future<Map<String, dynamic>> resendOTP(String phone) async {
+    return await _auth.resendOTP(phone);
+  }
+
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
@@ -92,3 +122,4 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 }
+

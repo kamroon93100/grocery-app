@@ -11,6 +11,7 @@ import '../orders/orders_screen.dart';
 import '../profile/profile_screen.dart';
 import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
+import '../../constants/app_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Local Grocery',
+        title: const Text(AppConstants.storeName,
           style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           if (auth.isAdmin)
@@ -438,3 +439,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+

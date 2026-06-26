@@ -1,9 +1,11 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../constants/app_constants.dart';
 import '../../providers/product_provider.dart';
 import '../home/home_screen.dart';
 import 'register_screen.dart';
+import 'otp_login_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -72,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Icon(Icons.store_rounded, size: 70, color: Colors.white),
                 ),
                 const SizedBox(height: 24),
-                const Text('Local Grocery Store',
+                const Text(AppConstants.storeName,
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green)),
-                const Text('Sign in to continue',
+                const Text(AppConstants.storeTagline,
                   style: TextStyle(color: Colors.grey, fontSize: 14)),
                 const SizedBox(height: 40),
                 TextFormField(
@@ -141,6 +143,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   ]),
                 ),
                 const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.phone_outlined, color: Colors.green),
+                    label: const Text('Login with Phone (OTP)',
+                      style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.green),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const OtpLoginScreen())),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -163,3 +182,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+

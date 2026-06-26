@@ -13,6 +13,10 @@
   static const String refreshToken    = '/auth/refresh';
   static const String changePassword  = '/auth/change-password';
   static const String updateProfile   = '/auth/update-profile';
+  static const String sendOTP         = '/auth/send-otp';
+  static const String verifyOTP       = '/auth/verify-otp';
+  static const String resendOTP       = '/auth/resend-otp';
+
   static const String updateFcmToken  = '/auth/update-fcm-token';
 
   // Categories
@@ -60,3 +64,4 @@
   static const int connectTimeout     = 30;
   static const int receiveTimeout     = 30;
 }
+

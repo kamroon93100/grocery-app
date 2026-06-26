@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../services/notification_service.dart';
+import '../constants/app_constants.dart';
 import 'auth/login_screen.dart';
 import 'home/home_screen.dart';
 
@@ -40,13 +41,8 @@ class _SplashScreenState extends State<SplashScreen>
     if (auth.isLoggedIn) {
       context.read<ProductProvider>().loadCategories();
       context.read<ProductProvider>().loadProducts();
-
-      // Show welcome notification
       NotificationService().showWelcomeNotification(auth.userName);
-
-      // Start polling for new notifications
       NotificationService().startPolling();
-
       Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } else {
@@ -80,19 +76,37 @@ class _SplashScreenState extends State<SplashScreen>
             const SizedBox(height: 30),
             FadeTransition(
               opacity: _fade,
-              child: const Column(
+              child: Column(
                 children: [
-                  Text('Local Grocery Store',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold,
+                  Text(AppConstants.storeName,
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,
                       color: Colors.white)),
-                  SizedBox(height: 8),
-                  Text('Fresh products at your doorstep',
-                    style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Text(AppConstants.storeTagline,
+                    style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text('🌿 Fresh • Fast • Trusted',
+                      style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 60),
             const CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+            const SizedBox(height: 20),
+            FadeTransition(
+              opacity: _fade,
+              child: Text(
+                'v' + AppConstants.version,
+                style: const TextStyle(color: Colors.white60, fontSize: 12),
+              ),
+            ),
           ],
         ),
       ),

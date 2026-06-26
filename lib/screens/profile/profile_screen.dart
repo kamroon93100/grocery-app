@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
 import '../address/address_screen.dart';
 import '../wishlist/wishlist_screen.dart';
+import '../refer/refer_screen.dart';
 import 'profile_edit_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -237,6 +238,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: [
                   _section('Account'),
+                  _tile(Icons.card_giftcard, Colors.purple,
+                    'Refer & Earn', 'Get $10 for each friend',
+                    () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const ReferScreen()))),
                   _tile(Icons.favorite_outline, Colors.red,
                     'My Wishlist', 'Saved products',
                     () => Navigator.push(context,
@@ -357,4 +362,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
 

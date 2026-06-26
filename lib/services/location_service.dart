@@ -1,20 +1,14 @@
 ﻿import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LocationService {
   static final LocationService _instance = LocationService._internal();
   factory LocationService() => _instance;
   LocationService._internal();
 
-  Future<bool> requestPermission() async {
-    final status = await Permission.location.request();
-    return status.isGranted;
-  }
-
   Future<Map<String, dynamic>?> getCurrentLocation() async {
     try {
-      // Check permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -22,53 +16,47 @@ class LocationService {
       }
       if (permission == LocationPermission.deniedForever) return null;
 
-      // Check if location service enabled
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) return null;
 
-      // Get current position
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
         timeLimit:       const Duration(seconds: 15),
       );
 
-      // Convert to address
-      final placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
+      // Use free reverse geocoding API
+      String address = '${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}';
+      String city = '';
 
-      if (placemarks.isEmpty) return null;
-      final place = placemarks.first;
+      try {
+        final response = await http.get(
+          Uri.parse('https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}&zoom=18&addressdetails=1'),
+          headers: {'User-Agent': 'GroceryApp/1.0'},
+        ).timeout(const Duration(seconds: 10));
 
-      final addressParts = <String>[];
-      if (place.name?.isNotEmpty == true && place.name != place.street)
-        addressParts.add(place.name!);
-      if (place.street?.isNotEmpty == true) addressParts.add(place.street!);
-      if (place.subLocality?.isNotEmpty == true) addressParts.add(place.subLocality!);
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          address = data['display_name'] ?? address;
+          city = data['address']?['city'] ??
+                 data['address']?['town'] ??
+                 data['address']?['village'] ?? '';
+        }
+      } catch (_) {}
 
       return {
-        'latitude':    position.latitude,
-        'longitude':   position.longitude,
-        'fullAddress': addressParts.join(', '),
-        'line1':       addressParts.take(2).join(', '),
-        'line2':       place.subLocality ?? '',
-        'city':        place.locality ?? '',
-        'state':       place.administrativeArea ?? '',
-        'pincode':     place.postalCode ?? '',
-        'country':     place.country ?? 'India',
+        'latitude':      position.latitude,
+        'longitude':     position.longitude,
+        'fullAddress':   address,
+        'line1':         address.split(',').take(2).join(',').trim(),
+        'line2':         '',
+        'city':          city,
+        'state':         '',
+        'pincode':       '',
+        'country':       'India',
         'googleMapsUrl': 'https://www.google.com/maps?q=${position.latitude},${position.longitude}',
       };
     } catch (e) {
       return null;
     }
-  }
-
-  Future<bool> openLocationSettings() async {
-    return await Geolocator.openLocationSettings();
-  }
-
-  Future<bool> openAppSettings() async {
-    return await openAppSettings();
   }
 }

@@ -6,6 +6,8 @@ class CartProvider extends ChangeNotifier {
   final List<CartItemModel> _items = [];
   String? _couponCode;
   double  _couponDiscount = 0;
+  DateTime? _deliveryDate;
+  String?   _deliverySlot;
 
   List<CartItemModel> get items          => _items;
   int                 get itemCount      => _items.fold(0, (s, i) => s + i.quantity);
@@ -15,6 +17,9 @@ class CartProvider extends ChangeNotifier {
   double              get deliveryFee    => subtotal > 50 ? 0 : 5;
   double              get tax            => (subtotal - _couponDiscount) * 0.05;
   double              get totalAmount    => subtotal - _couponDiscount + deliveryFee + tax;
+  DateTime?           get deliveryDate   => _deliveryDate;
+  String?             get deliverySlot   => _deliverySlot;
+  bool                get hasSchedule    => _deliverySlot != null;
 
   void addItem(ProductModel product) {
     final index = _items.indexWhere((i) => i.product.id == product.id);
@@ -60,10 +65,24 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setDeliverySlot(DateTime date, String slot) {
+    _deliveryDate = date;
+    _deliverySlot = slot;
+    notifyListeners();
+  }
+
+  void clearDeliverySlot() {
+    _deliveryDate = null;
+    _deliverySlot = null;
+    notifyListeners();
+  }
+
   void clearCart() {
     _items.clear();
     _couponCode     = null;
     _couponDiscount = 0;
+    _deliveryDate   = null;
+    _deliverySlot   = null;
     notifyListeners();
   }
 

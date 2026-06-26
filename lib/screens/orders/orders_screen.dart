@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/order_provider.dart';
 import '../../models/order_model.dart';
 import 'order_tracking_screen.dart';
+import '../../providers/cart_provider.dart';
+import '../../services/product_service.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -172,6 +174,38 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: OutlinedButton.icon(
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Re-order'),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.blue,
+                                      side: const BorderSide(color: Colors.blue)),
+                                    onPressed: () async {
+                                      final productService = ProductService();
+                                      int added = 0;
+                                      for (final item in o.items) {
+                                        final product = await productService.getProductById(item.productId);
+                                        if (product != null && product.inStock) {
+                                          for (int i = 0; i < item.quantity; i++) {
+                                            context.read<CartProvider>().addItem(product);
+                                          }
+                                          added++;
+                                        }
+                                      }
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('$added items added to cart'),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
                                     icon: const Icon(Icons.location_searching),
                                     label: const Text('Track Order'),
                                     onPressed: () => Navigator.push(context,
@@ -190,3 +224,4 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 }
+

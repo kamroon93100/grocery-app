@@ -5,6 +5,7 @@ import 'providers/cart_provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/address_provider.dart';
+import 'providers/wishlist_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
 
@@ -28,6 +29,7 @@ class GroceryApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: MaterialApp(
         title:                     'Local Grocery Store',
@@ -64,3 +66,4 @@ class GroceryApp extends StatelessWidget {
     );
   }
 }
+

@@ -4,6 +4,7 @@ import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
 import '../cart/cart_screen.dart';
+import '../../providers/wishlist_provider.dart';
 import '../../widgets/reviews_section.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -34,6 +35,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             pinned:         true,
             backgroundColor: Colors.green,
             actions: [
+              Consumer<WishlistProvider>(
+                builder: (context, wishlist, _) {
+                  final isFav = wishlist.isInWishlist(widget.product.id);
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? Colors.red : Colors.white,
+                    ),
+                    onPressed: () {
+                      context.read<WishlistProvider>().toggleWishlist(widget.product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isFav
+                              ? 'Removed from wishlist'
+                              : 'Added to wishlist ❤️'),
+                          backgroundColor: isFav ? Colors.grey : Colors.red,
+                          duration: const Duration(seconds: 1),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -414,4 +438,5 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 }
+
 

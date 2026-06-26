@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   _section('Account'),
                   _tile(Icons.card_giftcard, Colors.purple,
-                    'Refer & Earn', 'Get $10 for each friend',
+                    'Refer & Earn', 'Get 10 for each friend',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ReferScreen()))),
                   _tile(Icons.favorite_outline, Colors.red,
@@ -362,5 +362,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
 
 

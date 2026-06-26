@@ -7,7 +7,6 @@ class WhatsAppService {
   factory WhatsAppService() => _instance;
   WhatsAppService._internal();
 
-  // Auto-send order to store WhatsApp
   Future<bool> sendOrderToStore({
     required OrderModel order,
     required String customerName,
@@ -26,6 +25,13 @@ class WhatsAppService {
         .map((i) => '• ${i.productName} x${i.quantity} = ${AppConstants.currency}${i.subtotal.toStringAsFixed(2)}')
         .join('\n');
 
+    final orderNotes = order.notes ?? '';
+    final couponLine = order.couponDiscount > 0
+        ? 'Discount (${order.couponCode}): -${AppConstants.currency}${order.couponDiscount.toStringAsFixed(2)}\n'
+        : '';
+    final mapLine    = mapLink.isNotEmpty ? '*📍 Live Location:* $mapLink\n' : '';
+    final notesLine  = orderNotes.isNotEmpty ? '📝 *Notes:* $orderNotes\n' : '';
+
     final message = '''
 🛒 *NEW ORDER RECEIVED!*
 ━━━━━━━━━━━━━━━━━━━━
@@ -39,8 +45,7 @@ class WhatsAppService {
 *Name:* $customerName
 *Phone:* $customerPhone
 *Address:* $address
-${mapLink.isNotEmpty ? '*📍 Live Location:* $mapLink' : ''}
-
+$mapLine
 🛍️ *ORDER ITEMS*
 ━━━━━━━━━━━━━━━━━━━━
 $itemsList
@@ -48,21 +53,20 @@ $itemsList
 💰 *BILL SUMMARY*
 ━━━━━━━━━━━━━━━━━━━━
 Subtotal: ${AppConstants.currency}${order.subtotal.toStringAsFixed(2)}
-${order.couponDiscount > 0 ? 'Discount (${order.couponCode}): -${AppConstants.currency}${order.couponDiscount.toStringAsFixed(2)}\n' : ''}Delivery: ${order.deliveryFee > 0 ? "${AppConstants.currency}${order.deliveryFee.toStringAsFixed(2)}" : "FREE"}
+${couponLine}Delivery: ${order.deliveryFee > 0 ? "${AppConstants.currency}${order.deliveryFee.toStringAsFixed(2)}" : "FREE"}
 Tax: ${AppConstants.currency}${order.tax.toStringAsFixed(2)}
 ━━━━━━━━━━━━━━━━━━━━
 💵 *TOTAL: ${AppConstants.currency}${order.totalAmount.toStringAsFixed(2)}*
 💳 *Payment:* ${order.paymentMethod.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━━━
 
-${order.notes.isNotEmpty ? '📝 *Notes:* ${order.notes}\n' : ''}
+$notesLine
 ✅ Please confirm & prepare for delivery!
     ''';
 
     return await _sendMessage(AppConstants.storeWhatsApp, message);
   }
 
-  // Send confirmation to customer
   Future<bool> sendConfirmationToCustomer({
     required String customerPhone,
     required String orderNumber,
@@ -71,21 +75,18 @@ ${order.notes.isNotEmpty ? '📝 *Notes:* ${order.notes}\n' : ''}
     final message = '''
 ✅ *Order Confirmed!*
 
-Hi! Your order at *${AppConstants.storeName}* has been placed successfully.
+Hi! Your order at *${AppConstants.storeName}* has been placed.
 
 📦 *Order:* #$orderNumber
 💵 *Total:* ${AppConstants.currency}${totalAmount.toStringAsFixed(2)}
 💳 *Payment:* Cash on Delivery
 ⏰ *Delivery:* 30-45 mins
 
-We'll deliver fresh products to your door!
-
 Need help? Contact us:
 📞 ${AppConstants.storePhone}
 
 Thank you for shopping with us! 🛒
     ''';
-
     return await _sendMessage(customerPhone, message);
   }
 
@@ -94,8 +95,7 @@ Thank you for shopping with us! 🛒
       final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
       final encoded    = Uri.encodeComponent(message);
       final url        = 'https://wa.me/$cleanPhone?text=$encoded';
-
-      final uri = Uri.parse(url);
+      final uri        = Uri.parse(url);
       if (await canLaunchUrl(uri)) {
         return await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
@@ -105,7 +105,6 @@ Thank you for shopping with us! 🛒
     }
   }
 
-  // Open WhatsApp directly to chat with store
   Future<void> openStoreChat() async {
     final url = 'https://wa.me/${AppConstants.storeWhatsApp}';
     final uri = Uri.parse(url);

@@ -45,7 +45,7 @@ class OrderModel {
   final Map<String, dynamic> deliveryAddress;
   final List<OrderItemModel> items;
   final String           createdAt;
-  final String?          notes;
+  final String notes;
   final String?          cancelReason;
   final int              estimatedTime;
 
@@ -66,7 +66,7 @@ class OrderModel {
     required this.deliveryAddress,
     required this.items,
     required this.createdAt,
-    this.notes,
+    this.notes = '',
     this.cancelReason,
     required this.estimatedTime,
   });
@@ -96,8 +96,9 @@ class OrderModel {
         .map((i) => OrderItemModel.fromJson(i))
         .toList(),
     createdAt:     json['createdAt']    ?? '',
-    notes:         json['notes'],
+    notes: json['notes'] ?? '',
     cancelReason:  json['cancelReason'],
     estimatedTime: json['estimatedTime'] ?? 30,
   );
 }
+

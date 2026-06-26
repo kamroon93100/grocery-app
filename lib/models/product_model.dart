@@ -47,6 +47,8 @@
   bool get lowStock    => stock > 0 && stock <= 10;
 
   String get displayImage => thumbnail ?? (images.isNotEmpty ? images[0] : '🛒');
+  bool   get isNetworkImage => displayImage.startsWith('http');
+  bool   get isEmojiImage   => !isNetworkImage && displayImage.length <= 3;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
     id:           json['id']          ?? '',

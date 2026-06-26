@@ -1,5 +1,5 @@
 ﻿name: grocery_local
-description: Complete Grocery Store App - COD + WhatsApp
+description: Complete Grocery Store App
 publish_to: 'none'
 version: 2.0.0+1
 
@@ -32,6 +32,9 @@ dependencies:
 
   # WhatsApp + Links
   url_launcher:       ^6.3.0
+
+  # Notifications
+  flutter_local_notifications: ^17.2.3
 
   # Utils
   intl:               ^0.19.0

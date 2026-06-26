@@ -2,6 +2,7 @@
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
+import '../services/notification_service.dart';
 import 'auth/login_screen.dart';
 import 'home/home_screen.dart';
 
@@ -39,6 +40,13 @@ class _SplashScreenState extends State<SplashScreen>
     if (auth.isLoggedIn) {
       context.read<ProductProvider>().loadCategories();
       context.read<ProductProvider>().loadProducts();
+
+      // Show welcome notification
+      NotificationService().showWelcomeNotification(auth.userName);
+
+      // Start polling for new notifications
+      NotificationService().startPolling();
+
       Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } else {
@@ -58,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
             ScaleTransition(
               scale: _scale,
               child: Container(
-                padding:     const EdgeInsets.all(28),
+                padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   color:        Colors.white,
                   borderRadius: BorderRadius.circular(30),
@@ -75,11 +83,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: const Column(
                 children: [
                   Text('Local Grocery Store',
-                    style: TextStyle(
-                      fontSize:   28,
-                      fontWeight: FontWeight.bold,
-                      color:      Colors.white,
-                    )),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold,
+                      color: Colors.white)),
                   SizedBox(height: 8),
                   Text('Fresh products at your doorstep',
                     style: TextStyle(color: Colors.white70, fontSize: 14)),

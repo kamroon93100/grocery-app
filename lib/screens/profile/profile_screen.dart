@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
 import '../address/address_screen.dart';
+import 'profile_edit_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,27 +26,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Change Password'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.lock_outline, color: Colors.green),
+            SizedBox(width: 10),
+            Text('Change Password'),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller:  _oldPassCtrl,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText:  'Current Password',
-                border:     OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock_outline),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: const Icon(Icons.lock_outline),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
               controller:  _newPassCtrl,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText:  'New Password',
-                border:     OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock_outline),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: const Icon(Icons.lock_outline),
               ),
             ),
           ],
@@ -79,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(result['success'] == true
-                        ? 'Password changed!' : result['message'] ?? 'Failed'),
+                        ? '✅ Password changed!' : result['message'] ?? 'Failed'),
                     backgroundColor: result['success'] == true
                         ? Colors.green : Colors.red,
                   ),
@@ -101,12 +109,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header
+            // Header with Edit Button
             Container(
               width:   double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
               decoration: const BoxDecoration(
-                color: Colors.green,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end:   Alignment.bottomRight,
+                  colors: [Colors.green, Color(0xFF66BB6A)],
+                ),
                 borderRadius: BorderRadius.only(
                   bottomLeft:  Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -114,45 +126,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius:          45,
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      auth.userName.isNotEmpty
-                          ? auth.userName[0].toUpperCase() : 'U',
-                      style: const TextStyle(
-                        fontSize:   40, color: Colors.green,
-                        fontWeight: FontWeight.bold),
-                    ),
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius:          50,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          auth.userName.isNotEmpty
+                              ? auth.userName[0].toUpperCase() : 'U',
+                          style: const TextStyle(
+                            fontSize:   45,
+                            color:      Colors.green,
+                            fontWeight: FontWeight.bold)),
+                      ),
+                      Positioned(
+                        bottom: 0, right: 0,
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const ProfileEditScreen())),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color:  Colors.white,
+                              shape:  BoxShape.circle,
+                              border: Border.all(color: Colors.green, width: 2),
+                            ),
+                            child: const Icon(Icons.edit,
+                              color: Colors.green, size: 18),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
                   Text(auth.userName,
-                    style: const TextStyle(fontSize: 22,
-                      fontWeight: FontWeight.bold, color: Colors.white)),
+                    style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold,
+                      color: Colors.white)),
                   Text(auth.userEmail,
                     style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 4),
+                          horizontal: 14, vertical: 5),
                         decoration: BoxDecoration(
                           color:        Colors.white,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(
-                          auth.userRole.toUpperCase(),
+                        child: Text(auth.userRole.toUpperCase(),
                           style: const TextStyle(
                             color:      Colors.green,
-                            fontWeight: FontWeight.bold),
-                        ),
+                            fontWeight: FontWeight.bold,
+                            fontSize:   11)),
                       ),
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 4),
+                          horizontal: 14, vertical: 5),
                         decoration: BoxDecoration(
                           color:        Colors.green.shade700,
                           borderRadius: BorderRadius.circular(20),
@@ -160,36 +193,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Text(
                           'Wallet: \$${auth.wallet.toStringAsFixed(2)}',
                           style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+                            color:      Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize:   11)),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    icon:  const Icon(Icons.edit, color: Colors.white, size: 16),
+                    label: const Text('Edit Profile',
+                      style: TextStyle(color: Colors.white)),
+                    onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const ProfileEditScreen())),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
+
+            // Quick Stats
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(child: _statCard(Icons.receipt_long_outlined,
+                    'Orders', '12', Colors.blue)),
+                  const SizedBox(width: 10),
+                  Expanded(child: _statCard(Icons.favorite_outline,
+                    'Favorites', '8', Colors.red)),
+                  const SizedBox(width: 10),
+                  Expanded(child: _statCard(Icons.discount_outlined,
+                    'Coupons', '5', Colors.orange)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Menu Items
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
+                  _section('Account'),
+                  _tile(Icons.edit_outlined, Colors.blue,
+                    'Edit Profile', 'Update your information',
+                    () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const ProfileEditScreen()))),
                   _tile(Icons.location_on_outlined, Colors.red,
                     'My Addresses', 'Manage delivery addresses',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const AddressScreen()))),
-                  _tile(Icons.phone_outlined, Colors.teal,
-                    'Phone', auth.userPhone.isNotEmpty ? auth.userPhone : 'Not set', null),
                   _tile(Icons.lock_outline, Colors.orange,
                     'Change Password', 'Update your password',
                     () => _changePassword(context, auth)),
+
+                  const SizedBox(height: 16),
+                  _section('Information'),
+                  _tile(Icons.phone_outlined, Colors.teal,
+                    'Phone',
+                    auth.userPhone.isNotEmpty ? auth.userPhone : 'Not set',
+                    null),
                   _tile(Icons.security_outlined, Colors.purple,
                     'Security', 'JWT + SHA256 Encrypted', null),
-                  _tile(Icons.storage_outlined, Colors.blue,
+                  _tile(Icons.storage_outlined, Colors.indigo,
                     'Database', 'PostgreSQL + Redis', null),
-                  _tile(Icons.wifi_outlined, Colors.indigo,
-                    'API', 'Connected to Backend', null),
                   _tile(Icons.info_outline, Colors.grey,
-                    'Version', 'v2.0.0 - Full Stack', null),
+                    'App Version', 'v2.0.0 - Full Stack', null),
+
                   const SizedBox(height: 20),
                   SizedBox(
                     width:  double.infinity,
@@ -225,6 +296,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _section(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(title,
+          style: TextStyle(
+            color:      Colors.grey.shade600,
+            fontWeight: FontWeight.bold,
+            fontSize:   13,
+            letterSpacing: 1.2)),
+      ),
+    );
+  }
+
+  Widget _statCard(IconData icon, String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color:        Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 5)],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 26),
+          const SizedBox(height: 6),
+          Text(value,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
+          Text(label,
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+        ],
+      ),
+    );
+  }
+
   Widget _tile(IconData icon, Color color, String title,
     String subtitle, VoidCallback? onTap) {
     return Card(
@@ -245,4 +352,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

@@ -6,6 +6,7 @@ import '../../providers/order_provider.dart';
 import '../../services/order_service.dart';
 import '../../services/whatsapp_service.dart';
 import '../../constants/app_constants.dart';
+import '../../services/notification_service.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -506,7 +507,11 @@ class CartScreen extends StatelessWidget {
                           } catch (_) {}
                         }
 
-                        _showSuccess(context, result);
+                        NotificationService().showOrderPlacedNotification(
+                            order?['orderNumber'] ?? '',
+                            cart.totalAmount,
+                          );
+                          _showSuccess(context, result);
                       } else {
                         _showSnack(context,
                           result['message'] ?? 'Order failed', error: true);
@@ -665,3 +670,4 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+

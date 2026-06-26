@@ -1,7 +1,9 @@
 ﻿class ApiConstants {
-  // YOUR PC IP - Auto detected
-  static const String baseUrl    = 'http://192.168.1.40:5000/api/v1';
-  static const String socketUrl  = 'http://192.168.1.40:5000';
+  // ========================================
+  // 🌐 PRODUCTION URL - Railway Cloud
+  // ========================================
+  static const String baseUrl   = 'https://grocery-backend-production-ded1.up.railway.app/api/v1';
+  static const String socketUrl = 'https://grocery-backend-production-ded1.up.railway.app';
 
   // Auth
   static const String login           = '/auth/login';

@@ -17,6 +17,7 @@ import '../../widgets/product_quick_view.dart';
 import '../../widgets/sticky_brand_cards.dart';
 import '../../widgets/premium_category_section.dart';
 import '../../widgets/premium_product_card.dart';
+import '../../widgets/premium_promo_banner.dart';
 import '../../widgets/location_permission_sheet.dart';
 import '../../widgets/instamart_category_section.dart';
 import '../../widgets/brand_product_card.dart';
@@ -271,9 +272,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
 
         if (_searchCtrl.text.isEmpty) ...[
-          // HERO PROMO CARD (Animated)
-          SliverToBoxAdapter(
-            child: _HeroPromoCard(),
+          // PREMIUM PROMO BANNER
+          const SliverToBoxAdapter(
+            child: PremiumPromoBanner(),
+          ),
+
+          // OFFER CHIPS ROW
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: OfferChipsRow(),
+            ),
           ),
 
           // PREMIUM CATEGORY SECTIONS (4 per row, pastel tiles)
@@ -284,9 +293,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-          // URGENCY CARD - Low Stock / Limited Time
-          SliverToBoxAdapter(
-            child: _UrgencyCard(),
+          // URGENCY BANNER
+          const SliverToBoxAdapter(
+            child: UrgencyBanner(),
           ),
 
           // BUNDLE / OFFERS CARDS
@@ -934,6 +943,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

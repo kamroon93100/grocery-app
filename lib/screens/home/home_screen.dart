@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen>
             AnimatedPositioned(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOut,
-              bottom: _showDeliveryBanner ? 74 : -60,
+              bottom: _showDeliveryBanner ? (60 + MediaQuery.of(context).padding.bottom) : -60,
               left: 0, right: 0,
               child: const _DeliveryBanner(),
             ),
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
           AnimatedPositioned(
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeOut,
-            bottom: _showBottomNav ? 0 : -84,
+            bottom: _showBottomNav ? 0 : -(60 + MediaQuery.of(context).padding.bottom),
             left: 0, right: 0,
             child: _BottomNav(
               current: _currentTab,
@@ -193,7 +193,9 @@ class _HomeContent extends StatelessWidget {
         ),
 
         // Bottom spacing for nav + banner
-        const SliverToBoxAdapter(child: SizedBox(height: 180)),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 140 + MediaQuery.of(context).padding.bottom)),
       ],
     );
   }
@@ -275,7 +277,7 @@ class _BlueHeroArea extends StatelessWidget {
                   ),
                   // Spec 2: Profile button - 48x48, circle, dark grey, shadow
                   Container(
-                    width: 48, height: 48,
+                    width: 48, height: 46,
                     decoration: BoxDecoration(
                       color: const Color(0xFF3D3D3D),
                       shape: BoxShape.circle,
@@ -445,15 +447,15 @@ class _AnimatedSearchBarState extends State<_AnimatedSearchBar>
 
 class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
   @override
-  double get minExtent => 48;
+  double get minExtent => 46;
   @override
-  double get maxExtent => 48;
+  double get maxExtent => 46;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.white,
-      height: 48,
+      height: 46,
       child: ListView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -836,7 +838,7 @@ class _AddPlusButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 48, height: 48,
+        width: 48, height: 46,
         decoration: BoxDecoration(
           color: const Color(0xFF00796B),
           borderRadius: BorderRadius.circular(14),
@@ -1151,4 +1153,5 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+
 

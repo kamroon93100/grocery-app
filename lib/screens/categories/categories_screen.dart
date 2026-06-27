@@ -116,7 +116,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   const _FreeDeliveryBanner(),
 
                   // Space for bottom nav
-                  const SizedBox(height: 20),
+                  SizedBox(height: 80 + MediaQuery.of(context).padding.bottom),
                 ],
               ),
             ),
@@ -408,4 +408,5 @@ class _FreeDeliveryBannerState extends State<_FreeDeliveryBanner>
     );
   }
 }
+
 

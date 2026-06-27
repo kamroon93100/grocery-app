@@ -45,6 +45,28 @@ class AppColors {
   static const Color border        = Color(0xFFE4E7EC); // Dividers
   static const Color borderLight   = Color(0xFFF2F4F7);
 
+  // ─── COMPATIBILITY ALIASES (old code) ───
+  static const Color cream         = surface;
+  static const Color creamDark     = surfaceAlt;
+  static const Color softWhite     = surface;
+  static const Color jetBlack      = textStrong;
+  static const Color charcoal      = textStrong;
+  static const Color slate         = textMuted;
+  static const Color graySoft      = textMuted;
+  static const Color grayLight     = textSubtle;
+  static const Color grayBg        = background;
+  static const Color cardBg        = surface;
+  static const Color textDark      = textStrong;
+  static const Color textGrey      = textMuted;
+  static const Color textLight     = textSubtle;
+  static const Color coral         = accent;
+  static const Color coralLight    = accentLight;
+  static const Color tangerine     = Color(0xFFFF8C42);
+  static const Color softBlack     = Color(0xFF2A2A2A);
+  static const Color cardBlack     = Color(0xFF333333);
+  static const Color white         = Colors.white;
+  static const Color primaryAccent = Color(0xFF14A37A);
+
   // STATES
   static const Color success       = Color(0xFF12B76A); // Stock, delivered
   static const Color warning       = Color(0xFFF79009); // Low stock
@@ -126,6 +148,15 @@ class AppText {
 
 /// SPACING (8-point grid)
 class AppSpacing {
+  // ─── ALIASES ───
+  static const double xs   = 4;
+  static const double sm   = 8;
+  static const double md   = 12;
+  static const double lg   = 16;
+  static const double xl   = 20;
+  static const double xxl  = 24;
+  static const double xxxl = 32;
+
   static const double x4   = 4;
   static const double x8   = 8;
   static const double x12  = 12;
@@ -138,6 +169,11 @@ class AppSpacing {
 
 /// RADIUS
 class AppRadius {
+  // ─── ALIASES ───
+  static const double md   = 10;
+  static const double lg   = 14;
+  static const double xl   = 20;
+
   static const double card     = 12;
   static const double featured = 16;
   static const double pill     = 999;
@@ -317,3 +353,4 @@ class GroceryApp extends StatelessWidget {
     );
   }
 }
+

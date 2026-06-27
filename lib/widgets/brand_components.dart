@@ -120,7 +120,7 @@ class OfferBadge extends StatelessWidget {
     label: 'NEW',
     color: AppColors.primary);
 
-  factory OfferBadge.outOfStock() => const OfferBadge(
+  factory OfferBadge.outOfStock() => OfferBadge(
     label: 'OUT OF STOCK',
     color: AppColors.textMuted);
 
@@ -572,3 +572,4 @@ class BrandCategoryChip extends StatelessWidget {
     );
   }
 }
+

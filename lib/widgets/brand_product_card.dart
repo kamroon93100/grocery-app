@@ -63,8 +63,7 @@ class BrandProductCard extends StatelessWidget {
                         color: Colors.white.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
-                      child: const Center(
-                        child: OfferBadge.outOfStock()),
+                      child: Center(child: OfferBadge.outOfStock()),
                     ),
                   ),
               ],
@@ -79,7 +78,7 @@ class BrandProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Delivery time pill (only if needed)
-                  const TimerPill(minutes: '30'),
+                  TimerPill(minutes: '30'),
                   const SizedBox(height: AppSpacing.x8),
 
                   // Product name
@@ -144,3 +143,5 @@ class BrandProductCard extends StatelessWidget {
     );
   }
 }
+
+

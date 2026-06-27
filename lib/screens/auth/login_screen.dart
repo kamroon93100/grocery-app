@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     return Scaffold(
-      backgroundColor: AppColors.jetBlack,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -87,24 +87,31 @@ class _LoginScreenState extends State<LoginScreen>
               children: [
                 const SizedBox(height: 40),
 
+                // LOGO
                 ScaleTransition(
                   scale: _logoScale,
                   child: Container(
-                    width: 110, height: 110,
+                    width:  120,
+                    height: 120,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.2),
+                          color: AppColors.primary.withOpacity(0.25),
                           blurRadius: 30,
+                          spreadRadius: 3,
                           offset: const Offset(0, 8)),
                       ],
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
+                      borderRadius: BorderRadius.circular(28),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
+                ),
 
                 const SizedBox(height: 24),
 
@@ -117,12 +124,13 @@ class _LoginScreenState extends State<LoginScreen>
                         style: const TextStyle(
                           fontSize:   28,
                           fontWeight: FontWeight.bold,
-                          color:      AppColors.primary),
+                          color:      AppColors.textStrong),
                       ),
+                      const SizedBox(height: 4),
                       Text(
                         AppConstants.storeTagline,
                         style: TextStyle(
-                          color: AppColors.primary.withOpacity(0.7),
+                          color: AppColors.textMuted,
                           fontSize: 14)),
                     ],
                   ),
@@ -173,14 +181,13 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 24),
 
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width:    double.infinity,
-                  height:   55,
+                SizedBox(
+                  width:  double.infinity,
+                  height: 55,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.jetBlack,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                       elevation: auth.isLoading ? 0 : 4,
@@ -194,13 +201,13 @@ class _LoginScreenState extends State<LoginScreen>
                               key: ValueKey('loading'),
                               width: 24, height: 24,
                               child: CircularProgressIndicator(
-                                color: AppColors.jetBlack, strokeWidth: 2.5),
+                                color: Colors.white, strokeWidth: 2.5),
                             )
                           : const Text('Login',
                               key: ValueKey('text'),
                               style: TextStyle(
                                 fontSize: 18,
-                                color: AppColors.jetBlack,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold)),
                     ),
                   ),
@@ -232,10 +239,10 @@ class _LoginScreenState extends State<LoginScreen>
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.primary.withOpacity(0.3)),
+                      color: AppColors.primary.withOpacity(0.2)),
                   ),
                   child: const Column(children: [
                     Text('Demo Admin Login',
@@ -256,8 +263,7 @@ class _LoginScreenState extends State<LoginScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?",
-                      style: TextStyle(
-                        color: AppColors.primary.withOpacity(0.7))),
+                      style: TextStyle(color: AppColors.textMuted)),
                     TextButton(
                       onPressed: () => Navigator.push(
                         context,
@@ -278,4 +284,3 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 }
-

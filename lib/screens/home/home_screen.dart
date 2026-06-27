@@ -13,6 +13,7 @@ import '../orders/orders_screen.dart';
 import '../profile/profile_screen.dart';
 import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
+import '../../widgets/product_quick_view.dart';
 import '../address/address_screen.dart';
 import '../../widgets/smooth_search_bar.dart';
 
@@ -710,9 +711,7 @@ class _ProductCard extends StatelessWidget {
     final qty    = cart.getQuantity(product.id);
 
     return GestureDetector(
-      onTap: () => Navigator.push(context,
-        MaterialPageRoute(builder: (_) =>
-          ProductDetailScreen(product: product))),
+      onTap: () => ProductQuickView.show(context, product, relatedProducts: context.read<ProductProvider>().products.where((p) => p.id != product.id).take(5).toList()),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -986,4 +985,5 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 

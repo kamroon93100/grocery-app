@@ -23,7 +23,7 @@ class SmoothSearchBar extends StatefulWidget {
     this.onClear,
     this.prefixIcon    = Icons.search,
     this.suffixIcon,
-    this.primaryColor  = const Color(0xFF1BA672),
+    this.primaryColor  = const Color(0xFF99E1D9),
     this.fillColor,
     this.fontSize      = 14,
     this.padding       = const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -270,3 +270,4 @@ class _SmoothSearchBarState extends State<SmoothSearchBar>
     );
   }
 }
+

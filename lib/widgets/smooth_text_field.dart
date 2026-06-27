@@ -23,7 +23,7 @@ class SmoothTextField extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.autoFillSuggestions,
-    this.primaryColor        = const Color(0xFF1BA672),
+    this.primaryColor        = const Color(0xFF99E1D9),
   });
 
   @override
@@ -153,3 +153,4 @@ class _SmoothTextFieldState extends State<SmoothTextField>
     );
   }
 }
+

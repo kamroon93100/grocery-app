@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
 import '../../widgets/smooth_text_field.dart';
+import '../../main.dart';
 import '../home/home_screen.dart';
 import 'register_screen.dart';
 import 'otp_login_screen.dart';
@@ -65,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content:         Text(result['message'] ?? 'Login failed'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
           behavior:        SnackBarBehavior.floating,
         ),
       );
@@ -76,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     return Scaffold(
-      backgroundColor: Colors.green.shade50,
+      backgroundColor: AppColors.jetBlack,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -86,27 +87,22 @@ class _LoginScreenState extends State<LoginScreen>
               children: [
                 const SizedBox(height: 40),
 
-                // Animated logo
                 ScaleTransition(
                   scale: _logoScale,
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1BA672), Color(0xFF0F8559)],
-                        begin: Alignment.topLeft,
-                        end:   Alignment.bottomRight,
-                      ),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.green.shade300,
-                          blurRadius: 24,
-                          offset: const Offset(0, 8)),
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 30,
+                          spreadRadius: 5),
                       ],
                     ),
                     child: const Icon(Icons.store_rounded,
-                      size: 70, color: Colors.white),
+                      size: 70, color: AppColors.jetBlack),
                   ),
                 ),
 
@@ -119,26 +115,27 @@ class _LoginScreenState extends State<LoginScreen>
                       Text(
                         AppConstants.storeName,
                         style: const TextStyle(
-                          fontSize:   26,
+                          fontSize:   28,
                           fontWeight: FontWeight.bold,
-                          color:      Color(0xFF1BA672)),
+                          color:      AppColors.primary),
                       ),
                       Text(
                         AppConstants.storeTagline,
                         style: TextStyle(
-                          color: Colors.grey.shade600, fontSize: 14)),
+                          color: AppColors.primary.withOpacity(0.7),
+                          fontSize: 14)),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 40),
 
-                // Smooth Email Field
                 SmoothTextField(
                   controller:   _emailCtrl,
                   label:        'Email Address',
                   prefixIcon:   Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
+                  primaryColor: AppColors.primary,
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Enter email';
                     if (!v.contains('@')) return 'Invalid email';
@@ -148,12 +145,12 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 16),
 
-                // Smooth Password Field
                 SmoothTextField(
                   controller:  _passwordCtrl,
                   label:       'Password',
                   prefixIcon:  Icons.lock_outline,
                   obscureText: _obscure,
+                  primaryColor: AppColors.primary,
                   suffixIcon: IconButton(
                     icon: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
@@ -176,18 +173,18 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 24),
 
-                // Animated Login Button
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width:    double.infinity,
                   height:   55,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1BA672),
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.jetBlack,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                      elevation:       auth.isLoading ? 0 : 4,
-                      shadowColor: Colors.green.shade300,
+                      elevation: auth.isLoading ? 0 : 4,
+                      shadowColor: AppColors.primary.withOpacity(0.5),
                     ),
                     onPressed: auth.isLoading ? null : _login,
                     child: AnimatedSwitcher(
@@ -197,13 +194,13 @@ class _LoginScreenState extends State<LoginScreen>
                               key: ValueKey('loading'),
                               width: 24, height: 24,
                               child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2.5),
+                                color: AppColors.jetBlack, strokeWidth: 2.5),
                             )
                           : const Text('Login',
                               key: ValueKey('text'),
                               style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: AppColors.jetBlack,
                                 fontWeight: FontWeight.bold)),
                     ),
                   ),
@@ -211,19 +208,18 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 16),
 
-                // OTP Login Button
                 SizedBox(
                   width:  double.infinity,
                   height: 50,
                   child: OutlinedButton.icon(
                     icon:  const Icon(Icons.phone_outlined,
-                      color: Color(0xFF1BA672)),
+                      color: AppColors.primary),
                     label: const Text('Login with Phone (OTP)',
                       style: TextStyle(
-                        color: Color(0xFF1BA672),
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold)),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF1BA672)),
+                      side: const BorderSide(color: AppColors.primary, width: 1.5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),
                     onPressed: () => Navigator.push(context,
@@ -233,23 +229,24 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 16),
 
-                // Demo admin box
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color:        Colors.blue.shade50,
+                    color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border:       Border.all(color: Colors.blue.shade200),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3)),
                   ),
                   child: const Column(children: [
                     Text('Demo Admin Login',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.blue)),
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary)),
                     SizedBox(height: 4),
                     Text('Email: admin@grocery.com',
-                      style: TextStyle(color: Colors.blue, fontSize: 13)),
+                      style: TextStyle(color: AppColors.primary, fontSize: 13)),
                     Text('Password: Admin@123',
-                      style: TextStyle(color: Colors.blue, fontSize: 13)),
+                      style: TextStyle(color: AppColors.primary, fontSize: 13)),
                   ]),
                 ),
 
@@ -258,7 +255,9 @@ class _LoginScreenState extends State<LoginScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?"),
+                    Text("Don't have an account?",
+                      style: TextStyle(
+                        color: AppColors.primary.withOpacity(0.7))),
                     TextButton(
                       onPressed: () => Navigator.push(
                         context,
@@ -266,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen>
                           builder: (_) => const RegisterScreen())),
                       child: const Text('Register Now',
                         style: TextStyle(
-                          color:      Color(0xFF1BA672),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold)),
                     ),
                   ],

@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../services/notification_service.dart';
 import '../constants/app_constants.dart';
+import '../main.dart';
 import 'auth/login_screen.dart';
 import 'home/home_screen.dart';
 
@@ -22,7 +23,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    _ctrl  = AnimationController(vsync: this,
+      duration: const Duration(milliseconds: 1000));
     _scale = CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut);
     _fade  = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
@@ -54,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      backgroundColor: AppColors.jetBlack,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -64,13 +66,17 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
-                  color:        Colors.white,
+                  color:        AppColors.primary,
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
-                    BoxShadow(color: Colors.green.shade800, blurRadius: 25),
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.4),
+                      blurRadius: 30,
+                      spreadRadius: 5),
                   ],
                 ),
-                child: const Icon(Icons.store_rounded, size: 80, color: Colors.green),
+                child: const Icon(Icons.store_rounded,
+                  size: 80, color: AppColors.jetBlack),
               ),
             ),
             const SizedBox(height: 30),
@@ -79,32 +85,41 @@ class _SplashScreenState extends State<SplashScreen>
               child: Column(
                 children: [
                   Text(AppConstants.storeName,
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,
-                      color: Colors.white)),
+                    style: const TextStyle(
+                      fontSize:   28,
+                      fontWeight: FontWeight.bold,
+                      color:      AppColors.primary)),
                   const SizedBox(height: 8),
                   Text(AppConstants.storeTagline,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                    style: TextStyle(
+                      color: AppColors.primary.withOpacity(0.7),
+                      fontSize: 14)),
                   const SizedBox(height: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: AppColors.primary.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(20),
-                    ),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3))),
                     child: const Text('🌿 Fresh • Fast • Trusted',
-                      style: TextStyle(color: Colors.white, fontSize: 12)),
+                      style: TextStyle(color: AppColors.primary, fontSize: 12)),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 60),
-            const CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+            const CircularProgressIndicator(
+              color: AppColors.primary, strokeWidth: 3),
             const SizedBox(height: 20),
             FadeTransition(
               opacity: _fade,
               child: Text(
                 'v' + AppConstants.version,
-                style: const TextStyle(color: Colors.white60, fontSize: 12),
+                style: TextStyle(
+                  color: AppColors.primary.withOpacity(0.5),
+                  fontSize: 12),
               ),
             ),
           ],

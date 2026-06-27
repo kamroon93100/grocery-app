@@ -234,7 +234,7 @@ class OfferChipsRow extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 95,
+      height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -245,7 +245,7 @@ class OfferChipsRow extends StatelessWidget {
           return Container(
             width:  140,
             margin: const EdgeInsets.symmetric(horizontal: 4),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: o.bgColor,
               borderRadius: BorderRadius.circular(12),
@@ -390,3 +390,4 @@ class FreeDeliveryBanner extends StatelessWidget {
     );
   }
 }
+

@@ -58,7 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
         height: _showNav ? (56 + bottomPad) : 0,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
@@ -206,7 +207,28 @@ class _HomePageState extends State<_HomePage> {
               delegate: _TabDelegate(
                 tabs: _tabs,
                 selected: _selectedTab,
-                onTap: (i) => setState(() => _selectedTab = i),
+                onTap: (i) {
+                  setState(() => _selectedTab = i);
+                  // Filter products based on tab
+                  final provider = context.read<ProductProvider>();
+                  switch (i) {
+                    case 0: // All
+                      provider.selectCategory('All');
+                      break;
+                    case 1: // Fresh
+                      provider.selectCategory('Vegetables');
+                      break;
+                    case 2: // Electronics (show all for now)
+                      provider.selectCategory('All');
+                      break;
+                    case 3: // 50% Off (show discounted)
+                      provider.selectCategory('All');
+                      break;
+                    case 4: // Vacations (show all for now)
+                      provider.selectCategory('All');
+                      break;
+                  }
+                },
               ),
             ),
           ],
@@ -340,8 +362,8 @@ class _TabDelegate extends SliverPersistentHeaderDelegate {
 
   _TabDelegate({required this.tabs, required this.selected, required this.onTap});
 
-  @override double get minExtent => 56;
-  @override double get maxExtent => 56;
+  @override double get minExtent => 60;
+  @override double get maxExtent => 60;
   @override bool shouldRebuild(covariant _TabDelegate old) =>
     old.selected != selected;
 
@@ -352,7 +374,7 @@ class _TabDelegate extends SliverPersistentHeaderDelegate {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+        padding: const EdgeInsets.fromLTRB(20, 6, 20, 6),
         child: Row(
           children: List.generate(tabs.length, (i) {
             final sel = i == selected;
@@ -365,12 +387,12 @@ class _TabDelegate extends SliverPersistentHeaderDelegate {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(tabs[i]['icon'] as IconData,
-                      size: 22,
+                      size: 20,
                       color: sel ? const Color(0xFF111111) : const Color(0xFF999999)),
                     const SizedBox(height: 4),
                     Text(tabs[i]['label'] as String,
                       style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w500,
+                        fontSize: 11, fontWeight: FontWeight.w500,
                         color: sel ? const Color(0xFF111111) : const Color(0xFF999999))),
                     const SizedBox(height: 4),
                     AnimatedContainer(
@@ -435,7 +457,7 @@ class _HeroRowState extends State<_HeroRow> with SingleTickerProviderStateMixin 
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 220,
+          height: 210,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -734,4 +756,5 @@ class _DeliveryBannerState extends State<_DeliveryBanner>
       ]));
   }
 }
+
 

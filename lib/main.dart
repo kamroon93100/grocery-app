@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/product_provider.dart';
@@ -15,165 +16,174 @@ void main() async {
   runApp(const GroceryApp());
 }
 
-/// PREMIUM BRAND DESIGN SYSTEM
-/// Brand: Calm, Premium, Trustworthy
-/// Rule: 70% neutral, 20% primary, 10% accent
+/// ═══════════════════════════════════════════════════════
+/// 🎨 BRAND DESIGN SYSTEM
+/// Brand Feel: Fast, Fresh, Premium, Dependable
+/// ═══════════════════════════════════════════════════════
+
 class AppColors {
-  // PRIMARY - Deep Emerald (freshness + appetite + premium)
-  static const Color primary       = Color(0xFF0F7C5C);
-  static const Color primaryDark   = Color(0xFF0A5C44);
-  static const Color primaryLight  = Color(0xFFE8F5EF);
-  static const Color primaryAccent = Color(0xFF14A37A);
+  // PRIMARY
+  static const Color primary       = Color(0xFF12B76A); // Brand green
+  static const Color primaryDark   = Color(0xFF0E8A52); // Pressed CTA
+  static const Color primaryLight  = Color(0xFFE7F8EF); // Subtle bg
 
-  // SECONDARY - Warm Cream (spaciousness)
-  static const Color cream         = Color(0xFFFAF8F3);
-  static const Color creamDark     = Color(0xFFF0EBE0);
-  static const Color softWhite     = Color(0xFFFCFCFA);
+  // ACCENT
+  static const Color accent        = Color(0xFFFF7A45); // Urgency
+  static const Color accentLight   = Color(0xFFFFEEE6);
 
-  // ACCENT - Coral (urgency, sparingly used)
-  static const Color coral         = Color(0xFFFF6B5B);
-  static const Color coralLight    = Color(0xFFFFE5E1);
-  static const Color tangerine     = Color(0xFFFF8C42);
+  // SURFACES
+  static const Color background    = Color(0xFFF7F8FA); // Main canvas
+  static const Color surface       = Color(0xFFFFFFFF); // Cards
+  static const Color surfaceAlt    = Color(0xFFFAFBFC); // Subtle surface
 
-  // NEUTRAL - Charcoal, Slate, Gray
-  static const Color charcoal      = Color(0xFF1A1A1A);
-  static const Color slate         = Color(0xFF3D3D3D);
-  static const Color graySoft      = Color(0xFF6B6B6B);
-  static const Color grayLight     = Color(0xFFB8B8B8);
-  static const Color grayBg        = Color(0xFFF5F5F5);
-  static const Color border        = Color(0xFFE8E8E8);
+  // TEXT
+  static const Color textStrong    = Color(0xFF101828); // Headings
+  static const Color textMuted     = Color(0xFF667085); // Labels
+  static const Color textSubtle    = Color(0xFF98A2B3); // Hints
 
-  // UTILITY
-  static const Color success       = Color(0xFF0F7C5C);
-  static const Color warning       = Color(0xFFFFB020);
-  static const Color error         = Color(0xFFE53935);
-  static const Color lowStock      = Color(0xFFFF8C42);
+  // BORDERS
+  static const Color border        = Color(0xFFE4E7EC); // Dividers
+  static const Color borderLight   = Color(0xFFF2F4F7);
 
-  // BACKGROUND
-  static const Color background    = Color(0xFFFAFAF8);
-  static const Color cardBg        = Colors.white;
-  static const Color textDark      = charcoal;
-  static const Color textGrey      = graySoft;
+  // STATES
+  static const Color success       = Color(0xFF12B76A); // Stock, delivered
+  static const Color warning       = Color(0xFFF79009); // Low stock
+  static const Color error         = Color(0xFFF04438); // Failed
+  static const Color info          = Color(0xFF0BA5EC); // Info
 }
 
-/// TYPOGRAPHY SCALE
+/// TYPOGRAPHY SCALE - Inter + Plus Jakarta Sans
 class AppText {
-  static const String fontFamily = 'Roboto';
+  static TextStyle _heading(double size, FontWeight w, double height) =>
+      GoogleFonts.plusJakartaSans(
+        fontSize:   size,
+        fontWeight: w,
+        height:     height / size,
+        color:      AppColors.textStrong,
+        letterSpacing: -0.2,
+      );
 
-  // Display - Hero text
-  static const TextStyle display = TextStyle(
-    fontSize:    32,
-    fontWeight:  FontWeight.w800,
-    letterSpacing: -0.5,
-    color:       AppColors.charcoal,
-    height:      1.2,
-  );
+  static TextStyle _body(double size, FontWeight w, double height,
+      {Color? color}) =>
+      GoogleFonts.inter(
+        fontSize:   size,
+        fontWeight: w,
+        height:     height / size,
+        color:      color ?? AppColors.textStrong,
+      );
 
-  // H1 - Page titles
-  static const TextStyle h1 = TextStyle(
-    fontSize:    24,
-    fontWeight:  FontWeight.w700,
-    letterSpacing: -0.3,
-    color:       AppColors.charcoal,
-    height:      1.3,
-  );
+  // Display
+  static TextStyle get display    => _heading(40, FontWeight.w800, 48);
+  // H1
+  static TextStyle get h1         => _heading(28, FontWeight.w700, 36);
+  // H2
+  static TextStyle get h2         => _heading(22, FontWeight.w700, 30);
+  // H3
+  static TextStyle get h3         => _heading(18, FontWeight.w600, 26);
 
-  // H2 - Section titles
-  static const TextStyle h2 = TextStyle(
-    fontSize:    18,
-    fontWeight:  FontWeight.w700,
-    letterSpacing: -0.2,
-    color:       AppColors.charcoal,
-    height:      1.3,
-  );
+  // Body
+  static TextStyle get body       => _body(16, FontWeight.w400, 24);
+  static TextStyle get bodyStrong => _body(16, FontWeight.w600, 24);
+  static TextStyle get small      => _body(14, FontWeight.w400, 20);
+  static TextStyle get smallStrong=> _body(14, FontWeight.w600, 20);
+  static TextStyle get caption    => _body(12, FontWeight.w400, 16,
+      color: AppColors.textMuted);
+  static TextStyle get label      => _body(12, FontWeight.w600, 16,
+      color: AppColors.textMuted);
 
-  // H3 - Card titles
-  static const TextStyle h3 = TextStyle(
-    fontSize:    15,
-    fontWeight:  FontWeight.w600,
-    color:       AppColors.charcoal,
-    height:      1.3,
-  );
+  // Price
+  static TextStyle get price      => GoogleFonts.inter(
+        fontSize:   20,
+        fontWeight: FontWeight.w700,
+        height:     28 / 20,
+        color:      AppColors.textStrong,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
 
-  // Body - Regular text
-  static const TextStyle body = TextStyle(
-    fontSize:    14,
-    fontWeight:  FontWeight.w400,
-    color:       AppColors.charcoal,
-    height:      1.5,
-  );
+  static TextStyle get priceSmall => GoogleFonts.inter(
+        fontSize:   15,
+        fontWeight: FontWeight.w700,
+        height:     20 / 15,
+        color:      AppColors.textStrong,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
 
-  // Body Small
-  static const TextStyle bodySmall = TextStyle(
-    fontSize:    12,
-    fontWeight:  FontWeight.w400,
-    color:       AppColors.graySoft,
-    height:      1.4,
-  );
+  static TextStyle get priceStrike => GoogleFonts.inter(
+        fontSize:   13,
+        fontWeight: FontWeight.w400,
+        color:      AppColors.textSubtle,
+        decoration: TextDecoration.lineThrough,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
 
-  // Caption
-  static const TextStyle caption = TextStyle(
-    fontSize:    11,
-    fontWeight:  FontWeight.w500,
-    color:       AppColors.graySoft,
-    letterSpacing: 0.2,
-  );
-
-  // Label - Small uppercase
-  static const TextStyle label = TextStyle(
-    fontSize:    10,
-    fontWeight:  FontWeight.w700,
-    color:       AppColors.graySoft,
-    letterSpacing: 1.2,
-  );
-
-  // Price - Tabular numerals
-  static const TextStyle price = TextStyle(
-    fontSize:    16,
-    fontWeight:  FontWeight.w700,
-    color:       AppColors.charcoal,
-    fontFeatures: [FontFeature.tabularFigures()],
-  );
-
-  // Price Strike - Original price
-  static const TextStyle priceStrike = TextStyle(
-    fontSize:    12,
-    fontWeight:  FontWeight.w400,
-    color:       AppColors.grayLight,
-    decoration:  TextDecoration.lineThrough,
-    fontFeatures: [FontFeature.tabularFigures()],
-  );
-
-  // Button text
-  static const TextStyle button = TextStyle(
-    fontSize:    14,
-    fontWeight:  FontWeight.w600,
-    letterSpacing: 0.3,
-  );
+  // Button
+  static TextStyle get button     => GoogleFonts.plusJakartaSans(
+        fontSize:   15,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.1,
+      );
 }
 
-/// SPACING SYSTEM
+/// SPACING (8-point grid)
 class AppSpacing {
-  static const double xs  = 4;
-  static const double sm  = 8;
-  static const double md  = 12;
-  static const double lg  = 16;
-  static const double xl  = 20;
-  static const double xxl = 24;
-  static const double xxxl = 32;
+  static const double x4   = 4;
+  static const double x8   = 8;
+  static const double x12  = 12;
+  static const double x16  = 16;
+  static const double x24  = 24;
+  static const double x32  = 32;
+  static const double x40  = 40;
+  static const double x48  = 48;
 }
 
-/// RADIUS SYSTEM
+/// RADIUS
 class AppRadius {
-  static const double sm   = 6;
-  static const double md   = 10;
-  static const double lg   = 14;
-  static const double xl   = 20;
-  static const double full = 999;
+  static const double card     = 12;
+  static const double featured = 16;
+  static const double pill     = 999;
+  static const double sm       = 8;
+}
+
+/// MOTION DURATIONS
+class AppMotion {
+  static const Duration fast   = Duration(milliseconds: 140);
+  static const Duration normal = Duration(milliseconds: 200);
+  static const Duration slow   = Duration(milliseconds: 300);
+
+  static const Curve smooth    = Curves.easeOutCubic;
+  static const Curve bounce    = Curves.easeOutBack;
+}
+
+/// SHADOWS - Very subtle, almost flat
+class AppShadow {
+  static List<BoxShadow> get subtle => [
+    BoxShadow(
+      color:     AppColors.textStrong.withOpacity(0.04),
+      blurRadius: 8,
+      offset:    const Offset(0, 2),
+    ),
+  ];
+
+  static List<BoxShadow> get card => [
+    BoxShadow(
+      color:     AppColors.textStrong.withOpacity(0.03),
+      blurRadius: 6,
+      offset:    const Offset(0, 1),
+    ),
+  ];
+
+  static List<BoxShadow> get raised => [
+    BoxShadow(
+      color:     AppColors.textStrong.withOpacity(0.06),
+      blurRadius: 12,
+      offset:    const Offset(0, 4),
+    ),
+  ];
 }
 
 class GroceryApp extends StatelessWidget {
   const GroceryApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -189,41 +199,39 @@ class GroceryApp extends StatelessWidget {
         title:                     'Kohli Store',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor:    AppColors.primary,
+          primaryColor: AppColors.primary,
           scaffoldBackgroundColor: AppColors.background,
-          useMaterial3:    true,
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor:  AppColors.primary,
             primary:    AppColors.primary,
-            secondary:  AppColors.coral,
-            surface:    AppColors.cardBg,
+            secondary:  AppColors.accent,
+            surface:    AppColors.surface,
+            error:      AppColors.error,
           ),
-          fontFamily: AppText.fontFamily,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            foregroundColor: AppColors.charcoal,
-            elevation:       0,
+          textTheme: GoogleFonts.interTextTheme(),
+          appBarTheme: AppBarTheme(
+            backgroundColor: AppColors.surface,
+            foregroundColor: AppColors.textStrong,
+            elevation: 0,
             scrolledUnderElevation: 0,
-            iconTheme: IconThemeData(color: AppColors.charcoal),
-            titleTextStyle: TextStyle(
-              color:      AppColors.charcoal,
-              fontSize:   17,
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.2,
-            ),
+            iconTheme: const IconThemeData(color: AppColors.textStrong),
+            titleTextStyle: AppText.h3,
             centerTitle: false,
+            surfaceTintColor: Colors.transparent,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.md),
+                borderRadius: BorderRadius.circular(AppRadius.card),
               ),
               elevation: 0,
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+                horizontal: AppSpacing.x24, vertical: AppSpacing.x12),
               textStyle: AppText.button,
+              minimumSize: const Size(0, 48),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
@@ -231,11 +239,12 @@ class GroceryApp extends StatelessWidget {
               foregroundColor: AppColors.primary,
               side: const BorderSide(color: AppColors.primary, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.md),
+                borderRadius: BorderRadius.circular(AppRadius.card),
               ),
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl, vertical: AppSpacing.md),
+                horizontal: AppSpacing.x24, vertical: AppSpacing.x12),
               textStyle: AppText.button,
+              minimumSize: const Size(0, 48),
             ),
           ),
           textButtonTheme: TextButtonThemeData(
@@ -246,46 +255,61 @@ class GroceryApp extends StatelessWidget {
           ),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
+              borderRadius: BorderRadius.circular(AppRadius.card),
               borderSide:   const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
+              borderRadius: BorderRadius.circular(AppRadius.card),
               borderSide:   const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
+              borderRadius: BorderRadius.circular(AppRadius.card),
               borderSide:   const BorderSide(color: AppColors.primary, width: 1.5),
             ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              borderSide:   const BorderSide(color: AppColors.error),
+            ),
             filled:    true,
-            fillColor: Colors.white,
+            fillColor: AppColors.surface,
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+              horizontal: AppSpacing.x16, vertical: AppSpacing.x12),
+            labelStyle: AppText.small.copyWith(color: AppColors.textMuted),
+            hintStyle:  AppText.small.copyWith(color: AppColors.textSubtle),
           ),
           cardTheme: CardThemeData(
-            color: AppColors.cardBg,
+            color: AppColors.surface,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              side: BorderSide(color: AppColors.border, width: 1),
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              side: const BorderSide(color: AppColors.border, width: 1),
             ),
+            margin: EdgeInsets.zero,
           ),
           chipTheme: ChipThemeData(
-            backgroundColor:        AppColors.cream,
-            selectedColor:          AppColors.primary,
-            secondarySelectedColor: AppColors.primaryDark,
-            labelStyle: AppText.caption.copyWith(color: AppColors.charcoal),
-            secondaryLabelStyle: AppText.caption.copyWith(color: Colors.white),
+            backgroundColor: AppColors.primaryLight,
+            selectedColor:   AppColors.primary,
+            labelStyle: AppText.smallStrong,
+            secondaryLabelStyle: AppText.smallStrong.copyWith(color: Colors.white),
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+              horizontal: AppSpacing.x12, vertical: 6),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
+            side: BorderSide.none,
           ),
           dividerTheme: const DividerThemeData(
-            color: AppColors.border,
+            color:     AppColors.border,
             thickness: 1,
             space:     1,
+          ),
+          snackBarTheme: SnackBarThemeData(
+            backgroundColor: AppColors.textStrong,
+            contentTextStyle: AppText.smallStrong.copyWith(color: Colors.white),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.card),
+            ),
           ),
         ),
         home: const SplashScreen(),

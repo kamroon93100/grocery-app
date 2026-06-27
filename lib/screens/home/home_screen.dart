@@ -174,7 +174,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                           Row(children: [
                             Flexible(
                               child: Text(
-                                address.defaultAddress != null ? 'To ' + address.defaultAddress!.line1
+                                address.defaultAddress != null ? 'To ' + address.defaultAddress!.line1 + address.defaultAddress!.line1
                                     : 'Set delivery address',
                                 style: const TextStyle(fontSize: 16,
                                   fontWeight: FontWeight.w500, color: Color(0xFF5B5B5B)),
@@ -529,4 +529,6 @@ class _HeroSectionState extends State<_HeroSection>
     );
   }
 }
+
+
 

@@ -90,21 +90,21 @@ class _LoginScreenState extends State<LoginScreen>
                 ScaleTransition(
                   scale: _logoScale,
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    width: 110, height: 110,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: AppColors.primary.withOpacity(0.2),
                           blurRadius: 30,
-                          spreadRadius: 5),
+                          offset: const Offset(0, 8)),
                       ],
                     ),
-                    child: const Icon(Icons.store_rounded,
-                      size: 70, color: AppColors.jetBlack),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
+                    ),
                   ),
-                ),
 
                 const SizedBox(height: 24),
 
@@ -278,3 +278,4 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 }
+

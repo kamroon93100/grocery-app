@@ -14,6 +14,7 @@ import '../profile/profile_screen.dart';
 import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../address/address_screen.dart';
+import '../../widgets/smooth_search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -985,3 +986,4 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+

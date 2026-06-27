@@ -349,8 +349,8 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.onSearchTap,
   });
 
-  @override double get minExtent => 100;
-  @override double get maxExtent => 100;
+  @override double get minExtent => 106;
+  @override double get maxExtent => 106;
   @override bool shouldRebuild(covariant _StickyHeaderDelegate old) =>
     old.selectedTab != selectedTab;
 
@@ -415,10 +415,9 @@ class _TabChip extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(right: 16),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(icon, size: 18, color: sel ? const Color(0xFF111111) : const Color(0xFF999999)),
+          Icon(icon, size: 16, color: sel ? const Color(0xFF111111) : const Color(0xFF999999)),
           const SizedBox(height: 2),
-          Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
-            color: sel ? const Color(0xFF111111) : const Color(0xFF999999))),
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: sel ? const Color(0xFF111111) : const Color(0xFF999999))),
           if (sel) Container(margin: const EdgeInsets.only(top: 2),
             width: 16, height: 2, decoration: BoxDecoration(
               color: const Color(0xFF111111), borderRadius: BorderRadius.circular(1))),

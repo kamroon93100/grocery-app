@@ -15,6 +15,7 @@ import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../../widgets/product_quick_view.dart';
 import '../../widgets/sticky_brand_cards.dart';
+import '../../widgets/premium_category_section.dart';
 import '../../widgets/location_permission_sheet.dart';
 import '../../widgets/instamart_category_section.dart';
 import '../../widgets/brand_product_card.dart';
@@ -274,10 +275,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: _HeroPromoCard(),
           ),
 
-          // INSTAMART-STYLE CATEGORIES (grouped sections)
+          // PREMIUM CATEGORY SECTIONS (4 per row, pastel tiles)
           if (product.categories.isNotEmpty && _searchCtrl.text.isEmpty)
             SliverToBoxAdapter(
-              child: InstamartCategorySection(
+              child: PremiumCategorySection(
                 categories: product.categories,
               ),
             ),
@@ -928,6 +929,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

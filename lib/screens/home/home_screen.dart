@@ -14,6 +14,7 @@ import '../profile/profile_screen.dart';
 import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../../widgets/product_quick_view.dart';
+import '../../widgets/sticky_brand_cards.dart';
 import '../address/address_screen.dart';
 import '../../widgets/smooth_search_bar.dart';
 
@@ -338,6 +339,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
+          // SPONSORED BRAND ADS - Horizontal scroll
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('💎 Featured Brands',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textDark)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade100,
+                      borderRadius: BorderRadius.circular(6)),
+                    child: const Text('SPONSORED',
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: StickyBrandCards(
+              ads: DemoBrandAds.getAds(),
+            ),
+          ),
+
+          // SINGLE BIG BRAND AD
+          SliverToBoxAdapter(
+            child: VerticalStickyBrandCard(
+              ad: BrandAdData(
+                id:        'special-offer',
+                brandName: 'Kohli Store Special',
+                tagline:   'Save BIG\nThis Weekend!',
+                ctaText:   'Get Offers',
+                emoji:     '🎉',
+                gradientColors: const [
+                  Color(0xFF1BA672), Color(0xFF0F8559)
+                ],
+              ),
+              height: 160,
+            ),
+          ),
 
           // URGENCY CARD - Low Stock / Limited Time
           SliverToBoxAdapter(
@@ -985,5 +1038,6 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 

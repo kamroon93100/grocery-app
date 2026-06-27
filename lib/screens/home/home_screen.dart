@@ -15,6 +15,9 @@ import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../../widgets/product_quick_view.dart';
 import '../../widgets/sticky_brand_cards.dart';
+import '../../widgets/location_permission_sheet.dart';
+import '../../widgets/instamart_category_section.dart';
+import '../../services/location_service.dart';
 import '../address/address_screen.dart';
 import '../../widgets/smooth_search_bar.dart';
 
@@ -26,6 +29,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  bool   _locationGranted = false;
+  String _locationText    = 'Locating...';
+  String _deliveryTime    = '30';
   final _searchCtrl = TextEditingController();
 
   @override
@@ -33,7 +39,19 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AddressProvider>().loadAddresses();
+      _autoDetectLocation();
     });
+  }
+
+  Future<void> _autoDetectLocation() async {
+    final result = await LocationPermissionSheet.requestOnAppOpen(context);
+    if (result != null && result.success && mounted) {
+      setState(() {
+        _locationGranted = true;
+        _locationText    = result.city.isNotEmpty
+            ? result.city : result.line1;
+      });
+    }
   }
 
   @override
@@ -126,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    const Text('Delivery in',
+                                    Text(_locationGranted ? 'Delivery in' : 'Locating...',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17,
@@ -151,9 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        address.defaultAddress != null
-                                            ? 'To: ${address.defaultAddress!.line1}'
-                                            : 'Tap to set address',
+                                        _locationGranted ? _locationText : (address.defaultAddress != null ? 'To: ' + address.defaultAddress!.line1 : 'Tap to set address'),
                                         style: const TextStyle(
                                           color: AppColors.textGrey,
                                           fontSize: 12),
@@ -254,143 +270,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: _HeroPromoCard(),
           ),
 
-          // CATEGORY RAIL (Horizontal chips)
-          if (product.categories.isNotEmpty)
+          // INSTAMART-STYLE CATEGORIES (grouped sections)
+          if (product.categories.isNotEmpty && _searchCtrl.text.isEmpty)
             SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Shop by Category',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textDark)),
-                          Text('${product.categories.length} categories',
-                            style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 11)),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        itemCount: product.categories.length,
-                        itemBuilder: (context, index) {
-                          final cat = product.categories[index];
-                          final isSelected =
-                            product.selectedCategory == cat.name;
-                          return GestureDetector(
-                            onTap: () => context.read<ProductProvider>()
-                                .selectCategory(cat.name),
-                            child: Container(
-                              width: 80,
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Column(
-                                children: [
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    width: 60, height: 60,
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : AppColors.primaryLight,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: isSelected
-                                          ? Border.all(
-                                              color: AppColors.primaryDark,
-                                              width: 2)
-                                          : null,
-                                    ),
-                                    child: Center(
-                                      child: Text(cat.icon,
-                                        style: const TextStyle(fontSize: 32)),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(cat.name,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold : FontWeight.w500,
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : AppColors.textDark),
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+              child: InstamartCategorySection(
+                categories: product.categories,
               ),
             ),
-
-          // SPONSORED BRAND ADS - Horizontal scroll
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('💎 Featured Brands',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark)),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade100,
-                      borderRadius: BorderRadius.circular(6)),
-                    child: const Text('SPONSORED',
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: StickyBrandCards(
-              ads: DemoBrandAds.getAds(),
-            ),
-          ),
-
-          // SINGLE BIG BRAND AD
-          SliverToBoxAdapter(
-            child: VerticalStickyBrandCard(
-              ad: BrandAdData(
-                id:        'special-offer',
-                brandName: 'Kohli Store Special',
-                tagline:   'Save BIG\nThis Weekend!',
-                ctaText:   'Get Offers',
-                emoji:     '🎉',
-                gradientColors: const [
-                  Color(0xFF1BA672), Color(0xFF0F8559)
-                ],
-              ),
-              height: 160,
-            ),
-          ),
 
           // URGENCY CARD - Low Stock / Limited Time
           SliverToBoxAdapter(
@@ -1038,6 +924,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

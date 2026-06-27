@@ -10,6 +10,8 @@ import '../../constants/app_constants.dart';
 import '../../main.dart';
 import '../cart/cart_screen.dart';
 import '../orders/orders_screen.dart';
+import '../categories/categories_screen.dart';
+import '../reorder/reorder_screen.dart';
 import '../profile/profile_screen.dart';
 import '../admin/admin_screen.dart';
 import '../product/product_detail_screen.dart';
@@ -75,7 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _currentIndex,
             children: [
               _buildShopPage(),
-              const OrdersScreen(),
+              const CategoriesScreen(),
+              const ReorderScreen(),
               const ProfileScreen(),
             ],
           ),
@@ -93,23 +96,33 @@ class _HomeScreenState extends State<HomeScreen> {
           boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 10)],
         ),
         child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: Colors.grey,
-          backgroundColor: Colors.white,
-          elevation: 0,
+          currentIndex:        _currentIndex,
+          selectedItemColor:   const Color(0xFF12B76A),
+          unselectedItemColor: const Color(0xFF98A2B3),
+          backgroundColor:     Colors.white,
+          elevation:           0,
           type: BottomNavigationBarType.fixed,
+          selectedFontSize:   12,
+          unselectedFontSize: 12,
+          selectedLabelStyle:  const TextStyle(fontWeight: FontWeight.w600),
           onTap: (i) => setState(() => _currentIndex = i),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home), label: 'Home'),
+              icon:       Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label:      'Home'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long_outlined),
-              activeIcon: Icon(Icons.receipt_long), label: 'Orders'),
+              icon:       Icon(Icons.grid_view_outlined),
+              activeIcon: Icon(Icons.grid_view),
+              label:      'Categories'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person), label: 'Account'),
+              icon:       Icon(Icons.replay_outlined),
+              activeIcon: Icon(Icons.replay),
+              label:      'Reorder'),
+            BottomNavigationBarItem(
+              icon:       Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label:      'Account'),
           ],
         ),
       ),
@@ -943,6 +956,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

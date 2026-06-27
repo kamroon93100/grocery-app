@@ -17,6 +17,10 @@ import '../../widgets/product_quick_view.dart';
 import '../../widgets/sticky_brand_cards.dart';
 import '../../widgets/location_permission_sheet.dart';
 import '../../widgets/instamart_category_section.dart';
+import '../../widgets/brand_product_card.dart';
+import '../../widgets/brand_category_card.dart';
+import '../../widgets/brand_components.dart';
+import '../../widgets/brand_image.dart';
 import '../../services/location_service.dart';
 import '../address/address_screen.dart';
 import '../../widgets/smooth_search_bar.dart';
@@ -924,6 +928,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

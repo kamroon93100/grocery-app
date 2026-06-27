@@ -260,8 +260,7 @@ class _CategoryCardState extends State<_CategoryCard>
             children: [
               // Spec 6: Image container 90x90
               Container(
-                width:  90,
-                height: 90,
+                width: 80, height: 80,
                 decoration: BoxDecoration(
                   color: color,
                   // Spec 6: Rounded top 46, bottom 18
@@ -353,7 +352,7 @@ class _FreeDeliveryBannerState extends State<_FreeDeliveryBanner>
       margin: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: const Color(0xFFE8FAFF),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
@@ -366,15 +365,13 @@ class _FreeDeliveryBannerState extends State<_FreeDeliveryBanner>
                   TextSpan(
                     text: 'FREE DELIVERY ',
                     style: TextStyle(
-                      fontSize:   18,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 15, fontWeight: FontWeight.w700,
                       color:      Color(0xFF111111)),
                   ),
                   TextSpan(
                     text: 'on orders above Rs99',
                     style: TextStyle(
-                      fontSize:   15,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 13, fontWeight: FontWeight.w400,
                       color:      Color(0xFF111111)),
                   ),
                 ],
@@ -411,3 +408,4 @@ class _FreeDeliveryBannerState extends State<_FreeDeliveryBanner>
     );
   }
 }
+

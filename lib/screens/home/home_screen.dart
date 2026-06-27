@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen>
             AnimatedPositioned(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOut,
-              bottom: _showDeliveryBanner ? 84 : -60,
+              bottom: _showDeliveryBanner ? 74 : -60,
               left: 0, right: 0,
               child: const _DeliveryBanner(),
             ),
@@ -193,7 +193,7 @@ class _HomeContent extends StatelessWidget {
         ),
 
         // Bottom spacing for nav + banner
-        const SliverToBoxAdapter(child: SizedBox(height: 160)),
+        const SliverToBoxAdapter(child: SizedBox(height: 180)),
       ],
     );
   }
@@ -445,15 +445,15 @@ class _AnimatedSearchBarState extends State<_AnimatedSearchBar>
 
 class _StickyTabsDelegate extends SliverPersistentHeaderDelegate {
   @override
-  double get minExtent => 52;
+  double get minExtent => 48;
   @override
-  double get maxExtent => 52;
+  double get maxExtent => 48;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.white,
-      height: 52,
+      height: 48,
       child: ListView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -1064,7 +1064,7 @@ class _DeliveryBannerState extends State<_DeliveryBanner>
 
 /// ═══════════════════════════════════════════════════════
 /// BOTTOM NAVIGATION (Spec 14, 16)
-/// Height: 82, Icons: 26x26, Text: 12px Medium
+/// height: 72, Icons: 26x26, Text: 12px Medium
 /// Selected: Black filled, Unselected: Grey
 /// ═══════════════════════════════════════════════════════
 
@@ -1078,15 +1078,13 @@ class _BottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // Spec 14: Height 82
-      height: 82,
+      height: 72,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
           top: BorderSide(color: Colors.grey.shade200, width: 0.5)),
       ),
-      child: SafeArea(
-        top: false,
-        child: Row(
+      child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _NavItem(icon: Icons.home_outlined,        activeIcon: Icons.home,
@@ -1099,8 +1097,7 @@ class _BottomNav extends StatelessWidget {
               label: 'Account',    index: 3, current: current, onTap: onTap),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -1154,3 +1151,4 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+

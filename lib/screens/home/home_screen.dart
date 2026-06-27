@@ -535,56 +535,123 @@ class _GridCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Image area
           Expanded(
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.circular(14)),
-              child: Stack(children: [
-                Center(child: p.isNetworkImage
-                    ? Image.network(p.displayImage, fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Text(p.displayImage,
-                          style: const TextStyle(fontSize: 44)))
-                    : Text(p.displayImage.isNotEmpty ? p.displayImage : '🛒',
-                        style: const TextStyle(fontSize: 44))),
-                if (p.hasDiscount) Positioned(top: 8, left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF16A34A),
-                      borderRadius: BorderRadius.circular(4)),
-                    child: Text('${p.discount.toInt()}% OFF',
-                      style: const TextStyle(color: Colors.white,
-                        fontSize: 9, fontWeight: FontWeight.w700)))),
-              ])),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: p.isNetworkImage
+                        ? Image.network(
+                            p.displayImage,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => Text(
+                              p.displayImage,
+                              style: const TextStyle(fontSize: 44),
+                            ),
+                          )
+                        : Text(
+                            p.displayImage.isNotEmpty ? p.displayImage : '🛒',
+                            style: const TextStyle(fontSize: 44),
+                          ),
+                  ),
+                  if (p.hasDiscount)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF16A34A),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '${p.discount.toInt()}% OFF',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 6),
+          // Timer pill
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
               color: const Color(0xFFF2F4F7),
-              borderRadius: BorderRadius.circular(100)),
-            child: const Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(Icons.schedule, size: 10, color: Color(0xFF667085)),
-              SizedBox(width: 2),
-              Text('30 mins', style: TextStyle(fontSize: 10,
-                fontWeight: FontWeight.w600, color: Color(0xFF667085)))])),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.schedule, size: 10, color: Color(0xFF667085)),
+                SizedBox(width: 2),
+                Text('30 mins',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF667085),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-              color: Color(0xFF111111), height: 1.2)),
-          Text(p.unit, style: const TextStyle(fontSize: 11, color: Color(0xFF5B5B5B))),
+          // Name
+          Text(
+            p.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF111111),
+              height: 1.2,
+            ),
+          ),
+          // Unit
+          Text(
+            p.unit,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF5B5B5B),
+            ),
+          ),
           const SizedBox(height: 6),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text('${AppConstants.currency}${p.finalPrice.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-                fontFeatures: [FontFeature.tabularFigures()])),
-            _PlusBtn(
-              onTap: () => context.read<CartProvider>().addItem(p),
-              inCart: cart.isInCart(p.id), qty: cart.getQuantity(p.id),
-              onAdd: () => context.read<CartProvider>().increaseQuantity(p.id),
-              onMinus: () => context.read<CartProvider>().decreaseQuantity(p.id)),
-          ]),
-        ]),
+          // Price + Add
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${AppConstants.currency}${p.finalPrice.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  fontFeatures: [FontFeature.tabularFigures()],
+                ),
+              ),
+              _PlusBtn(
+                onTap: () => context.read<CartProvider>().addItem(p),
+                inCart: cart.isInCart(p.id),
+                qty: cart.getQuantity(p.id),
+                onAdd: () => context.read<CartProvider>().increaseQuantity(p.id),
+                onMinus: () => context.read<CartProvider>().decreaseQuantity(p.id),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -667,3 +734,4 @@ class _DeliveryBannerState extends State<_DeliveryBanner>
       ]));
   }
 }
+

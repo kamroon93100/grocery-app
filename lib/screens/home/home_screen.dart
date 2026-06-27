@@ -16,6 +16,7 @@ import '../product/product_detail_screen.dart';
 import '../../widgets/product_quick_view.dart';
 import '../../widgets/sticky_brand_cards.dart';
 import '../../widgets/premium_category_section.dart';
+import '../../widgets/premium_product_card.dart';
 import '../../widgets/location_permission_sheet.dart';
 import '../../widgets/instamart_category_section.dart';
 import '../../widgets/brand_product_card.dart';
@@ -360,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.58,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
         ),
@@ -393,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.58,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
         ),
@@ -404,7 +405,11 @@ class _HomeScreenState extends State<HomeScreen> {
               return const Center(
                 child: CircularProgressIndicator(color: AppColors.primary));
             }
-            return _ProductCard(product.products[index]);
+            return PremiumProductCard(
+                product: product.products[index],
+                onTap: () => ProductQuickView.show(
+                  context, product.products[index]),
+              );
           },
           childCount: product.products.length + (product.hasMore ? 1 : 0),
         ),
@@ -929,6 +934,7 @@ class _FloatingCartBar extends StatelessWidget {
     );
   }
 }
+
 
 
 

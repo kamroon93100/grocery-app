@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
+import '../../widgets/smooth_text_field.dart';
 import '../home/home_screen.dart';
 
 class OtpLoginScreen extends StatefulWidget {
@@ -38,14 +39,13 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
     }
     setState(() => _isLoading = true);
     final result = await context.read<AuthProvider>().sendOTP(_phoneCtrl.text.trim());
-
     if (!mounted) return;
     setState(() => _isLoading = false);
 
     if (result['success'] == true) {
       setState(() {
-        _otpSent    = true;
-        _displayOtp = result['data']['otp']?.toString() ?? '';
+        _otpSent       = true;
+        _displayOtp    = result['data']['otp']?.toString() ?? '';
         _resendSeconds = 30;
       });
       _startResendTimer();
@@ -61,14 +61,12 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
       return;
     }
     setState(() => _isLoading = true);
-
     final result = await context.read<AuthProvider>().verifyOTP(
       phone: _phoneCtrl.text.trim(),
       otp:   _otpCtrl.text.trim(),
       name:  _nameCtrl.text.trim().isNotEmpty ? _nameCtrl.text.trim() : null,
       email: _emailCtrl.text.trim().isNotEmpty ? _emailCtrl.text.trim() : null,
     );
-
     if (!mounted) return;
     setState(() => _isLoading = false);
 
@@ -108,13 +106,21 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
 
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), backgroundColor: Colors.red),
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: Colors.red,
+        behavior:        SnackBarBehavior.floating,
+      ),
     );
   }
 
   void _showSuccess(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), backgroundColor: Colors.green),
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: Colors.green,
+        behavior:        SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -128,92 +134,103 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              Container(
+
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color:        Colors.green,
-                  borderRadius: BorderRadius.circular(24),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1BA672), Color(0xFF0F8559)],
+                    begin: Alignment.topLeft,
+                    end:   Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(28),
                   boxShadow: [
-                    BoxShadow(color: Colors.green.shade200, blurRadius: 20),
+                    BoxShadow(
+                      color: Colors.green.shade300,
+                      blurRadius: 24,
+                      offset: const Offset(0, 8)),
                   ],
                 ),
-                child: Icon(
-                  _otpSent ? Icons.lock_outlined : Icons.phone_outlined,
-                  size: 70, color: Colors.white),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: Icon(
+                    _otpSent ? Icons.lock_outlined : Icons.phone_outlined,
+                    key: ValueKey(_otpSent),
+                    size: 70,
+                    color: Colors.white),
+                ),
               ),
+
               const SizedBox(height: 24),
+
               Text(AppConstants.storeName,
                 style: const TextStyle(
                   fontSize: 26, fontWeight: FontWeight.bold,
-                  color: Colors.green)),
-              Text(_otpSent ? 'Verify OTP' : 'Login with Phone',
-                style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                  color: Color(0xFF1BA672))),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(_otpSent ? 'Verify OTP' : 'Login with Phone',
+                  key: ValueKey(_otpSent),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14)),
+              ),
+
               const SizedBox(height: 40),
 
               if (!_otpSent) ...[
-                // Phone input
-                TextField(
+                SmoothTextField(
                   controller:   _phoneCtrl,
+                  label:        'Phone Number',
+                  prefixIcon:   Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
-                  maxLength:    10,
-                  decoration: InputDecoration(
-                    labelText:  'Phone Number',
-                    hintText:   '10 digits',
-                    prefixIcon: const Icon(Icons.phone_outlined, color: Colors.green),
-                    prefixText: '+91 ',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true, fillColor: Colors.white,
-                  ),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity, height: 55,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1BA672),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
                     onPressed: _isLoading ? null : _sendOTP,
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? const CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2.5)
                         : const Text('Send OTP',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                   ),
                 ),
               ] else ...[
-                // OTP Verification
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.green.shade200),
-                  ),
+                    border: Border.all(color: Colors.green.shade200)),
                   child: Column(
                     children: [
                       Text('OTP sent to +91 ${_phoneCtrl.text}',
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                        style: const TextStyle(
+                          color: Colors.green, fontWeight: FontWeight.bold)),
                       if (_displayOtp.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Text('Demo OTP: $_displayOtp',
                           style: const TextStyle(
                             color: Colors.orange, fontSize: 14,
                             fontWeight: FontWeight.bold)),
-                        const Text('(Only for testing - SMS in production)',
-                          style: TextStyle(color: Colors.grey, fontSize: 11)),
                       ],
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                TextField(
+                SmoothTextField(
                   controller:   _otpCtrl,
+                  label:        'Enter 6-digit OTP',
+                  prefixIcon:   Icons.lock_outline,
                   keyboardType: TextInputType.number,
-                  maxLength:    6,
-                  textAlign:    TextAlign.center,
-                  style: const TextStyle(fontSize: 24, letterSpacing: 8, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                    labelText: 'Enter 6-digit OTP',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true, fillColor: Colors.white,
-                  ),
                 ),
 
                 const SizedBox(height: 10),
@@ -221,25 +238,17 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                   style: TextStyle(color: Colors.grey, fontSize: 12)),
                 const SizedBox(height: 10),
 
-                TextField(
+                SmoothTextField(
                   controller: _nameCtrl,
-                  decoration: InputDecoration(
-                    labelText: 'Your Name',
-                    prefixIcon: const Icon(Icons.person_outline, color: Colors.green),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true, fillColor: Colors.white,
-                  ),
+                  label:      'Your Name',
+                  prefixIcon: Icons.person_outline,
                 ),
                 const SizedBox(height: 10),
-                TextField(
+                SmoothTextField(
                   controller:   _emailCtrl,
+                  label:        'Your Email',
+                  prefixIcon:   Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Your Email',
-                    prefixIcon: const Icon(Icons.email_outlined, color: Colors.green),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true, fillColor: Colors.white,
-                  ),
                 ),
 
                 const SizedBox(height: 20),
@@ -247,11 +256,18 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                 SizedBox(
                   width: double.infinity, height: 55,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1BA672),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
                     onPressed: _isLoading ? null : _verifyOTP,
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? const CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2.5)
                         : const Text('Verify & Login',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -266,7 +282,8 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                             ? 'Resend in ${_resendSeconds}s'
                             : 'Resend OTP',
                         style: TextStyle(
-                          color: _resendSeconds > 0 ? Colors.grey : Colors.green,
+                          color: _resendSeconds > 0
+                              ? Colors.grey : const Color(0xFF1BA672),
                           fontWeight: FontWeight.bold)),
                     ),
                   ],

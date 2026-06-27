@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
@@ -6,6 +6,7 @@ import '../address/address_screen.dart';
 import '../wishlist/wishlist_screen.dart';
 import '../refer/refer_screen.dart';
 import 'profile_edit_screen.dart';
+import '../../constants/app_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -193,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          'Wallet: \$${auth.wallet.toStringAsFixed(2)}',
+                          'Wallet: ${AppConstants.currency}${auth.wallet.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color:      Colors.white,
                             fontWeight: FontWeight.bold,

@@ -1,4 +1,4 @@
-﻿import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -70,7 +70,7 @@ class NotificationService {
     await showNotification(
       id:    1,
       title: '🛒 Welcome to Local Grocery!',
-      body:  'Hi $name, browse fresh groceries and get free delivery above \$50',
+      body:  'Hi $name, browse fresh groceries and get free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
     );
   }
 
@@ -78,7 +78,7 @@ class NotificationService {
     await showNotification(
       id:    DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title: '✅ Order Placed Successfully!',
-      body:  'Order #$orderNumber  •  \$${amount.toStringAsFixed(2)}  •  Cash on Delivery',
+      body:  'Order #$orderNumber  •  ${AppConstants.currency}${amount.toStringAsFixed(2)}  •  Cash on Delivery',
     );
   }
 

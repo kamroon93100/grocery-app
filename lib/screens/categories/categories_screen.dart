@@ -1,10 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../models/category_model.dart';
+import '../../constants/app_constants.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({super.key});
+  final VoidCallback? onCategorySelected;
+  const CategoriesScreen({super.key, this.onCategorySelected});
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
 }
@@ -107,8 +109,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           padding: EdgeInsets.only(
                             right: i < entry.value.length - 1 ? 16 : 0),
                           child: GestureDetector(
-                            onTap: () => context.read<ProductProvider>()
-                                .selectCategory(cat.name),
+                            onTap: () {
+                              context.read<ProductProvider>().selectCategory(cat.name);
+                              if (widget.onCategorySelected != null) {
+                                widget.onCategorySelected!();
+                              }
+                            },
                             child: SizedBox(
                               width: 96,
                               child: Column(
@@ -156,17 +162,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFFE8FAFF),
                 borderRadius: BorderRadius.circular(16)),
-              child: const Row(children: [
+              child: Row(children: [
                 Expanded(
                   child: Text.rich(TextSpan(children: [
-                    TextSpan(text: 'FREE DELIVERY ',
+                    const TextSpan(text: 'FREE DELIVERY ',
                       style: TextStyle(fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF111111))),
-                    TextSpan(text: 'on orders above Rs99',
-                      style: TextStyle(fontSize: 12,
+                    TextSpan(text: 'on orders above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
+                      style: const TextStyle(fontSize: 12,
                         color: Color(0xFF5B5B5B)))]))),
-                Text('🏳️', style: TextStyle(fontSize: 22)),
+                const Text('🏳️', style: TextStyle(fontSize: 22)),
               ])),
 
             const SizedBox(height: 20),

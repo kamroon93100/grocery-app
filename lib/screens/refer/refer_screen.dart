@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
@@ -19,12 +19,12 @@ class ReferScreen extends StatelessWidget {
 🛒 Get FREE Grocery Delivery!
 
 I'm using ${AppConstants.storeName} for fresh groceries.
-Use my code: *$code* to get \$10 off your first order!
+Use my code: *$code* to get ${AppConstants.currency}10 off your first order!
 
 ✅ Cash on Delivery
 ✅ Fresh products
 ✅ Express delivery (30-45 mins)
-✅ Free delivery above \$50
+✅ Free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}
 
 Download the app now!
     ''';
@@ -76,9 +76,9 @@ Download the app now!
                       fontSize: 26,
                       fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Give \$10, Get \$10',
-                    style: TextStyle(
+                  Text(
+                    'Give ${AppConstants.currency}10, Get ${AppConstants.currency}10',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w500)),
@@ -101,10 +101,10 @@ Download the app now!
                     Icons.people_outline, 'Friends Invited', '0', Colors.blue)),
                   const SizedBox(width: 10),
                   Expanded(child: _statCard(
-                    Icons.attach_money, 'Earned', '\$0', Colors.green)),
+                    Icons.attach_money, 'Earned', '${AppConstants.currency}0', Colors.green)),
                   const SizedBox(width: 10),
                   Expanded(child: _statCard(
-                    Icons.account_balance_wallet, 'Pending', '\$0', Colors.orange)),
+                    Icons.account_balance_wallet, 'Pending', '${AppConstants.currency}0', Colors.orange)),
                 ],
               ),
             ),
@@ -180,8 +180,8 @@ Download the app now!
                       height: 50,
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.share),
-                        label: const Text('Share & Earn \$10',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        label: Text('Share & Earn ${AppConstants.currency}10',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         onPressed: () {
                           Share.share(_shareText(code),
                             subject: 'Get FREE Grocery Delivery!');
@@ -266,8 +266,8 @@ Download the app now!
                     _step('1', '📤', 'Share your code',
                       'Send your referral code to friends'),
                     _step('2', '🛍️', 'Friend uses your code',
-                      'They get \$10 off on first order'),
-                    _step('3', '💰', 'You earn \$10',
+                      'They get ${AppConstants.currency}10 off on first order'),
+                    _step('3', '💰', 'You earn ${AppConstants.currency}10',
                       'Credit added to your wallet'),
                     _step('4', '🎉', 'Both win!',
                       'Use credits on your next order'),

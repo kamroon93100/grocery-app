@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:async';
+import '../constants/app_constants.dart';
 
 class HomeBanners extends StatefulWidget {
   const HomeBanners({super.key});
@@ -15,7 +16,7 @@ class _HomeBannersState extends State<HomeBanners> {
   final List<Map<String, dynamic>> _banners = [
     {
       'title':    'Fresh Vegetables',
-      'subtitle': 'Free delivery above \$50',
+      'subtitle': 'Free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
       'icon':     '🥦',
       'colors':   [Color(0xFF4CAF50), Color(0xFF66BB6A)],
     },
@@ -33,7 +34,7 @@ class _HomeBannersState extends State<HomeBanners> {
     },
     {
       'title':    'Save BIG50',
-      'subtitle': '50% off above \$100',
+      'subtitle': '50% off above ${AppConstants.currency}100',
       'icon':     '💰',
       'colors':   [Color(0xFF9C27B0), Color(0xFFAB47BC)],
     },

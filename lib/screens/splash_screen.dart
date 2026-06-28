@@ -25,13 +25,17 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
     final auth = context.read<AuthProvider>();
-    await auth.checkAuth();
+    try {
+      await auth.checkAuth();
+    } catch (_) {
+      // Network error — proceed as guest
+    }
     if (!mounted) return;
     if (auth.isLoggedIn) {
       context.read<ProductProvider>().loadCategories();
       context.read<ProductProvider>().loadProducts();
-      NotificationService().showWelcomeNotification(auth.userName);
-      NotificationService().startPolling();
+      try { NotificationService().showWelcomeNotification(auth.userName); } catch (_) {}
+      try { NotificationService().startPolling(); } catch (_) {}
       Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     } else {

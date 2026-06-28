@@ -2,8 +2,8 @@
   // ========================================
   // 🌐 PRODUCTION URL - Railway Cloud
   // ========================================
-  static const String baseUrl   = 'http://localhost:3001/api';
-  static const String socketUrl = 'http://localhost:3001';
+  static const String baseUrl   = 'http://192.168.1.41:3001/api';
+  static const String socketUrl = 'http://192.168.1.41:3001';
 
   // Auth
   static const String login           = '/auth/login';

@@ -31,29 +31,62 @@ void _runApp() {
     return true;
   };
 
-  NotificationService().init();
+  try {
+    NotificationService().init();
+  } catch (_) {}
+
+  FlutterError.onError = (details) {
+    FlutterError.dumpErrorToConsole(details);
+    // Don't crash — just log
+  };
+
   runApp(const GroceryApp());
 }
 
 /// TYPOGRAPHY SCALE - Inter + Plus Jakarta Sans
 class AppText {
-  static TextStyle _heading(double size, FontWeight w, double height) =>
-      GoogleFonts.plusJakartaSans(
+  static TextStyle _heading(double size, FontWeight w, double height) {
+    try {
+      return GoogleFonts.plusJakartaSans(
         fontSize:   size,
         fontWeight: w,
         height:     height / size,
         color:      AppColors.textStrong,
         letterSpacing: -0.2,
       );
+    } catch (_) {
+      return TextStyle(fontSize: size, fontWeight: w, height: height / size, color: AppColors.textStrong);
+    }
+  }
 
   static TextStyle _body(double size, FontWeight w, double height,
-      {Color? color}) =>
-      GoogleFonts.inter(
+      {Color? color}) {
+    try {
+      return GoogleFonts.inter(
         fontSize:   size,
         fontWeight: w,
         height:     height / size,
         color:      color ?? AppColors.textStrong,
       );
+    } catch (_) {
+      return TextStyle(fontSize: size, fontWeight: w, height: height / size, color: color ?? AppColors.textStrong);
+    }
+  }
+
+  static TextStyle _inter(double size, FontWeight w, double height, Color color, {TextDecoration? decoration}) {
+    try {
+      return GoogleFonts.inter(
+        fontSize: size,
+        fontWeight: w,
+        height: height / size,
+        color: color,
+        decoration: decoration,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
+    } catch (_) {
+      return TextStyle(fontSize: size, fontWeight: w, height: height / size, color: color, decoration: decoration);
+    }
+  }
 
   // Display
   static TextStyle get display    => _heading(40, FontWeight.w800, 48);
@@ -75,36 +108,23 @@ class AppText {
       color: AppColors.textMuted);
 
   // Price
-  static TextStyle get price      => GoogleFonts.inter(
-        fontSize:   20,
-        fontWeight: FontWeight.w700,
-        height:     28 / 20,
-        color:      AppColors.textStrong,
-        fontFeatures: const [FontFeature.tabularFigures()],
-      );
-
-  static TextStyle get priceSmall => GoogleFonts.inter(
-        fontSize:   15,
-        fontWeight: FontWeight.w700,
-        height:     20 / 15,
-        color:      AppColors.textStrong,
-        fontFeatures: const [FontFeature.tabularFigures()],
-      );
-
-  static TextStyle get priceStrike => GoogleFonts.inter(
-        fontSize:   13,
-        fontWeight: FontWeight.w400,
-        color:      AppColors.textSubtle,
-        decoration: TextDecoration.lineThrough,
-        fontFeatures: const [FontFeature.tabularFigures()],
-      );
+  static TextStyle get price      => _inter(20, FontWeight.w700, 28, AppColors.textStrong);
+  static TextStyle get priceSmall => _inter(15, FontWeight.w700, 20, AppColors.textStrong);
+  static TextStyle get priceStrike => _inter(13, FontWeight.w400, 18, AppColors.textSubtle, decoration: TextDecoration.lineThrough);
 
   // Button
-  static TextStyle get button     => GoogleFonts.plusJakartaSans(
+  static TextStyle get button => _button();
+  static TextStyle _button() {
+    try {
+      return GoogleFonts.plusJakartaSans(
         fontSize:   15,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.1,
       );
+    } catch (_) {
+      return TextStyle(fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 0.1);
+    }
+  }
 }
 
 /// SPACING (8-point grid)

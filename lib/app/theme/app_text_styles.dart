@@ -6,19 +6,29 @@ class AppTextStyles {
 
   static TextStyle _baseTextStyle({
     required double fontSize,
-    required double lineHeight, // Use this for height property in TextStyle
+    required double lineHeight,
     required FontWeight fontWeight,
     Color? color,
     TextDecoration? decoration,
   }) {
-    return GoogleFonts.getFont(
-      _fontFamily,
-      fontSize: fontSize,
-      height: lineHeight / fontSize, // Calculate height based on line height and font size
-      fontWeight: fontWeight,
-      color: color,
-      decoration: decoration,
-    );
+    try {
+      return GoogleFonts.getFont(
+        _fontFamily,
+        fontSize: fontSize,
+        height: lineHeight / fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        decoration: decoration,
+      );
+    } catch (_) {
+      return TextStyle(
+        fontSize: fontSize,
+        height: lineHeight / fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        decoration: decoration,
+      );
+    }
   }
 
   // Display: 34 / 40 / 800

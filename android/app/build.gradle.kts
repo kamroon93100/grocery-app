@@ -27,25 +27,25 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            // TODO: Set up your release keystore before publishing
-            // 1. Generate: keytool -genkey -v -keystore upload-keystore.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000
-            // 2. Place upload-keystore.jks in android/app/
-            // 3. Create android/key.properties with:
-            //    storePassword=<password>
-            //    keyPassword=<password>
-            //    keyAlias=upload
-            //    storeFile=upload-keystore.jks
-            storeFile = file("upload-keystore.jks")
-            storePassword = System.getenv("STORE_PASSWORD") ?: ""
-            keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+        val storePass = System.getenv("STORE_PASSWORD")
+        val keyPass = System.getenv("KEY_PASSWORD")
+        val hasReleaseKey = !storePass.isNullOrEmpty() && !keyPass.isNullOrEmpty()
+
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file("upload-keystore.jks")
+                storePassword = storePass
+                keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
+                keyPassword = keyPass
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            // Use release signing if configured, otherwise fall back to debug signing
+            val releaseConfig = try { signingConfigs.getByName("release") } catch (_: Exception) { null }
+            signingConfig = releaseConfig ?: signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

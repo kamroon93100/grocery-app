@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/product_provider.dart';
@@ -21,22 +20,9 @@ Future<void> main() async {
 
   FlutterError.onError = (details) {
     FlutterError.dumpErrorToConsole(details);
-    Sentry.captureException(
-      details.exception,
-      stackTrace: details.stack,
-    );
   };
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = const String.fromEnvironment(
-        'SENTRY_DSN',
-        defaultValue: '',
-      );
-      options.tracesSampleRate = 0.2;
-    },
-    appRunner: () => _runApp(),
-  );
+  _runApp();
 }
 
 void _runApp() {

@@ -37,7 +37,7 @@ dependencies:
   latlong2:           ^0.9.0
   connectivity_plus:  ^6.1.0
   flutter_secure_storage: ^9.2.4
-  sentry_flutter: ^8.9.0
+  # sentry_flutter: removed due to build conflict
 
 dev_dependencies:
   flutter_test:

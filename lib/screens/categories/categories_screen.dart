@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../models/category_model.dart';
+import '../../app/theme/color_scheme_ext.dart';
 import '../../constants/app_constants.dart';
+import '../../app/theme/app_text_styles.dart';
+import '../../app/theme/app_radius.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final VoidCallback? onCategorySelected;
@@ -22,162 +25,205 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   Map<String, List<CategoryModel>> _group(List<CategoryModel> cats) {
-    final fresh   = <CategoryModel>[];
+    final fresh = <CategoryModel>[];
     final grocery = <CategoryModel>[];
-    final snacks  = <CategoryModel>[];
+    final snacks = <CategoryModel>[];
+    final personal = <CategoryModel>[];
+    final household = <CategoryModel>[];
 
     for (final c in cats) {
       final n = c.name.toLowerCase();
       if (n.contains('veg') || n.contains('fruit') ||
-          n.contains('dairy') || n.contains('meat')) {
+          n.contains('dairy') || n.contains('meat') ||
+          n.contains('fresh')) {
         fresh.add(c);
-      } else if (n.contains('grain') || n.contains('bakery')) {
+      } else if (n.contains('grain') || n.contains('bakery') ||
+                 n.contains('kitchen')) {
         grocery.add(c);
-      } else {
+      } else if (n.contains('snack') || n.contains('drink') ||
+                 n.contains('beverage')) {
         snacks.add(c);
+      } else if (n.contains('personal') || n.contains('care') ||
+                 n.contains('beauty')) {
+        personal.add(c);
+      } else {
+        household.add(c);
       }
     }
     return {
-      if (fresh.isNotEmpty)   'Fresh Items':      fresh,
+      if (fresh.isNotEmpty) 'Fresh Items': fresh,
       if (grocery.isNotEmpty) 'Grocery & Kitchen': grocery,
-      if (snacks.isNotEmpty)  'Snacks & Drinks':   snacks,
+      if (snacks.isNotEmpty) 'Snacks & Drinks': snacks,
+      if (personal.isNotEmpty) 'Personal Care': personal,
+      if (household.isNotEmpty) 'Household': household,
     };
   }
 
   static const List<Color> _colors = [
-    Color(0xFFE6F5F2), Color(0xFFFFF2B8),
-    Color(0xFFE7F8EF), Color(0xFFF3EBFF),
-    Color(0xFFEAF4FF), Color(0xFFFCE4EC),
-    Color(0xFFFFF9C4), Color(0xFFE0F7FA),
+    Color(0xFFEEF7FF),
+    Color(0xFFF0FFF4),
+    Color(0xFFFFF8ED),
+    Color(0xFFFCE4EC),
+    Color(0xFFF3E5F5),
+    Color(0xFFE0F7FA),
+    Color(0xFFFFF9C4),
+    Color(0xFFFFEBEE),
   ];
 
   @override
   Widget build(BuildContext context) {
     final product = context.watch<ProductProvider>();
     final sections = _group(product.categories);
+    final colorScheme = Theme.of(context).colorScheme;
     int colorIdx = 0;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Categories',
-                    style: TextStyle(
-                      fontSize: 34, fontWeight: FontWeight.w700,
-                      color: Color(0xFF111111), letterSpacing: -0.5)),
-                  SizedBox(
+                  Text('Categories',
+                    style: AppTextStyles.h1(color: colorScheme.textPrimary)),
+                  Container(
                     width: 40, height: 40,
+                    decoration: BoxDecoration(
+                      color: colorScheme.softSurface,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.search, size: 24,
-                        color: Color(0xFF111111)),
-                      onPressed: () {})),
+                      icon: Icon(Icons.search_rounded, size: 22,
+                        color: colorScheme.textPrimary),
+                      onPressed: () {}),
+                  ),
                 ],
               ),
             ),
-
             // Sections
             ...sections.entries.map((entry) {
               final section = Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: Text(entry.key,
-                      style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.w700,
-                        color: Color(0xFF111111)))),
-                  SizedBox(
-                    height: 126,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      style: AppTextStyles.sectionTitle(color: colorScheme.textPrimary))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 0.78,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 16,
+                      ),
                       itemCount: entry.value.length,
                       itemBuilder: (context, i) {
                         final cat = entry.value[i];
                         final bg = _colors[(colorIdx + i) % _colors.length];
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            right: i < entry.value.length - 1 ? 16 : 0),
-                          child: GestureDetector(
-                            onTap: () {
-                              context.read<ProductProvider>().selectCategory(cat.name);
-                              if (widget.onCategorySelected != null) {
-                                widget.onCategorySelected!();
-                              }
-                            },
-                            child: SizedBox(
-                              width: 96,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 90, height: 90,
-                                    decoration: BoxDecoration(
-                                      color: bg,
-                                      borderRadius: BorderRadius.circular(26)),
-                                    child: Center(
-                                      child: Text(cat.icon,
-                                        style: const TextStyle(fontSize: 36)))),
-                                  const SizedBox(height: 10),
-                                  SizedBox(
-                                    width: 90,
-                                    child: Text(cat.name,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF111111),
-                                        height: 1.2))),
-                                ],
-                              ),
-                            ),
-                          ),
+                        return _CategoryGridTile(
+                          category: cat,
+                          bgColor: bg,
+                          onTap: () {
+                            context.read<ProductProvider>().selectCategory(cat.name);
+                            if (widget.onCategorySelected != null) {
+                              widget.onCategorySelected!();
+                            }
+                          },
                         );
                       },
                     ),
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 28),
                 ],
               );
               colorIdx += entry.value.length;
               return section;
             }).toList(),
-
             // Free delivery banner
             Container(
               height: 56,
-              margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8FAFF),
-                borderRadius: BorderRadius.circular(16)),
+                color: colorScheme.softSurface,
+                borderRadius: BorderRadius.circular(AppRadius.banner)),
               child: Row(children: [
                 Expanded(
                   child: Text.rich(TextSpan(children: [
-                    const TextSpan(text: 'FREE DELIVERY ',
+                    TextSpan(text: 'FREE DELIVERY ',
                       style: TextStyle(fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF111111))),
+                        color: colorScheme.textPrimary)),
                     TextSpan(text: 'on orders above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
-                      style: const TextStyle(fontSize: 12,
-                        color: Color(0xFF5B5B5B)))]))),
-                const Text('🏳️', style: TextStyle(fontSize: 22)),
+                      style: TextStyle(fontSize: 12,
+                        color: colorScheme.textMuted))]))),
+                Icon(Icons.local_shipping_rounded,
+                  color: colorScheme.primary, size: 24),
               ])),
-
             const SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CategoryGridTile extends StatelessWidget {
+  final CategoryModel category;
+  final Color bgColor;
+  final VoidCallback onTap;
+
+  const _CategoryGridTile({
+    required this.category,
+    required this.bgColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 76,
+            height: 76,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(AppRadius.categoryTile),
+            ),
+            child: category.image != null && category.image!.startsWith('http')
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.categoryTile),
+                    child: Image.network(
+                      category.image!, fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Text(category.icon, style: const TextStyle(fontSize: 32))),
+                    ),
+                  )
+                : Center(
+                    child: Text(category.icon, style: const TextStyle(fontSize: 32))),
+          ),
+          const SizedBox(height: 6),
+          Text(category.name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w600,
+              color: colorScheme.textPrimary, height: 1.2)),
+        ],
       ),
     );
   }

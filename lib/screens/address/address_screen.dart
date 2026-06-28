@@ -1,7 +1,9 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import '../../providers/address_provider.dart';
 import '../../models/address_model.dart';
+import '../../services/google_maps_service.dart';
 
 class AddressScreen extends StatefulWidget {
   final bool selectMode;
@@ -231,6 +233,12 @@ class _AddressScreenState extends State<AddressScreen> {
     String selectedLabel = address?.label ?? 'Home';
     final labels = ['Home','Work','Office','Other'];
 
+    final mapsService = GoogleMapsService();
+    final searchCtrl    = TextEditingController();
+    List<Map<String,dynamic>> predictions = [];
+    bool searching = false;
+    Timer? _debounce;
+
     showModalBottomSheet(
       context:            context,
       isScrollControlled: true,
@@ -258,7 +266,86 @@ class _AddressScreenState extends State<AddressScreen> {
                   ],
                 ),
                 const Divider(),
-                const SizedBox(height: 8),
+
+                // Google Address Autocomplete
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: searchCtrl,
+                        decoration: InputDecoration(
+                          hintText: 'Search with Google...',
+                          prefixIcon: const Icon(Icons.search, color: Colors.green),
+                          suffixIcon: searching
+                              ? const SizedBox(
+                                  width: 20, height: 20,
+                                  child: Center(child: CircularProgressIndicator(strokeWidth: 2)))
+                              : null,
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        ),
+                        onChanged: (val) {
+                          _debounce?.cancel();
+                          if (val.trim().length < 3) {
+                            setS(() => predictions = []);
+                            return;
+                          }
+                          _debounce = Timer(const Duration(milliseconds: 500), () async {
+                            setS(() => searching = true);
+                            final result = await mapsService.placeAutocomplete(val.trim());
+                            setS(() {
+                              predictions = result;
+                              searching = false;
+                            });
+                          });
+                        },
+                      ),
+                      if (predictions.isNotEmpty)
+                        SizedBox(
+                          height: ((predictions.length * 48).clamp(0, 200)).toDouble(),
+                          child: ListView.separated(
+                            padding: EdgeInsets.zero,
+                            itemCount: predictions.length,
+                            separatorBuilder: (_, __) => const Divider(height: 1),
+                            itemBuilder: (_, i) {
+                              final p = predictions[i];
+                              return ListTile(
+                                dense: true,
+                                leading: const Icon(Icons.location_on_outlined, color: Colors.green, size: 20),
+                                title: Text(p['description'] ?? '', style: const TextStyle(fontSize: 13)),
+                                onTap: () async {
+                                  setS(() => searching = true);
+                                  final placeId = p['placeId'] ?? '';
+                                  final lat = p['lat'] as double?;
+                                  final lon = p['lon'] as double?;
+                                  final detail = await mapsService.placeDetails(
+                                    placeId, lat: lat, lon: lon);
+                                  setS(() => searching = false);
+                                  if (detail != null) {
+                                    final addr = detail['address'] as Map<String,dynamic>? ?? {};
+                                    line1Ctrl.text = addr['line1'] ?? '';
+                                    cityCtrl.text  = addr['city']  ?? '';
+                                    stateCtrl.text = addr['state'] ?? '';
+                                    pincodeCtrl.text = addr['pincode'] ?? '';
+                                    searchCtrl.text = p['description'] ?? '';
+                                    predictions = [];
+                                    if (addr['line2'] != null) line2Ctrl.text = addr['line2'];
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
                 const Text('Address Type',
                   style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),

@@ -1,4 +1,5 @@
-﻿import 'package:shared_preferences/shared_preferences.dart';
+﻿import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_constants.dart';
 import '../models/user_model.dart';
 import 'api_service.dart';
@@ -10,6 +11,7 @@ class AuthService {
   AuthService._internal();
 
   final ApiService _api = ApiService();
+  final _secure = const FlutterSecureStorage();
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     final result = await _api.post(
@@ -50,17 +52,27 @@ class AuthService {
 
   Future<void> logout() async {
     try {
-      await _api.post(ApiConstants.logout, {});
-    } catch (_) {}
+      await _api.post(ApiConstants.logout, {}).timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // Server logout is best-effort; local tokens are cleared regardless
+    }
     _api.clearToken();
+    await _secure.delete(key: AppConstants.keyToken);
+    await _secure.delete(key: AppConstants.keyRefreshToken);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await prefs.remove(AppConstants.keyUserId);
+    await prefs.remove(AppConstants.keyUserName);
+    await prefs.remove(AppConstants.keyUserEmail);
+    await prefs.remove(AppConstants.keyUserPhone);
+    await prefs.remove(AppConstants.keyUserRole);
+    await prefs.remove(AppConstants.keyIsLogged);
+    await prefs.remove(AppConstants.keyWallet);
   }
 
   Future<void> _saveSession(UserModel user, String token, String refreshToken) async {
+    await _secure.write(key: AppConstants.keyToken, value: token);
+    await _secure.write(key: AppConstants.keyRefreshToken, value: refreshToken);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.keyToken,        token);
-    await prefs.setString(AppConstants.keyRefreshToken, refreshToken);
     await prefs.setString(AppConstants.keyUserId,       user.id);
     await prefs.setString(AppConstants.keyUserName,     user.name);
     await prefs.setString(AppConstants.keyUserEmail,    user.email);
@@ -68,6 +80,19 @@ class AuthService {
     await prefs.setString(AppConstants.keyUserRole,     user.role);
     await prefs.setBool(AppConstants.keyIsLogged,       true);
     await prefs.setDouble(AppConstants.keyWallet,       user.walletBalance);
+  }
+
+  Future<void> saveSessionFromMap(Map<String, dynamic> user, String token, String refreshToken) async {
+    await _secure.write(key: AppConstants.keyToken, value: token);
+    await _secure.write(key: AppConstants.keyRefreshToken, value: refreshToken);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.keyUserId,       user['id'] ?? '');
+    await prefs.setString(AppConstants.keyUserName,     user['name'] ?? '');
+    await prefs.setString(AppConstants.keyUserEmail,    user['email'] ?? '');
+    await prefs.setString(AppConstants.keyUserPhone,    user['phone'] ?? '');
+    await prefs.setString(AppConstants.keyUserRole,     user['role'] ?? 'customer');
+    await prefs.setBool(AppConstants.keyIsLogged,       true);
+    await prefs.setDouble(AppConstants.keyWallet,       (user['walletBalance'] ?? 0.0).toDouble());
   }
 
   Future<bool> isLoggedIn() async {
@@ -86,7 +111,7 @@ class AuthService {
       'role':    prefs.getString(AppConstants.keyUserRole),
       'wallet':  prefs.getDouble(AppConstants.keyWallet) ?? 0.0,
       'isAdmin': prefs.getString(AppConstants.keyUserRole) == 'admin',
-      'token':   prefs.getString(AppConstants.keyToken),
+      'token':   await _secure.read(key: AppConstants.keyToken),
     };
   }
 

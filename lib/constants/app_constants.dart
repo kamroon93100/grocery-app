@@ -1,14 +1,15 @@
 ﻿class AppConstants {
   // ========================================
-  // 🏪 YOUR STORE INFORMATION
+  // YOUR STORE INFORMATION
   // ========================================
-  static const String storeName     = 'Kohli Store';
-  static const String storeTagline  = 'Fresh products at your door';
-  static const String storePhone    = '919310053756';
-  static const String storeWhatsApp = '919310053756';
-  static const String storeAddress  = 'B-433, lajpat nagar , sahibabad, ghaziabad 201005';
-  static const String storeEmail    = 'karmansingh93100@gmail.com';
-  static const String currency      = 'Rs';
+  // Override at build time: --dart-define=STORE_NAME=...
+  static const String storeName     = String.fromEnvironment('STORE_NAME',     defaultValue: 'Kohli Store');
+  static const String storeTagline  = String.fromEnvironment('STORE_TAGLINE',  defaultValue: 'Fresh products at your door');
+  static const String storePhone    = String.fromEnvironment('STORE_PHONE',    defaultValue: '919310053756');
+  static const String storeWhatsApp = String.fromEnvironment('STORE_WHATSAPP', defaultValue: '919310053756');
+  static const String storeAddress  = String.fromEnvironment('STORE_ADDRESS',  defaultValue: 'B-433, lajpat nagar , sahibabad, ghaziabad 201005');
+  static const String storeEmail    = String.fromEnvironment('STORE_EMAIL',    defaultValue: 'karmansingh93100@gmail.com');
+  static const String currency      = String.fromEnvironment('STORE_CURRENCY', defaultValue: 'Rs');
   static const String version       = '2.0.0';
 
   // Storage Keys

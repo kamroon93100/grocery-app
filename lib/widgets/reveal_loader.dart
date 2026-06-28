@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../main.dart';
+import '../app/theme/theme.dart';
 
 /// ═══════════════════════════════════════════════════════
 /// 🎬 ANIMATED REVEAL LOADER

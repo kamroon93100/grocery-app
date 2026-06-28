@@ -2,7 +2,7 @@
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../constants/app_constants.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 import '../screens/cart/cart_screen.dart';
 
 class FloatingCartBar extends StatelessWidget {

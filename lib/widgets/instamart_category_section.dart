@@ -2,7 +2,7 @@
 import 'package:provider/provider.dart';
 import '../models/category_model.dart';
 import '../providers/product_provider.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 import '../constants/app_constants.dart';
 
 /// Instamart-style grouped category sections

@@ -1,6 +1,8 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/product_provider.dart';
@@ -8,70 +10,43 @@ import 'providers/order_provider.dart';
 import 'providers/address_provider.dart';
 import 'providers/wishlist_provider.dart';
 import 'services/notification_service.dart';
+import 'services/connectivity_service.dart';
+import 'widgets/offline_banner.dart';
 import 'screens/splash_screen.dart';
+import 'app/theme/app_colors.dart';
+import 'app/theme/app_theme.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService().init();
-  runApp(const GroceryApp());
+
+  FlutterError.onError = (details) {
+    FlutterError.dumpErrorToConsole(details);
+    Sentry.captureException(
+      details.exception,
+      stackTrace: details.stack,
+    );
+  };
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = const String.fromEnvironment(
+        'SENTRY_DSN',
+        defaultValue: '',
+      );
+      options.tracesSampleRate = 0.2;
+    },
+    appRunner: () => _runApp(),
+  );
 }
 
-/// ═══════════════════════════════════════════════════════
-/// 🎨 BRAND DESIGN SYSTEM
-/// Brand Feel: Fast, Fresh, Premium, Dependable
-/// ═══════════════════════════════════════════════════════
+void _runApp() {
+  ui.PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Unhandled error: $error\n$stack');
+    return true;
+  };
 
-class AppColors {
-  // PRIMARY
-  static const Color primary       = Color(0xFF12B76A); // Brand green
-  static const Color primaryDark   = Color(0xFF0E8A52); // Pressed CTA
-  static const Color primaryLight  = Color(0xFFE7F8EF); // Subtle bg
-
-  // ACCENT
-  static const Color accent        = Color(0xFFFF7A45); // Urgency
-  static const Color accentLight   = Color(0xFFFFEEE6);
-
-  // SURFACES
-  static const Color background    = Color(0xFFF7F8FA); // Main canvas
-  static const Color surface       = Color(0xFFFFFFFF); // Cards
-  static const Color surfaceAlt    = Color(0xFFFAFBFC); // Subtle surface
-
-  // TEXT
-  static const Color textStrong    = Color(0xFF101828); // Headings
-  static const Color textMuted     = Color(0xFF667085); // Labels
-  static const Color textSubtle    = Color(0xFF98A2B3); // Hints
-
-  // BORDERS
-  static const Color border        = Color(0xFFE4E7EC); // Dividers
-  static const Color borderLight   = Color(0xFFF2F4F7);
-
-  // ─── COMPATIBILITY ALIASES (old code) ───
-  static const Color cream         = surface;
-  static const Color creamDark     = surfaceAlt;
-  static const Color softWhite     = surface;
-  static const Color jetBlack      = textStrong;
-  static const Color charcoal      = textStrong;
-  static const Color slate         = textMuted;
-  static const Color graySoft      = textMuted;
-  static const Color grayLight     = textSubtle;
-  static const Color grayBg        = background;
-  static const Color cardBg        = surface;
-  static const Color textDark      = textStrong;
-  static const Color textGrey      = textMuted;
-  static const Color textLight     = textSubtle;
-  static const Color coral         = accent;
-  static const Color coralLight    = accentLight;
-  static const Color tangerine     = Color(0xFFFF8C42);
-  static const Color softBlack     = Color(0xFF2A2A2A);
-  static const Color cardBlack     = Color(0xFF333333);
-  static const Color white         = Colors.white;
-  static const Color primaryAccent = Color(0xFF14A37A);
-
-  // STATES
-  static const Color success       = Color(0xFF12B76A); // Stock, delivered
-  static const Color warning       = Color(0xFFF79009); // Low stock
-  static const Color error         = Color(0xFFF04438); // Failed
-  static const Color info          = Color(0xFF0BA5EC); // Info
+  NotificationService().init();
+  runApp(const GroceryApp());
 }
 
 /// TYPOGRAPHY SCALE - Inter + Plus Jakarta Sans
@@ -225,130 +200,21 @@ class GroceryApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()..loadCart()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectivityService()),
       ],
       child: MaterialApp(
         title:                     'Kohli Store',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: AppColors.primary,
-          scaffoldBackgroundColor: AppColors.background,
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor:  AppColors.primary,
-            primary:    AppColors.primary,
-            secondary:  AppColors.accent,
-            surface:    AppColors.surface,
-            error:      AppColors.error,
-          ),
-          textTheme: GoogleFonts.interTextTheme(),
-          appBarTheme: AppBarTheme(
-            backgroundColor: AppColors.surface,
-            foregroundColor: AppColors.textStrong,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            iconTheme: const IconThemeData(color: AppColors.textStrong),
-            titleTextStyle: AppText.h3,
-            centerTitle: false,
-            surfaceTintColor: Colors.transparent,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.card),
-              ),
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.x24, vertical: AppSpacing.x12),
-              textStyle: AppText.button,
-              minimumSize: const Size(0, 48),
-            ),
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.primary,
-              side: const BorderSide(color: AppColors.primary, width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.card),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.x24, vertical: AppSpacing.x12),
-              textStyle: AppText.button,
-              minimumSize: const Size(0, 48),
-            ),
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.primary,
-              textStyle: AppText.button,
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              borderSide:   const BorderSide(color: AppColors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              borderSide:   const BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              borderSide:   const BorderSide(color: AppColors.primary, width: 1.5),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              borderSide:   const BorderSide(color: AppColors.error),
-            ),
-            filled:    true,
-            fillColor: AppColors.surface,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.x16, vertical: AppSpacing.x12),
-            labelStyle: AppText.small.copyWith(color: AppColors.textMuted),
-            hintStyle:  AppText.small.copyWith(color: AppColors.textSubtle),
-          ),
-          cardTheme: CardThemeData(
-            color: AppColors.surface,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              side: const BorderSide(color: AppColors.border, width: 1),
-            ),
-            margin: EdgeInsets.zero,
-          ),
-          chipTheme: ChipThemeData(
-            backgroundColor: AppColors.primaryLight,
-            selectedColor:   AppColors.primary,
-            labelStyle: AppText.smallStrong,
-            secondaryLabelStyle: AppText.smallStrong.copyWith(color: Colors.white),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.x12, vertical: 6),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-            ),
-            side: BorderSide.none,
-          ),
-          dividerTheme: const DividerThemeData(
-            color:     AppColors.border,
-            thickness: 1,
-            space:     1,
-          ),
-          snackBarTheme: SnackBarThemeData(
-            backgroundColor: AppColors.textStrong,
-            contentTextStyle: AppText.smallStrong.copyWith(color: Colors.white),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.card),
-            ),
-          ),
-        ),
+        theme:                     AppTheme.lightTheme,
+        darkTheme:                 AppTheme.darkTheme,
+        themeMode:                 ThemeMode.light,
         home: const SplashScreen(),
+        builder: (context, child) => OfflineBanner(child: child!),
       ),
     );
   }

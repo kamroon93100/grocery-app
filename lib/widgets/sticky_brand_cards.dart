@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../main.dart';
+
 
 class BrandAdData {
   final String  id;

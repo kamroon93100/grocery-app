@@ -60,6 +60,24 @@
   static const String myDeliveries    = '/delivery/my-deliveries';
   static const String earnings        = '/delivery/earnings';
 
+  // Google Auth
+  static const String googleLogin     = '/auth/google';
+
+  // Razorpay
+  static const String razorpayCreateOrder = '/payments/razorpay/create-order';
+  static const String razorpayVerify  = '/payments/razorpay/verify';
+  static const String razorpayWalletTopup = '/payments/razorpay/wallet-topup';
+
+  // Maps
+  static const String geocode         = '/maps/geocode';
+  static const String reverseGeocode  = '/maps/reverse-geocode';
+  static const String distanceMatrix  = '/maps/distance-matrix';
+  static const String placeAutocomplete = '/maps/places/autocomplete';
+  static const String placeDetails    = '/maps/places/details';
+
+  // Wishlist
+  static const String wishlist        = '/wishlist';
+
   // Timeouts
   static const int connectTimeout     = 30;
   static const int receiveTimeout     = 30;

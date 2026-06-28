@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 
 /// ═══════════════════════════════════════════════════════
 /// 🧩 BRAND COMPONENT LIBRARY
@@ -373,28 +373,31 @@ class CardAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 32,
-      decoration: BoxDecoration(
-        color: AppColors.primaryLight,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: AppColors.primary, width: 1.2),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    return SizedBox(
+      height: 48,
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: AppColors.primaryLight,
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          onTap: onPressed,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Center(
-              child: Text('ADD',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                  letterSpacing: 1,
-                )),
+          border: Border.all(color: AppColors.primary, width: 1.2),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            onTap: onPressed,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Center(
+                child: Text('ADD',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    letterSpacing: 1,
+                  )),
+              ),
             ),
           ),
         ),

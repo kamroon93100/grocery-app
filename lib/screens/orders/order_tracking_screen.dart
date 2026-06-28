@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../models/order_model.dart';
 import '../../services/order_service.dart';
 import '../../services/invoice_service.dart';
@@ -192,6 +194,50 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
             ),
 
             const SizedBox(height: 20),
+
+            // Live Map (only when out for delivery)
+            if (order.status == 'out_for_delivery') ...[
+              Container(
+                width: double.infinity,
+                height: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(
+                      order.deliveryLat ?? 28.6139,
+                      order.deliveryLng ?? 77.2090,
+                    ),
+                    initialZoom: 14,
+                    interactionOptions: const InteractionOptions(flags: InteractiveFlag.none),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.grocery.app',
+                    ),
+                    if (order.deliveryLat != null && order.deliveryLng != null)
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(order.deliveryLat!, order.deliveryLng!),
+                            width: 40,
+                            height: 40,
+                            child: const Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 36,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Tracking Timeline
             if (!isCancelled) ...[

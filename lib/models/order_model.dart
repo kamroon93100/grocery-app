@@ -48,6 +48,8 @@ class OrderModel {
   final String notes;
   final String?          cancelReason;
   final int              estimatedTime;
+  final double?          deliveryLat;
+  final double?          deliveryLng;
 
   OrderModel({
     required this.id,
@@ -69,6 +71,8 @@ class OrderModel {
     this.notes = '',
     this.cancelReason,
     required this.estimatedTime,
+    this.deliveryLat,
+    this.deliveryLng,
   });
 
   bool get isPending    => status == 'pending';
@@ -99,6 +103,8 @@ class OrderModel {
     notes: json['notes'] ?? '',
     cancelReason:  json['cancelReason'],
     estimatedTime: json['estimatedTime'] ?? 30,
+    deliveryLat: double.tryParse(json['deliveryLat']?.toString() ?? ''),
+    deliveryLng: double.tryParse(json['deliveryLng']?.toString() ?? ''),
   );
 }
 

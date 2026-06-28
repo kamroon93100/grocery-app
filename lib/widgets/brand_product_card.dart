@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import '../providers/cart_provider.dart';
 import '../constants/app_constants.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 import 'brand_components.dart';
 import 'brand_image.dart';
 import '../widgets/product_quick_view.dart';

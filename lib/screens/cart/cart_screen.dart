@@ -1,13 +1,16 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/order_provider.dart';
-import '../../services/order_service.dart';
+
 import '../../services/whatsapp_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/location_service.dart';
 import '../../constants/app_constants.dart';
+import '../../constants/app_colors.dart';
+import '../../widgets/brand_components.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -18,17 +21,10 @@ class CartScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Cart (${cart.itemCount} items)')),
       body: cart.items.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart_outlined,
-                    size: 80, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
-                  Text('Your cart is empty',
-                    style: TextStyle(fontSize: 20, color: Colors.grey.shade500)),
-                ],
-              ),
+          ? EmptyState(
+              icon: Icons.shopping_cart_outlined,
+              title: 'Your cart is empty',
+              subtitle: 'Add items from the store to get started',
             )
           : Column(
               children: [
@@ -47,9 +43,10 @@ class CartScreen extends StatelessWidget {
                               item.product.isNetworkImage
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(item.product.displayImage,
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.product.displayImage,
                                         height: 50, width: 50, fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) =>
+                                        errorWidget: (_, __, ___) =>
                                           const Icon(Icons.image, size: 40)))
                                   : Text(item.product.displayImage.isNotEmpty
                                       ? item.product.displayImage : '🛒',
@@ -62,21 +59,23 @@ class CartScreen extends StatelessWidget {
                                     Text(item.product.name,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold, fontSize: 14)),
-                                    Text('${AppConstants.currency}${item.product.finalPrice.toStringAsFixed(2)}',
-                                      style: const TextStyle(color: Colors.green)),
+                                    PriceDisplay(
+                                      price: item.product.finalPrice,
+                                      originalPrice: item.product.hasDiscount
+                                        ? item.product.price : null,
+                                    ),
                                   ],
                                 ),
                               ),
                               Column(
                                 children: [
-                                  Text('${AppConstants.currency}${item.subtotal.toStringAsFixed(2)}',
+                                  Text(AppConstants.currency + item.subtotal.toStringAsFixed(2),
                                     style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green)),
+                                      fontWeight: FontWeight.bold, color: Colors.green)),
                                   Row(children: [
                                     IconButton(
                                       icon: const Icon(Icons.remove_circle_outline,
-                                        color: Colors.green),
+                                        color: AppColors.primary),
                                       onPressed: () => context.read<CartProvider>()
                                         .decreaseQuantity(item.product.id),
                                       constraints: const BoxConstraints(),
@@ -85,7 +84,7 @@ class CartScreen extends StatelessWidget {
                                       style: const TextStyle(fontWeight: FontWeight.bold)),
                                     IconButton(
                                       icon: const Icon(Icons.add_circle_outline,
-                                        color: Colors.green),
+                                        color: AppColors.primary),
                                       onPressed: () => context.read<CartProvider>()
                                         .increaseQuantity(item.product.id),
                                       constraints: const BoxConstraints(),
@@ -112,10 +111,10 @@ class CartScreen extends StatelessWidget {
                         children: [
                           const Text('Total',
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text('${AppConstants.currency}${cart.totalAmount.toStringAsFixed(2)}',
+                          Text(AppConstants.currency + cart.totalAmount.toStringAsFixed(2),
                             style: const TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold,
-                              color: Colors.green)),
+                              color: AppColors.primary)),
                         ],
                       ),
                       const SizedBox(height: 14),
@@ -137,16 +136,19 @@ class CartScreen extends StatelessWidget {
   }
 
   void _showCheckout(BuildContext context, CartProvider cart) {
-    final nameCtrl    = TextEditingController();
-    final phoneCtrl   = TextEditingController();
-    final addressCtrl = TextEditingController();
-    final cityCtrl    = TextEditingController();
-    final notesCtrl   = TextEditingController();
-    final auth        = context.read<AuthProvider>();
+    final nameCtrl     = TextEditingController();
+    final phoneCtrl    = TextEditingController();
+    final addressCtrl  = TextEditingController();
+    final cityCtrl     = TextEditingController();
+    final pincodeCtrl  = TextEditingController();
+    final stateCtrl    = TextEditingController();
+    final notesCtrl    = TextEditingController();
+    final auth         = context.read<AuthProvider>();
 
     nameCtrl.text  = auth.userName;
     phoneCtrl.text = auth.userPhone;
 
+    final isProcessing = ValueNotifier<bool>(false);
     double?  latitude;
     double?  longitude;
     double?  accuracy;
@@ -164,7 +166,6 @@ class CartScreen extends StatelessWidget {
           Future<void> detectLocation() async {
             setS(() => detecting = true);
 
-            // Show progress
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Row(children: [
@@ -209,7 +210,6 @@ class CartScreen extends StatelessWidget {
                 ),
               );
             } else {
-              // Show error dialog with action
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
@@ -309,7 +309,7 @@ class CartScreen extends StatelessWidget {
                   ),
                   const Divider(),
 
-                  // GPS Card - Industry style
+                  // GPS Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -440,6 +440,19 @@ class CartScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _field(cityCtrl, 'City *', Icons.location_city_outlined),
                   const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _field(pincodeCtrl, 'Pincode *', Icons.pin_drop_outlined,
+                          type: TextInputType.number),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _field(stateCtrl, 'State *', Icons.map_outlined),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
                   _field(notesCtrl, 'Order Notes (optional)', Icons.note_outlined),
                   const SizedBox(height: 16),
 
@@ -471,92 +484,110 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  SizedBox(
-                    width: double.infinity, height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                      ),
-                      onPressed: () async {
-                        if (nameCtrl.text.trim().isEmpty ||
-                            phoneCtrl.text.trim().isEmpty ||
-                            addressCtrl.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Fill all required fields'),
-                              backgroundColor: Colors.red));
-                          return;
-                        }
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isProcessing,
+                    builder: (context, processing, _) {
+                      return SizedBox(
+                        width: double.infinity, height: 60,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                          ),
+                          onPressed: processing
+                              ? null
+                              : () async {
+                                  if (nameCtrl.text.trim().isEmpty ||
+                                      phoneCtrl.text.trim().isEmpty ||
+                                      addressCtrl.text.trim().isEmpty ||
+                                      cityCtrl.text.trim().isEmpty ||
+                                      pincodeCtrl.text.trim().isEmpty ||
+                                      stateCtrl.text.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Fill all required fields'),
+                                        backgroundColor: Colors.red));
+                                    return;
+                                  }
+                                  if (pincodeCtrl.text.trim().length < 6) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Enter a valid 6-digit pincode'),
+                                        backgroundColor: Colors.red));
+                                    return;
+                                  }
 
-                        final orderProvider = context.read<OrderProvider>();
-                        final result = await orderProvider.placeOrder(
-                          items: cart.items,
-                          deliveryAddress: {
-                            'name':    nameCtrl.text.trim(),
-                            'phone':   phoneCtrl.text.trim(),
-                            'line1':   addressCtrl.text.trim(),
-                            'city':    cityCtrl.text.trim().isEmpty
-                                ? 'City' : cityCtrl.text.trim(),
-                            'state':   'State',
-                            'pincode': '000000',
-                            'country': 'India',
-                            'latitude':  latitude,
-                            'longitude': longitude,
+                                  isProcessing.value = true;
+                                  final orderProvider = context.read<OrderProvider>();
+                                  final result = await orderProvider.placeOrder(
+                                    items: cart.items,
+                                    deliveryAddress: {
+                                      'name':    nameCtrl.text.trim(),
+                                      'phone':   phoneCtrl.text.trim(),
+                                      'line1':   addressCtrl.text.trim(),
+                                      'city':    cityCtrl.text.trim(),
+                                      'state':   stateCtrl.text.trim(),
+                                      'pincode': pincodeCtrl.text.trim(),
+                                      'country': 'India',
+                                      'latitude':  latitude,
+                                      'longitude': longitude,
+                                    },
+                                    paymentMethod: 'cod',
+                                    couponCode:    cart.couponCode,
+                                    notes:         notesCtrl.text.trim(),
+                                  );
+                                  isProcessing.value = false;
+
+                                  if (!context.mounted) return;
+                                  if (result['success'] == true) {
+                                    final order    = result['data']?['order'];
+                                    final orderNum = order?['orderNumber'] ?? '';
+                                    final totalAmt = cart.totalAmount;
+
+                                    cart.clearCart();
+                                    Navigator.pop(ctx);
+                                    Navigator.pop(context);
+
+                                    await WhatsAppService().sendOrderToStore(
+                                      order: order ?? {},
+                                      customerName:   nameCtrl.text.trim(),
+                                      customerPhone:  phoneCtrl.text.trim(),
+                                      address:        '${addressCtrl.text.trim()}, ${cityCtrl.text.trim()}',
+                                      googleMapsLink: googleMapsLink,
+                                      latitude:       latitude,
+                                      longitude:      longitude,
+                                    );
+
+                                    NotificationService().showOrderPlacedNotification(
+                                      orderNum, totalAmt);
+
+                                    _showSuccess(context, orderNum);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(result['message'] ?? 'Failed'),
+                                        backgroundColor: Colors.red));
+                                  }
+                                },
+                                child: processing
+                                    ? const SizedBox(
+                                        width: 24, height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5, color: Colors.white))
+                                    : const Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.send, color: Colors.white),
+                                          SizedBox(width: 8),
+                                          Text('Place Order & Notify Store',
+                                            style: TextStyle(
+                                              fontSize: 16, color: Colors.white,
+                                              fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                              ),
+                            );
                           },
-                          paymentMethod: 'cod',
-                          couponCode:    cart.couponCode,
-                          notes:         notesCtrl.text.trim(),
-                        );
-
-                        if (!context.mounted) return;
-                        if (result['success'] == true) {
-                          final order    = result['data']?['order'];
-                          final orderNum = order?['orderNumber'] ?? '';
-                          final totalAmt = cart.totalAmount;
-
-                          cart.clearCart();
-                          Navigator.pop(ctx);
-                          Navigator.pop(context);
-
-                          try {
-                            if (order != null && orderProvider.orders.isNotEmpty) {
-                              await WhatsAppService().sendOrderToStore(
-                                order: orderProvider.orders.first,
-                                customerName:   nameCtrl.text.trim(),
-                                customerPhone:  phoneCtrl.text.trim(),
-                                address:        '${addressCtrl.text.trim()}, ${cityCtrl.text.trim()}',
-                                googleMapsLink: googleMapsLink,
-                                latitude:       latitude,
-                                longitude:      longitude,
-                              );
-                            }
-                          } catch (_) {}
-
-                          NotificationService().showOrderPlacedNotification(
-                            orderNum, totalAmt);
-
-                          _showSuccess(context, orderNum);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result['message'] ?? 'Failed'),
-                              backgroundColor: Colors.red));
-                        }
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.send, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text('Place Order & Notify Store',
-                            style: TextStyle(
-                              fontSize: 16, color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                        ),
+                      const SizedBox(height: 20),
                 ],
               ),
             ),

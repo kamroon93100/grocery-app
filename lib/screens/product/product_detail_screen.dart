@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
@@ -96,8 +97,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Center(
                       child: Hero(
                         tag: 'product_${p.id}',
-                        child: Text(p.displayImage,
-                          style: const TextStyle(fontSize: 130)),
+                        child: p.isNetworkImage
+                          ? CachedNetworkImage(
+                              imageUrl: p.displayImage,
+                              height: 180,
+                              fit: BoxFit.contain,
+                              errorWidget: (_, __, ___) => const Icon(Icons.image, size: 60),
+                            )
+                          : Text(p.displayImage.isNotEmpty ? p.displayImage : '🛒',
+                              style: const TextStyle(fontSize: 80)),
                       ),
                     ),
                     if (p.hasDiscount)

@@ -70,21 +70,25 @@ class ProductProvider extends ChangeNotifier {
     final sortField  = sortParts[0];
     final sortOrder  = sortParts.length > 1 ? sortParts[1] : 'DESC';
 
-    final result = await _service.getProducts(
-      page:      _currentPage,
-      category:  categoryId,
-      minPrice:  _minPrice > 0 ? _minPrice : null,
-      maxPrice:  _maxPrice < 50 ? _maxPrice : null,
-      sortBy:    sortField,
-      sortOrder: sortOrder,
-    );
+    try {
+      final result = await _service.getProducts(
+        page:      _currentPage,
+        category:  categoryId,
+        minPrice:  _minPrice > 0 ? _minPrice : null,
+        maxPrice:  _maxPrice < 50 ? _maxPrice : null,
+        sortBy:    sortField,
+        sortOrder: sortOrder,
+      );
 
-    final newProducts = result['products'] as List<ProductModel>;
-    final pagination  = result['pagination'];
+      final newProducts = result['products'] as List<ProductModel>;
+      final pagination  = result['pagination'];
 
-    _products.addAll(newProducts);
-    _currentPage++;
-    _hasMore   = pagination != null && pagination['hasNext'] == true;
+      _products.addAll(newProducts);
+      _currentPage++;
+      _hasMore   = pagination != null && pagination['hasNext'] == true;
+    } catch (e) {
+      _error = 'Failed to load products. Pull down to retry.';
+    }
     _isLoading = false;
     notifyListeners();
   }

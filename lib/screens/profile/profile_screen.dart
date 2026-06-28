@@ -7,6 +7,10 @@ import '../wishlist/wishlist_screen.dart';
 import '../refer/refer_screen.dart';
 import 'profile_edit_screen.dart';
 import '../../constants/app_constants.dart';
+import '../../app/theme/app_text_styles.dart';
+import '../../app/theme/color_scheme_ext.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../app/theme/app_radius.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,6 +21,19 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _oldPassCtrl = TextEditingController();
   final _newPassCtrl = TextEditingController();
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open link')),
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -41,20 +58,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller:  _oldPassCtrl,
+              controller: _oldPassCtrl,
               obscureText: true,
               decoration: InputDecoration(
-                labelText:  'Current Password',
+                labelText: 'Current Password',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.lock_outline),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
-              controller:  _newPassCtrl,
+              controller: _newPassCtrl,
               obscureText: true,
               decoration: InputDecoration(
-                labelText:  'New Password',
+                labelText: 'New Password',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 prefixIcon: const Icon(Icons.lock_outline),
               ),
@@ -90,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(result['success'] == true
-                        ? '✅ Password changed!' : result['message'] ?? 'Failed'),
+                        ? 'Password changed!' : result['message'] ?? 'Failed'),
                     backgroundColor: result['success'] == true
                         ? Colors.green : Colors.red,
                   ),
@@ -107,39 +124,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: colorScheme.surface,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header with Edit Button
+            // Premium Header with light tint
             Container(
-              width:   double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end:   Alignment.bottomRight,
-                  colors: [Colors.green, Color(0xFF66BB6A)],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft:  Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 50, 16, 24),
+              decoration: BoxDecoration(
+                color: colorScheme.softSurface,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(AppRadius.bottomSheet),
+                  bottomRight: Radius.circular(AppRadius.bottomSheet),
                 ),
               ),
               child: Column(
                 children: [
+                  // Back, Help, More row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 40),
+                      Icon(Icons.help_outline_rounded,
+                        color: colorScheme.textMuted, size: 22),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Avatar
                   Stack(
                     children: [
                       CircleAvatar(
-                        radius:          50,
-                        backgroundColor: Colors.white,
+                        radius: 44,
+                        backgroundColor: colorScheme.primary,
                         child: Text(
                           auth.userName.isNotEmpty
                               ? auth.userName[0].toUpperCase() : 'U',
                           style: const TextStyle(
-                            fontSize:   45,
-                            color:      Colors.green,
+                            fontSize: 40, color: Colors.white,
                             fontWeight: FontWeight.bold)),
                       ),
                       Positioned(
@@ -148,143 +173,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onTap: () => Navigator.push(context,
                             MaterialPageRoute(builder: (_) => const ProfileEditScreen())),
                           child: Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color:  Colors.white,
-                              shape:  BoxShape.circle,
-                              border: Border.all(color: Colors.green, width: 2),
+                              color: colorScheme.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: colorScheme.surface, width: 3),
                             ),
                             child: const Icon(Icons.edit,
-                              color: Colors.green, size: 18),
+                              color: Colors.white, size: 14),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   Text(auth.userName,
-                    style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold,
-                      color: Colors.white)),
+                    style: AppTextStyles.h2(color: colorScheme.textPrimary)),
                   Text(auth.userEmail,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                    style: AppTextStyles.caption(color: colorScheme.textMuted)),
                   const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 5),
-                        decoration: BoxDecoration(
-                          color:        Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(auth.userRole.toUpperCase(),
-                          style: const TextStyle(
-                            color:      Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize:   11)),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 5),
-                        decoration: BoxDecoration(
-                          color:        Colors.green.shade700,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          'Wallet: ${AppConstants.currency}${auth.wallet.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color:      Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize:   11)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  TextButton.icon(
-                    icon:  const Icon(Icons.edit, color: Colors.white, size: 16),
-                    label: const Text('Edit Profile',
-                      style: TextStyle(color: Colors.white)),
-                    onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const ProfileEditScreen())),
+                  // Member card
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(AppRadius.primaryButton),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.auto_awesome_rounded,
+                          color: colorScheme.primary, size: 18),
+                        const SizedBox(width: 8),
+                        Text('Wallet: ${AppConstants.currency}${auth.wallet.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w700, fontSize: 13)),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Quick Stats
+            const SizedBox(height: 16),
+            // Quick action tiles
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  Expanded(child: _statCard(Icons.receipt_long_outlined,
-                    'Orders', '12', Colors.blue)),
+                  Expanded(child: _actionTile(context, Icons.location_on_outlined,
+                    'Saved\nAddress', Colors.blue, () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AddressScreen())))),
                   const SizedBox(width: 10),
-                  Expanded(child: _statCard(Icons.favorite_outline,
-                    'Favorites', '8', Colors.red)),
+                  Expanded(child: _actionTile(context, Icons.credit_card_outlined,
+                    'Payment\nModes', Colors.green, null)),
                   const SizedBox(width: 10),
-                  Expanded(child: _statCard(Icons.discount_outlined,
-                    'Coupons', '5', Colors.orange)),
+                  Expanded(child: _actionTile(context, Icons.replay_outlined,
+                    'Refunds', Colors.orange, null)),
+                  const SizedBox(width: 10),
+                  Expanded(child: _actionTile(context, Icons.account_balance_wallet_outlined,
+                    'Wallet', Colors.purple, null)),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            // Menu Items
+            // Menu list
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  _section('Account'),
-                  _tile(Icons.card_giftcard, Colors.purple,
-                    'Refer & Earn', 'Get 10 for each friend',
+                  _menuCard(context, Icons.card_giftcard_outlined, Colors.purple,
+                    'Refer & Earn', 'Get rewards for each friend',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ReferScreen()))),
-                  _tile(Icons.favorite_outline, Colors.red,
-                    'My Wishlist', 'Saved products',
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.favorite_outlined, Colors.red,
+                    'My Wishlist', 'Your saved products',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const WishlistScreen()))),
-                  _tile(Icons.edit_outlined, Colors.blue,
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.description_outlined, Colors.teal,
+                    'Statements', 'Order history & invoices', null),
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.star_outline, Colors.amber,
+                    'Rewards', 'Your loyalty points', null),
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.edit_outlined, Colors.blue,
                     'Edit Profile', 'Update your information',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ProfileEditScreen()))),
-                  _tile(Icons.location_on_outlined, Colors.red,
-                    'My Addresses', 'Manage delivery addresses',
-                    () => Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const AddressScreen()))),
-                  _tile(Icons.lock_outline, Colors.orange,
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.lock_outlined, Colors.orange,
                     'Change Password', 'Update your password',
                     () => _changePassword(context, auth)),
-
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.description_outlined, Colors.indigo,
+                    'Privacy Policy', 'How we handle your data',
+                    () => _openUrl('https://kohlistore.com/privacy')),
+                  const SizedBox(height: 8),
+                  _menuCard(context, Icons.article_outlined, Colors.indigo,
+                    'Terms of Service', 'Terms & conditions',
+                    () => _openUrl('https://kohlistore.com/terms')),
                   const SizedBox(height: 16),
-                  _section('Information'),
-                  _tile(Icons.phone_outlined, Colors.teal,
-                    'Phone',
-                    auth.userPhone.isNotEmpty ? auth.userPhone : 'Not set',
-                    null),
-                  _tile(Icons.security_outlined, Colors.purple,
-                    'Security', 'JWT + SHA256 Encrypted', null),
-                  _tile(Icons.storage_outlined, Colors.indigo,
-                    'Database', 'PostgreSQL + Redis', null),
-                  _tile(Icons.info_outline, Colors.grey,
-                    'App Version', 'v2.0.0 - Full Stack', null),
-
-                  const SizedBox(height: 20),
+                  // App version
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text('App Version: v2.0.0',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.caption(color: colorScheme.textMuted)),
+                  ),
+                  const SizedBox(height: 12),
+                  // Logout
                   SizedBox(
-                    width:  double.infinity,
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: colorScheme.danger,
+                        side: BorderSide(color: colorScheme.danger),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
+                          borderRadius: BorderRadius.circular(AppRadius.primaryButton)),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      icon:  const Icon(Icons.logout),
+                      icon: const Icon(Icons.logout_rounded),
                       label: const Text('Logout',
-                        style: TextStyle(fontSize: 18)),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                       onPressed: () async {
                         await auth.logout();
                         if (context.mounted) {
@@ -307,62 +320,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _section(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(title,
-          style: TextStyle(
-            color:      Colors.grey.shade600,
-            fontWeight: FontWeight.bold,
-            fontSize:   13,
-            letterSpacing: 1.2)),
+  Widget _actionTile(BuildContext context, IconData icon, String title,
+      Color color, VoidCallback? onTap) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: colorScheme.card,
+          borderRadius: BorderRadius.circular(AppRadius.primaryButton),
+          border: Border.all(color: colorScheme.border),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(height: 6),
+            Text(title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w600,
+                color: colorScheme.textPrimary)),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _statCard(IconData icon, String label, String value, Color color) {
+  Widget _menuCard(BuildContext context, IconData icon, Color color,
+      String title, String subtitle, VoidCallback? onTap) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:        Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 5)],
+        color: colorScheme.card,
+        borderRadius: BorderRadius.circular(AppRadius.primaryButton),
+        border: Border.all(color: colorScheme.border),
       ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 26),
-          const SizedBox(height: 6),
-          Text(value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
-          Text(label,
-            style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
-        ],
-      ),
-    );
-  }
-
-  Widget _tile(IconData icon, Color color, String title,
-    String subtitle, VoidCallback? onTap) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.1),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Icon(icon, color: color, size: 20),
         ),
-        title:    Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
+        title: Text(title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600, fontSize: 14,
+            color: colorScheme.textPrimary)),
+        subtitle: Text(subtitle,
+          style: TextStyle(fontSize: 12, color: colorScheme.textMuted)),
         trailing: onTap != null
-            ? const Icon(Icons.arrow_forward_ios, size: 16)
+            ? Icon(Icons.arrow_forward_ios_rounded,
+                size: 14, color: colorScheme.textMuted)
             : null,
         onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
     );
   }
 }
-
-
-

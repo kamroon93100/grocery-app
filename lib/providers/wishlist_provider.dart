@@ -1,16 +1,31 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import '../constants/api_constants.dart';
 import '../models/product_model.dart';
+import '../services/api_service.dart';
 
 class WishlistProvider extends ChangeNotifier {
   static const String _key = 'wishlist_items';
   List<ProductModel> _items = [];
+  final ApiService _api = ApiService();
 
   List<ProductModel> get items => _items;
   int get count => _items.length;
 
   Future<void> loadWishlist() async {
+    // Try server first
+    try {
+      final result = await _api.get(ApiConstants.wishlist);
+      if (result['success'] == true) {
+        final list = result['data']['items'] as List;
+        _items = list.map((json) => ProductModel.fromJson(json)).toList();
+        notifyListeners();
+        return;
+      }
+    } catch (_) {}
+
+    // Fallback to local
     try {
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString(_key);
@@ -48,7 +63,7 @@ class WishlistProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _saveWishlist() async {
+  Future<void> _saveLocal() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final list  = _items.map((p) => {
@@ -70,7 +85,7 @@ class WishlistProvider extends ChangeNotifier {
         'tags':         p.tags,
       }).toList();
       await prefs.setString(_key, jsonEncode(list));
-    } catch (e) {}
+    } catch (_) {}
   }
 
   bool isInWishlist(String productId) =>
@@ -79,22 +94,28 @@ class WishlistProvider extends ChangeNotifier {
   Future<void> toggleWishlist(ProductModel product) async {
     if (isInWishlist(product.id)) {
       _items.removeWhere((p) => p.id == product.id);
+      try { await _api.delete('${ApiConstants.wishlist}/${product.id}'); } catch (_) {}
     } else {
       _items.add(product);
+      try { await _api.post('${ApiConstants.wishlist}/${product.id}', {}); } catch (_) {}
     }
-    await _saveWishlist();
+    await _saveLocal();
     notifyListeners();
   }
 
   Future<void> removeFromWishlist(String productId) async {
     _items.removeWhere((p) => p.id == productId);
-    await _saveWishlist();
+    try { await _api.delete('${ApiConstants.wishlist}/$productId'); } catch (_) {}
+    await _saveLocal();
     notifyListeners();
   }
 
   Future<void> clearWishlist() async {
     _items.clear();
-    await _saveWishlist();
+    for (final item in _items) {
+      try { await _api.delete('${ApiConstants.wishlist}/${item.id}'); } catch (_) {}
+    }
+    await _saveLocal();
     notifyListeners();
   }
 }

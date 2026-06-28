@@ -1,8 +1,8 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/api_constants.dart';
 import '../constants/app_constants.dart';
 
@@ -13,6 +13,7 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
+  final _secure = const FlutterSecureStorage();
 
   Timer? _pollingTimer;
   int    _lastNotifId = 0;
@@ -104,8 +105,7 @@ class NotificationService {
 
   Future<void> _checkNewNotifications() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString(AppConstants.keyToken);
+      final token = await _secure.read(key: AppConstants.keyToken);
       if (token == null) return;
 
       final response = await http.get(

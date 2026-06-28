@@ -18,9 +18,8 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
   final _nameCtrl  = TextEditingController();
   final _emailCtrl = TextEditingController();
 
-  bool   _otpSent      = false;
-  bool   _isLoading    = false;
-  String _displayOtp   = '';
+  bool   _otpSent       = false;
+  bool   _isLoading     = false;
   int    _resendSeconds = 0;
 
   @override
@@ -45,7 +44,6 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
     if (result['success'] == true) {
       setState(() {
         _otpSent       = true;
-        _displayOtp    = result['data']['otp']?.toString() ?? '';
         _resendSeconds = 30;
       });
       _startResendTimer();
@@ -88,7 +86,6 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
 
     if (result['success'] == true) {
       setState(() {
-        _displayOtp    = result['data']['otp']?.toString() ?? '';
         _resendSeconds = 30;
       });
       _startResendTimer();
@@ -214,13 +211,6 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                       Text('OTP sent to +91 ${_phoneCtrl.text}',
                         style: const TextStyle(
                           color: Colors.green, fontWeight: FontWeight.bold)),
-                      if (_displayOtp.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Text('Demo OTP: $_displayOtp',
-                          style: const TextStyle(
-                            color: Colors.orange, fontSize: 14,
-                            fontWeight: FontWeight.bold)),
-                      ],
                     ],
                   ),
                 ),

@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 
 /// ═══════════════════════════════════════════════════════
 /// 📸 BRAND IMAGE SYSTEM
@@ -110,7 +110,7 @@ class BrandImage extends StatelessWidget {
       decoration: BoxDecoration(
         color:        style.backgroundColor,
         borderRadius: BorderRadius.circular(style.radius),
-        boxShadow:    showShadow ? AppShadow.subtle : null,
+        boxShadow:    showShadow ? AppShadows.subtle : null,
       ),
       padding: EdgeInsets.all(style.padding),
       child: AspectRatio(

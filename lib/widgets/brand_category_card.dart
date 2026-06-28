@@ -2,7 +2,7 @@
 import 'package:provider/provider.dart';
 import '../models/category_model.dart';
 import '../providers/product_provider.dart';
-import '../main.dart';
+import '../app/theme/theme.dart';
 import 'brand_image.dart';
 
 /// Standardized category card - bold color block + clean image

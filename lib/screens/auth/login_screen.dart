@@ -1,10 +1,12 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
+import '../../constants/app_colors.dart';
 import '../../widgets/smooth_text_field.dart';
-import '../../main.dart';
+import '../../services/google_auth_service.dart';
 import '../home/home_screen.dart';
 import 'register_screen.dart';
 import 'otp_login_screen.dart';
@@ -236,26 +238,62 @@ class _LoginScreenState extends State<LoginScreen>
 
                 const SizedBox(height: 16),
 
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.primary.withOpacity(0.2)),
-                  ),
-                  child: const Column(children: [
-                    Text('Demo Admin Login',
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.g_mobiledata, color: Colors.black87, size: 28),
+                    label: const Text('Continue with Google',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary)),
-                    SizedBox(height: 4),
-                    Text('Email: admin@grocery.com',
-                      style: TextStyle(color: AppColors.primary, fontSize: 13)),
-                    Text('Password: Admin@123',
-                      style: TextStyle(color: AppColors.primary, fontSize: 13)),
-                  ]),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.grey, width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+                    onPressed: () async {
+                      final result = await GoogleAuthService().signIn();
+                      if (!context.mounted) return;
+                      if (result['success'] == true) {
+                        context.read<ProductProvider>().loadCategories();
+                        context.read<ProductProvider>().loadProducts();
+                        Navigator.pushReplacement(
+                          context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(result['message'] ?? 'Google sign in failed'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
+
+                const SizedBox(height: 16),
+
+                if (kDebugMode)
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.2)),
+                    ),
+                    child: const Column(children: [
+                      Text('Demo Admin Login',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary)),
+                      SizedBox(height: 4),
+                      Text('Email: admin@grocery.com',
+                        style: TextStyle(color: AppColors.primary, fontSize: 13)),
+                      Text('Password: Admin@123',
+                        style: TextStyle(color: AppColors.primary, fontSize: 13)),
+                    ]),
+                  ),
 
                 const SizedBox(height: 16),
 

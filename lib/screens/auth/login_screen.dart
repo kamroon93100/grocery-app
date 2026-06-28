@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
@@ -6,10 +6,10 @@ import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/smooth_text_field.dart';
-import '../../services/google_auth_service.dart';
 import '../home/home_screen.dart';
 import 'register_screen.dart';
 import 'otp_login_screen.dart';
+import '../../services/google_auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,6 +49,19 @@ class _LoginScreenState extends State<LoginScreen>
     _passwordCtrl.dispose();
     _logoController.dispose();
     super.dispose();
+  }
+
+  String _friendlyError(String raw) {
+    final lower = raw.toLowerCase();
+    if (lower.contains('socketexception') ||
+        lower.contains('no route to host') ||
+        lower.contains('connection refused') ||
+        lower.contains('network is unreachable') ||
+        lower.contains('timed out') ||
+        lower.contains('host lookup')) {
+      return 'Cannot connect to server. Please check your internet connection and try again.';
+    }
+    return raw;
   }
 
   Future<void> _login() async {

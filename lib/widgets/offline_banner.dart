@@ -20,7 +20,7 @@ class OfflineBanner extends StatelessWidget {
               ? const SizedBox.shrink()
                       : const MaterialBanner(
                       padding: EdgeInsets.zero,
-                      content: const Row(
+                      content: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.wifi_off_rounded,

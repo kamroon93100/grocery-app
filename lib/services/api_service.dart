@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -50,7 +50,10 @@ class ApiService {
       final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.refreshToken}');
       final response = await http.post(
         uri,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'bypass-tunnel-reminder': 'true',
+        },
         body: jsonEncode({'refreshToken': _refreshToken}),
       ).timeout(const Duration(seconds: ApiConstants.receiveTimeout));
       if (response.statusCode == 200) {
@@ -77,6 +80,7 @@ class ApiService {
     final headers = <String, String>{
       'Content-Type':  'application/json',
       'Accept':        'application/json',
+      'bypass-tunnel-reminder': 'true',
     };
     if (auth) {
       final token = await getToken();

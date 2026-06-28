@@ -1,9 +1,9 @@
-﻿class ApiConstants {
+class ApiConstants {
   // ========================================
   // 🌐 PRODUCTION URL - Railway Cloud
   // ========================================
-  static const String baseUrl   = 'http://192.168.1.41:3001/api';
-  static const String socketUrl = 'http://192.168.1.41:3001';
+  static const String baseUrl   = 'https://grocery-backend-production-ded1.up.railway.app/api/v1';
+  static const String socketUrl = 'https://grocery-backend-production-ded1.up.railway.app';
 
   // Auth
   static const String login           = '/auth/login';

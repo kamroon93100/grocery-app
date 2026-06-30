@@ -1,4 +1,4 @@
-﻿class UserModel {
+class UserModel {
   final String  id;
   final String  name;
   final String  email;
@@ -32,7 +32,7 @@
   bool get isCustomer => role == 'customer';
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id:            json['id']            ?? '',
+    id:            json['id']?.toString() ?? '',
     name:          json['name']          ?? '',
     email:         json['email']         ?? '',
     phone:         json['phone']         ?? '',

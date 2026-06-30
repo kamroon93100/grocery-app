@@ -11,6 +11,9 @@ import '../../services/location_service.dart';
 import '../../constants/app_constants.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/brand_components.dart';
+import '../../widgets/cart_item_card.dart';
+import '../../widgets/cart_bill_card.dart';
+import '../../widgets/sticky_checkout_bar.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -34,98 +37,29 @@ class CartScreen extends StatelessWidget {
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       final item = cart.items[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              item.product.isNetworkImage
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: CachedNetworkImage(
-                                        imageUrl: item.product.displayImage,
-                                        height: 50, width: 50, fit: BoxFit.cover,
-                                        errorWidget: (_, __, ___) =>
-                                          const Icon(Icons.image, size: 40)))
-                                  : Text(item.product.displayImage.isNotEmpty
-                                      ? item.product.displayImage : '🛒',
-                                      style: const TextStyle(fontSize: 40)),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(item.product.name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold, fontSize: 14)),
-                                    PriceDisplay(
-                                      price: item.product.finalPrice,
-                                      originalPrice: item.product.hasDiscount
-                                        ? item.product.price : null,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(AppConstants.currency + item.subtotal.toStringAsFixed(2),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold, color: Colors.green)),
-                                  Row(children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline,
-                                        color: AppColors.primary),
-                                      onPressed: () => context.read<CartProvider>()
-                                        .decreaseQuantity(item.product.id),
-                                      constraints: const BoxConstraints(),
-                                      padding: const EdgeInsets.all(4)),
-                                    Text('${item.quantity}',
-                                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                      icon: const Icon(Icons.add_circle_outline,
-                                        color: AppColors.primary),
-                                      onPressed: () => context.read<CartProvider>()
-                                        .increaseQuantity(item.product.id),
-                                      constraints: const BoxConstraints(),
-                                      padding: const EdgeInsets.all(4)),
-                                  ]),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                      return CartItemCard(
+                        item: item,
+                        onAdd: () => context.read<CartProvider>().increaseQuantity(item.product.id),
+                        onRemove: () => context.read<CartProvider>().decreaseQuantity(item.product.id),
                       );
                     },
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 10)]),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Total',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text(AppConstants.currency + cart.totalAmount.toStringAsFixed(2),
-                            style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold,
-                              color: AppColors.primary)),
-                        ],
+                      CartBillCard(
+                        subtotal: cart.subtotal,
+                        delivery: cart.deliveryFee,
+                        tax: cart.tax,
+                        total: cart.totalAmount,
                       ),
-                      const SizedBox(height: 14),
-                      SizedBox(
-                        width: double.infinity, height: 55,
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.shopping_bag_outlined),
-                          label: const Text('Proceed to Checkout',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          onPressed: () => _showCheckout(context, cart),
-                        ),
+                      StickyCheckoutBar(
+                        total: cart.totalAmount,
+                        onCheckout: () => _showCheckout(context, cart),
                       ),
                     ],
                   ),
@@ -665,3 +599,8 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

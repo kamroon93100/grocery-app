@@ -14,19 +14,40 @@ class AuthService {
   final _secure = const FlutterSecureStorage();
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final result = await _api.post(
-      ApiConstants.login,
-      {'email': email, 'password': password},
-      auth: false,
-    );
-    if (result['success'] == true) {
-      final user  = UserModel.fromJson(result['data']['user']);
-      final token = result['data']['accessToken'];
-      final refreshToken = result['data']['refreshToken'];
-      await _saveSession(user, token, refreshToken);
-      _api.setToken(token);
+    try {
+      final result = await _api.post(
+        ApiConstants.login,
+        {'email': email, 'password': password},
+        auth: false,
+      );
+
+      final data = result['data'] ?? result;
+
+      if (result['success'] == true || data['accessToken'] != null) {
+        final user = UserModel.fromJson(Map<String, dynamic>.from(data['user']));
+        final token = (data['accessToken'] ?? data['token']).toString();
+        final refreshToken = (data['refreshToken'] ?? '').toString();
+
+        await _saveSession(user, token, refreshToken);
+        _api.setToken(token);
+
+        return {
+          'success': true,
+          'data': data,
+          'message': 'Login successful',
+        };
+      }
+
+      return {
+        'success': false,
+        'message': result['message'] ?? 'Login failed',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
     }
-    return result;
   }
 
   Future<Map<String, dynamic>> register({
@@ -42,8 +63,8 @@ class AuthService {
     );
     if (result['success'] == true) {
       final user  = UserModel.fromJson(result['data']['user']);
-      final token = result['data']['accessToken'];
-      final refreshToken = result['data']['refreshToken'];
+      final token = (result['data']['accessToken'] ?? result['data']['token']).toString();
+      final refreshToken = (result['data']['refreshToken'] ?? '').toString();
       await _saveSession(user, token, refreshToken);
       _api.setToken(token);
     }
@@ -148,8 +169,8 @@ class AuthService {
     final result = await _api.post(ApiConstants.verifyOTP, body, auth: false);
     if (result['success'] == true) {
       final user  = UserModel.fromJson(result['data']['user']);
-      final token = result['data']['accessToken'];
-      final refreshToken = result['data']['refreshToken'];
+      final token = (result['data']['accessToken'] ?? result['data']['token']).toString();
+      final refreshToken = (result['data']['refreshToken'] ?? '').toString();
       await _saveSession(user, token, refreshToken);
       _api.setToken(token);
     }
@@ -172,4 +193,6 @@ class AuthService {
     });
   }
 }
+
+
 

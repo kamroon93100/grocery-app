@@ -1,6 +1,5 @@
 ﻿import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_constants.dart';
-import '../models/order_model.dart';
 
 class WhatsAppService {
   static final WhatsAppService _instance = WhatsAppService._internal();
@@ -8,7 +7,7 @@ class WhatsAppService {
   WhatsAppService._internal();
 
   Future<bool> sendOrderToStore({
-    required OrderModel order,
+    required dynamic order,
     required String customerName,
     required String customerPhone,
     required String address,
@@ -21,48 +20,56 @@ class WhatsAppService {
             ? 'https://www.google.com/maps?q=$latitude,$longitude'
             : '');
 
-    final itemsList = order.items
-        .map((i) => '• ${i.productName} x${i.quantity} = ${AppConstants.currency}${i.subtotal.toStringAsFixed(2)}')
-        .join('\n');
+    final orderNumber = _read(order, 'orderNumber') ?? 'NEW';
+    final items = _read(order, 'items');
 
-    final orderNotes = order.notes ?? '';
-    final couponLine = order.couponDiscount > 0
-        ? 'Discount (${order.couponCode}): -${AppConstants.currency}${order.couponDiscount.toStringAsFixed(2)}\n'
-        : '';
-    final mapLine    = mapLink.isNotEmpty ? '*📍 Live Location:* $mapLink\n' : '';
-    final notesLine  = orderNotes.isNotEmpty ? '📝 *Notes:* $orderNotes\n' : '';
+    final itemsList = items is List && items.isNotEmpty
+        ? items.map((i) {
+            final name = _read(i, 'productName') ?? _read(i, 'name') ?? 'Product';
+            final qty = _read(i, 'quantity') ?? 1;
+            final subtotal = double.tryParse((_read(i, 'subtotal') ?? 0).toString()) ?? 0;
+            return '• $name x$qty = ${AppConstants.currency}${subtotal.toStringAsFixed(0)}';
+          }).join('\n')
+        : '• Order items available in admin panel';
+
+    final subtotal = _money(_read(order, 'subtotal'));
+    final delivery = _money(_read(order, 'deliveryFee'));
+    final tax = _money(_read(order, 'tax'));
+    final total = _money(_read(order, 'totalAmount'));
+    final notes = (_read(order, 'notes') ?? '').toString();
 
     final message = '''
-🛒 *NEW ORDER RECEIVED!*
+🛒 *NEW COD ORDER*
 ━━━━━━━━━━━━━━━━━━━━
 🏪 *${AppConstants.storeName}*
 
-📦 *Order:* #${order.orderNumber}
+📦 *Order:* #$orderNumber
 ⏰ *Time:* ${DateTime.now().toString().substring(0, 16)}
 
-👤 *CUSTOMER DETAILS*
+👤 *CUSTOMER*
 ━━━━━━━━━━━━━━━━━━━━
 *Name:* $customerName
 *Phone:* $customerPhone
 *Address:* $address
-$mapLine
-🛍️ *ORDER ITEMS*
+${mapLink.isNotEmpty ? '*Location:* $mapLink' : ''}
+
+🛍️ *ITEMS*
 ━━━━━━━━━━━━━━━━━━━━
 $itemsList
 
-💰 *BILL SUMMARY*
+💰 *BILL*
 ━━━━━━━━━━━━━━━━━━━━
-Subtotal: ${AppConstants.currency}${order.subtotal.toStringAsFixed(2)}
-${couponLine}Delivery: ${order.deliveryFee > 0 ? "${AppConstants.currency}${order.deliveryFee.toStringAsFixed(2)}" : "FREE"}
-Tax: ${AppConstants.currency}${order.tax.toStringAsFixed(2)}
+Subtotal: ${AppConstants.currency}${subtotal.toStringAsFixed(0)}
+Delivery: ${delivery > 0 ? '${AppConstants.currency}${delivery.toStringAsFixed(0)}' : 'FREE'}
+Tax: ${AppConstants.currency}${tax.toStringAsFixed(0)}
 ━━━━━━━━━━━━━━━━━━━━
-💵 *TOTAL: ${AppConstants.currency}${order.totalAmount.toStringAsFixed(2)}*
-💳 *Payment:* ${order.paymentMethod.toUpperCase()}
-━━━━━━━━━━━━━━━━━━━━
+💵 *TOTAL: ${AppConstants.currency}${total.toStringAsFixed(0)}*
+💳 *Payment:* CASH ON DELIVERY
 
-$notesLine
-✅ Please confirm & prepare for delivery!
-    ''';
+${notes.isNotEmpty ? '📝 *Notes:* $notes' : ''}
+━━━━━━━━━━━━━━━━━━━━
+✅ Please confirm and prepare this order.
+''';
 
     return await _sendMessage(AppConstants.storeWhatsApp, message);
   }
@@ -75,41 +82,66 @@ $notesLine
     final message = '''
 ✅ *Order Confirmed!*
 
-Hi! Your order at *${AppConstants.storeName}* has been placed.
+Your order at *${AppConstants.storeName}* has been placed.
 
-📦 *Order:* #$orderNumber
-💵 *Total:* ${AppConstants.currency}${totalAmount.toStringAsFixed(2)}
-💳 *Payment:* Cash on Delivery
-⏰ *Delivery:* 30-45 mins
-
-Need help? Contact us:
-📞 ${AppConstants.storePhone}
+📦 Order: #$orderNumber
+💵 Total: ${AppConstants.currency}${totalAmount.toStringAsFixed(0)}
+💳 Payment: Cash on Delivery
 
 Thank you for shopping with us! 🛒
-    ''';
+''';
+
     return await _sendMessage(customerPhone, message);
+  }
+
+  dynamic _read(dynamic obj, String key) {
+    if (obj is Map) return obj[key];
+
+    try {
+      switch (key) {
+        case 'orderNumber': return obj.orderNumber;
+        case 'items': return obj.items;
+        case 'subtotal': return obj.subtotal;
+        case 'deliveryFee': return obj.deliveryFee;
+        case 'tax': return obj.tax;
+        case 'totalAmount': return obj.totalAmount;
+        case 'notes': return obj.notes;
+        case 'productName': return obj.productName;
+        case 'name': return obj.name;
+        case 'quantity': return obj.quantity;
+        case 'subtotal': return obj.subtotal;
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  double _money(dynamic value) {
+    return double.tryParse((value ?? 0).toString()) ?? 0;
   }
 
   Future<bool> _sendMessage(String phone, String message) async {
     try {
       final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
-      final encoded    = Uri.encodeComponent(message);
-      final url        = 'https://wa.me/$cleanPhone?text=$encoded';
-      final uri        = Uri.parse(url);
+      final encoded = Uri.encodeComponent(message);
+      final uri = Uri.parse('https://wa.me/$cleanPhone?text=$encoded');
+
       if (await canLaunchUrl(uri)) {
         return await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
+
       return false;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
 
   Future<void> openStoreChat() async {
-    final url = 'https://wa.me/${AppConstants.storeWhatsApp}';
-    final uri = Uri.parse(url);
+    final cleanPhone = AppConstants.storeWhatsApp.replaceAll(RegExp(r'[^\d]'), '');
+    final uri = Uri.parse('https://wa.me/$cleanPhone');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }
+

@@ -3,15 +3,10 @@ import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
-import '../../widgets/common/kohli_quantity_stepper.dart';
 import '../../constants/app_constants.dart';
 import '../../models/product_model.dart';
-import '../../widgets/home/product_card_v6.dart';
-import '../../widgets/home/category_chip_v2.dart';
 import '../cart/cart_screen.dart';
 import '../profile/profile_screen.dart';
-import '../../widgets/home/kohli_banner_carousel.dart';
-import '../../widgets/categories/category_strip.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,14 +24,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() {
       context.read<ProductProvider>().loadCategories();
       context.read<ProductProvider>().loadProducts(refresh: true);
-      context.read<CartProvider>().loadCart();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<CartProvider>();
-
     final pages = [
       const _HomePage(),
       const _CategoriesPage(),
@@ -46,18 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xfff6f7f9),
-      body: Stack(
-        children: [
-          pages[_tab],
-          if (_tab == 0 && cart.itemCount > 0)
-            Positioned(
-              left: 16,
-              right: 16,
-              bottom: 14,
-              child: _FloatingCartBar(cart: cart),
-            ),
-        ],
-      ),
+      body: pages[_tab],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         backgroundColor: Colors.white,
@@ -95,16 +76,16 @@ class _HomePage extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(child: _SearchBar()),
-            const SliverToBoxAdapter(child: KohliBannerCarousel()),
-            SliverToBoxAdapter(child: CategoryStrip(categories: productProvider.categories)),
-            SliverToBoxAdapter(child: _SectionHeader(title: 'Fresh picks', action: 'See all')),
+            const SliverToBoxAdapter(child: _OfferBanner()),
+            SliverToBoxAdapter(child: _CategoryStrip(categories: productProvider.categories)),
+            const SliverToBoxAdapter(child: _SectionHeader(title: 'Fresh picks', action: 'See all')),
             if (productProvider.isLoading && productProvider.products.isEmpty)
               const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
             else if (productProvider.products.isEmpty)
               const SliverFillRemaining(child: Center(child: Text('No products found')))
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 110),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 90),
                 sliver: SliverLayoutBuilder(
                   builder: (context, constraints) {
                     final width = constraints.crossAxisExtent;
@@ -117,7 +98,7 @@ class _HomePage extends StatelessWidget {
                         childAspectRatio: 0.72,
                       ),
                       delegate: SliverChildBuilderDelegate(
-                        (context, index) => ProductCardV6(product: productProvider.products[index]),
+                        (context, index) => _ProductCard(product: productProvider.products[index]),
                         childCount: productProvider.products.length,
                       ),
                     );
@@ -126,44 +107,6 @@ class _HomePage extends StatelessWidget {
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final String action;
-
-  const _SectionHeader({
-    required this.title,
-    required this.action,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ),
-          Text(
-            action,
-            style: const TextStyle(
-              color: Color(0xff0c8f43),
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -236,7 +179,10 @@ class _SearchBar extends StatelessWidget {
       child: Container(
         height: 50,
         padding: const EdgeInsets.symmetric(horizontal: 14),
-        decoration: BoxDecoration(color: const Color(0xfff1f3f5), borderRadius: BorderRadius.circular(16)),
+        decoration: BoxDecoration(
+          color: const Color(0xfff1f3f5),
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: const Row(
           children: [
             Icon(Icons.search, color: Colors.grey),
@@ -286,58 +232,127 @@ class _CategoryStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = categories.take(12).toList();
 
-    if (items.isEmpty) return const SizedBox.shrink();
-
     return SizedBox(
-      height: 104,
+      height: 96,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 14),
         scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (_, i) {
           final c = items[i];
-
-          return CategoryChipV2(
-            title: c.name,
-            image: c.image ?? '',
-            onTap: () => context.read<ProductProvider>().selectCategory(c.name),
+          return Container(
+            width: 92,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: const [BoxShadow(color: Color(0x08000000), blurRadius: 10)],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('🛒', style: TextStyle(fontSize: 26)),
+                const SizedBox(height: 6),
+                Text(c.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+              ],
+            ),
           );
         },
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemCount: items.length,
       ),
     );
   }
 }
-class _FloatingCartBar extends StatelessWidget {
-  final CartProvider cart;
 
-  const _FloatingCartBar({required this.cart});
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String action;
+
+  const _SectionHeader({required this.title, required this.action});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 10,
-      borderRadius: BorderRadius.circular(18),
-      color: const Color(0xff0c8f43),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
-        child: Container(
-          height: 58,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              const Icon(Icons.shopping_bag_rounded, color: Colors.white),
-              const SizedBox(width: 10),
-              Text('${cart.itemCount} items', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
-              const SizedBox(width: 8),
-              Text('${AppConstants.currency}${cart.totalAmount.toStringAsFixed(0)}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
-              const Spacer(),
-              const Text('View Cart', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
-              const SizedBox(width: 4),
-              const Icon(Icons.chevron_right, color: Colors.white),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 8),
+      child: Row(
+        children: [
+          Expanded(child: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900))),
+          Text(action, style: const TextStyle(color: Color(0xff0c8f43), fontWeight: FontWeight.w800)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProductCard extends StatelessWidget {
+  final ProductModel product;
+
+  const _ProductCard({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final sellingPrice = product.price;
+    final mrp = product.discount > 0 ? sellingPrice / (1 - product.discount / 100) : sellingPrice;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: const [BoxShadow(color: Color(0x10000000), blurRadius: 14, offset: Offset(0, 6))],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (product.discount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    decoration: BoxDecoration(color: const Color(0xffffefe6), borderRadius: BorderRadius.circular(999)),
+                    child: Text('${product.discount.toStringAsFixed(0)}% OFF', style: const TextStyle(color: Color(0xffd9480f), fontSize: 11, fontWeight: FontWeight.w900)),
+                  ),
+                const Spacer(),
+                const Icon(Icons.favorite_border_rounded, size: 20, color: Colors.grey),
+              ],
+            ),
+            Expanded(
+              child: Center(
+                child: Image.network(
+                  product.displayImage,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Text('🛒', style: TextStyle(fontSize: 42)),
+                ),
+              ),
+            ),
+            Text(product.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14)),
+            const SizedBox(height: 4),
+            Text(product.unit, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text('${AppConstants.currency}${sellingPrice.toStringAsFixed(0)}', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+                const SizedBox(width: 6),
+                if (product.discount > 0)
+                  Text('${AppConstants.currency}${mrp.toStringAsFixed(0)}', style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough, fontSize: 12)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              height: 34,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xff0c8f43),
+                  side: const BorderSide(color: Color(0xff0c8f43), width: 1.2),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () => context.read<CartProvider>().addItem(product),
+                child: const Text('ADD', style: TextStyle(fontWeight: FontWeight.w900)),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -363,68 +378,4 @@ class _CategoriesPage extends StatelessWidget {
     );
   }
 }
-
-class _ProductRowSection extends StatelessWidget {
-  final String title;
-  final List<ProductModel> products;
-
-  const _ProductRowSection({
-    required this.title,
-    required this.products,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (products.isEmpty) return const SliverToBoxAdapter(child: SizedBox.shrink());
-
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                  const Text(
-                    'See all',
-                    style: TextStyle(color: Color(0xff0c8f43), fontWeight: FontWeight.w800),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 285,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                scrollDirection: Axis.horizontal,
-                itemCount: products.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 14),
-                itemBuilder: (_, i) {
-                  return SizedBox(
-                    width: 165,
-                    child: ProductCardV6(product: products[i]),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-
 

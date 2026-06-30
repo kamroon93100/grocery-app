@@ -23,10 +23,15 @@
     id:           json['id']           ?? '',
     name:         json['name']         ?? '',
     description:  json['description']  ?? '',
-    image:        json['image'],
+    image: json['image'] == null
+    ? null
+    : json['image'].toString().startsWith('http')
+        ? json['image']
+        : 'http://127.0.0.1:3001/uploads/categories/',
     icon:         json['icon']         ?? '🛒',
     isActive:     json['isActive']     ?? true,
     sortOrder:    json['sortOrder']    ?? 0,
     productCount: json['productCount'],
   );
 }
+

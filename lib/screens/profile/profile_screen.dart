@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
 import '../address/address_screen.dart';
 import '../wishlist/wishlist_screen.dart';
 import '../refer/refer_screen.dart';
+import '../orders/orders_screen.dart';
 import 'profile_edit_screen.dart';
 import '../../constants/app_constants.dart';
 import '../../app/theme/app_text_styles.dart';
@@ -242,7 +243,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  _menuCard(context, Icons.card_giftcard_outlined, Colors.purple,
+                  _menuCard(context, Icons.receipt_long_outlined, Colors.green, 'My Orders', 'Track & manage your orders', () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen()))),
+                    const SizedBox(height: 8),
+                    _menuCard(context, Icons.card_giftcard_outlined, Colors.purple,
                     'Refer & Earn', 'Get rewards for each friend',
                     () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const ReferScreen()))),
@@ -388,3 +391,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+

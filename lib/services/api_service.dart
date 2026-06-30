@@ -182,7 +182,13 @@ class ApiService {
     try {
       final body = jsonDecode(response.body);
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return body;
+        if (body is Map<String, dynamic> && body.containsKey('success')) {
+          return body;
+        }
+        if (body is Map<String, dynamic>) {
+          return {'success': true, 'data': body, ...body};
+        }
+        return {'success': true, 'data': body};
       } else {
         return {
           'success': false,
@@ -199,3 +205,5 @@ class ApiService {
     }
   }
 }
+
+

@@ -19,8 +19,14 @@ class OrderProvider extends ChangeNotifier {
     _error     = null;
     notifyListeners();
 
-    final result = await _service.getMyOrders(status: status);
-    _orders    = result['orders'] as List<OrderModel>;
+    try {
+      final result = await _service.getMyOrders(status: status);
+      _orders = result['orders'] as List<OrderModel>;
+    } catch (e) {
+      _error = e.toString();
+      _orders = [];
+    }
+
     _isLoading = false;
     notifyListeners();
   }
@@ -59,3 +65,5 @@ class OrderProvider extends ChangeNotifier {
     return result;
   }
 }
+
+

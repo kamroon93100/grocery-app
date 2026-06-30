@@ -8,6 +8,9 @@ import '../cart/cart_screen.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../widgets/reviews_section.dart';
 import '../../widgets/recommended_products.dart';
+import 'product_sticky_bottom_bar.dart';
+import '../../widgets/product/frequently_bought_section.dart';
+import '../../widgets/product/similar_products_section.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
@@ -26,6 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final cart  = context.watch<CartProvider>();
     final inCart = cart.isInCart(p.id);
     final qty    = cart.getQuantity(p.id);
+    final relatedProducts = context.watch<ProductProvider>().products.where((x) => x.id != p.id).take(12).toList();
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -330,97 +334,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ),
 
       // Bottom Add to Cart
-      bottomNavigationBar: !p.inStock
-          ? Container(
-              padding: const EdgeInsets.all(16),
-              color:   Colors.white,
-              child: const SizedBox(
-                height: 55,
-                child: Center(
-                  child: Text('Out of Stock',
-                    style: TextStyle(
-                      color:      Colors.red,
-                      fontSize:   18,
-                      fontWeight: FontWeight.bold)),
-                ),
-              ),
-            )
-          : Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(color: Colors.grey.shade300, blurRadius: 10)],
-              ),
-              child: SafeArea(
-                child: Row(
-                  children: [
-                    // Quantity selector
-                    Container(
-                      decoration: BoxDecoration(
-                        color:        Colors.green.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border:       Border.all(color: Colors.green),
-                      ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove, color: Colors.green),
-                            onPressed: () => setState(() {
-                              if (_quantity > 1) _quantity--;
-                            }),
-                          ),
-                          SizedBox(
-                            width: 30,
-                            child: Text('$_quantity',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add, color: Colors.green),
-                            onPressed: () => setState(() {
-                              if (_quantity < p.stock) _quantity++;
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Add to cart button
-                    Expanded(
-                      child: SizedBox(
-                        height: 55,
-                        child: ElevatedButton.icon(
-                          icon: Icon(inCart
-                              ? Icons.check_circle
-                              : Icons.shopping_cart_outlined),
-                          label: Text(
-                            inCart
-                                ? 'In Cart ($qty)  •  \$${(p.finalPrice * _quantity).toStringAsFixed(2)}'
-                                : 'Add to Cart  •  \$${(p.finalPrice * _quantity).toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold)),
-                          onPressed: () {
-                            for (int i = 0; i < _quantity; i++) {
-                              context.read<CartProvider>().addItem(p);
-                            }
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  '$_quantity x ${p.name} added to cart'),
-                                backgroundColor: Colors.green,
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      bottomNavigationBar: ProductStickyBottomBar(
+        price: p.finalPrice,
+        onAdd: () {
+          context.read<CartProvider>().addItem(p);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(' added to cart'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 1),
             ),
+          );
+        },
+      ),
     );
   }
 
@@ -455,6 +381,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

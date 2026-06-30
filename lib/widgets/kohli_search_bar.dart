@@ -119,3 +119,4 @@ class _KohliSearchBarState extends State<KohliSearchBar>
   }
 }
 
+

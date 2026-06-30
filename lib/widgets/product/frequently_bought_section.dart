@@ -111,3 +111,4 @@ class FrequentlyBoughtSection extends StatelessWidget {
   }
 }
 
+

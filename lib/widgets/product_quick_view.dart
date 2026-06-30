@@ -499,3 +499,4 @@ class _QuickViewSheetState extends State<_QuickViewSheet>
   }
 }
 
+

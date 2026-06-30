@@ -454,3 +454,4 @@ class _ShimmerBoxState extends State<_ShimmerBox>
   }
 }
 
+

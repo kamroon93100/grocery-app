@@ -83,3 +83,4 @@ class StickyCheckoutBar extends StatelessWidget {
   }
 }
 
+

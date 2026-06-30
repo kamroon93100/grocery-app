@@ -72,3 +72,4 @@ class PlaceOrderBar extends StatelessWidget {
     );
   }
 }
+

@@ -114,7 +114,7 @@ class _SmoothSearchBarState extends State<SmoothSearchBar>
     setState(() {
       if (!_isDeleting) {
         if (_charIndex <= currentHint.length) {
-          _displayedHint = currentHint.substring(0, _charIndex);
+          _displayedHint = currentHint.substring(0, _charIndex.clamp(0, currentHint.length));
           _charIndex++;
         } else {
           _isDeleting = true;
@@ -124,7 +124,7 @@ class _SmoothSearchBarState extends State<SmoothSearchBar>
       } else {
         if (_charIndex > 0) {
           _charIndex--;
-          _displayedHint = currentHint.substring(0, _charIndex);
+          _displayedHint = currentHint.substring(0, _charIndex.clamp(0, currentHint.length));
         } else {
           _isDeleting = false;
           _currentHintIndex = (_currentHintIndex + 1) % widget.rotatingHints.length;
@@ -270,5 +270,7 @@ class _SmoothSearchBarState extends State<SmoothSearchBar>
     );
   }
 }
+
+
 
 

@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../providers/Cart_provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/order_provider.dart';
 
@@ -22,13 +22,10 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Cart = context.watch<CartProvider>();
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(title: Text('Cart (${Cart.itemCount} items)')),
       body: Cart.items.isEmpty
-          ? EmptyState(
-              icon: Icons.shopping_cart_outlined,
-              title: 'Your Cart is empty',
-              subtitle: 'Add items from the store to get started',
-            )
+          ? const _CartEmptyState()
           : Column(
               children: [
                 Expanded(
@@ -606,5 +603,39 @@ class CartScreen extends StatelessWidget {
 
 
 
+
+
+
+class _CartEmptyState extends StatelessWidget {
+  const _CartEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: Color(0xffeeeeee)),
+              ),
+              child: const Icon(Icons.shopping_cart_outlined, size: 48, color: Colors.grey),
+            ),
+            const SizedBox(height: 18),
+            const Text('Your cart is empty', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 8),
+            Text('Add items from Kohli Store to get started', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w700)),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 

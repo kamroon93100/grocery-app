@@ -10,7 +10,8 @@ class ReferScreen extends StatelessWidget {
 
   String _getReferralCode(String userId) {
     if (userId.isEmpty) return 'GROCERY100';
-    final part = userId.replaceAll('-', '').substring(0, 6).toUpperCase();
+    final clean = userId.replaceAll('-', '');
+    final part = clean.substring(0, clean.length < 6 ? clean.length : 6).toUpperCase();
     return 'REF$part';
   }
 
@@ -404,4 +405,6 @@ Download the app now!
     );
   }
 }
+
+
 

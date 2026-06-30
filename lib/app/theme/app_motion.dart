@@ -9,3 +9,4 @@ class AppMotion {
   static const Curve bounce    = Curves.easeOutBack;
 }
 
+

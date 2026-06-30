@@ -80,3 +80,4 @@ class BrandCategoryCard extends StatelessWidget {
   }
 }
 
+

@@ -60,3 +60,4 @@ class CategoryChipBar extends StatelessWidget {
   }
 }
 
+

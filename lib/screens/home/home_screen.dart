@@ -14,6 +14,7 @@ import '../profile/profile_screen.dart';
 import '../orders/orders_screen.dart';
 import '../../widgets/home/kohli_banner_carousel.dart';
 import '../../widgets/categories/category_strip.dart';
+import '../../widgets/premium_search_overlay.dart';
 import '../categories/kohli_categories_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -581,6 +582,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

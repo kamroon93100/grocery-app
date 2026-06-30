@@ -238,3 +238,4 @@ enum LocationErrorType {
   timeout,
   unknown,
 }
+

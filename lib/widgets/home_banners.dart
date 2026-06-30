@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'dart:async';
 import '../constants/app_constants.dart';
 
@@ -17,31 +17,31 @@ class _HomeBannersState extends State<HomeBanners> {
     {
       'title':    'Fresh Vegetables',
       'subtitle': 'Free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
-      'icon':     '🥦',
+      'icon':     'ðŸ¥¦',
       'colors':   [Color(0xFF4CAF50), Color(0xFF66BB6A)],
     },
     {
       'title':    'Use Code WELCOME10',
       'subtitle': 'Get 10% off your order',
-      'icon':     '🎫',
+      'icon':     'ðŸŽ«',
       'colors':   [Color(0xFFFF6B6B), Color(0xFFEE5A6F)],
     },
     {
       'title':    'Fresh Fruits',
       'subtitle': '15% off on Grapes',
-      'icon':     '🍇',
+      'icon':     'ðŸ‡',
       'colors':   [Color(0xFFFF9800), Color(0xFFFFA726)],
     },
     {
       'title':    'Save BIG50',
       'subtitle': '50% off above ${AppConstants.currency}100',
-      'icon':     '💰',
+      'icon':     'ðŸ’°',
       'colors':   [Color(0xFF9C27B0), Color(0xFFAB47BC)],
     },
     {
       'title':    'Cash on Delivery',
       'subtitle': 'Pay when you receive',
-      'icon':     '💵',
+      'icon':     'ðŸ’µ',
       'colors':   [Color(0xFF2196F3), Color(0xFF42A5F5)],
     },
   ];
@@ -170,3 +170,4 @@ class _HomeBannersState extends State<HomeBanners> {
     );
   }
 }
+

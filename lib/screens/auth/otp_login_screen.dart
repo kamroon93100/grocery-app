@@ -4,7 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
 import '../../widgets/smooth_text_field.dart';
-import '../home/home_screen.dart';
+import 'package:grocery_local/screens/home/home_screen.dart';
 
 class OtpLoginScreen extends StatefulWidget {
   const OtpLoginScreen({super.key});
@@ -294,3 +294,4 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
     );
   }
 }
+

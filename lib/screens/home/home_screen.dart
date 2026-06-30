@@ -8,10 +8,13 @@ import '../../constants/app_constants.dart';
 import '../../models/product_model.dart';
 import '../../widgets/home/product_card_v6.dart';
 import '../../widgets/home/category_chip_v2.dart';
-import '../cart/cart_screen.dart';
+import 'package:grocery_local/screens/cart/cart_screen.dart';
+import '../search/kohli_search_screen.dart';
 import '../profile/profile_screen.dart';
+import '../orders/orders_screen.dart';
 import '../../widgets/home/kohli_banner_carousel.dart';
 import '../../widgets/categories/category_strip.dart';
+import '../categories/kohli_categories_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final pages = [
       const _HomePage(),
-      const _CategoriesPage(),
+      const KohliCategoriesPage(),
       const CartScreen(),
       const ProfileScreen(),
     ];
@@ -53,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Positioned(
               left: 16,
               right: 16,
-              bottom: 14,
+              bottom: 86,
               child: _FloatingCartBar(cart: cart),
             ),
         ],
@@ -61,6 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         backgroundColor: Colors.white,
+        elevation: 2,
+        height: 72,
         indicatorColor: const Color(0xffe6f7ee),
         onDestinationSelected: (i) => setState(() => _tab = i),
         destinations: const [
@@ -94,7 +99,7 @@ class _HomePage extends StatelessWidget {
                 cartCount: cart.itemCount,
               ),
             ),
-            const SliverToBoxAdapter(child: _SearchBar()),
+            SliverToBoxAdapter(child: GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KohliSearchScreen())), child: const _SearchBar())),
             const SliverToBoxAdapter(child: KohliBannerCarousel()),
             SliverToBoxAdapter(child: CategoryStrip(categories: productProvider.categories)),
             SliverToBoxAdapter(child: _SectionHeader(title: 'Fresh picks', action: 'See all')),
@@ -197,7 +202,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Deliver in 10 mins', style: TextStyle(fontSize: 13, color: Color(0xff0c8f43), fontWeight: FontWeight.w700)),
-                Text('Kohli Store • Hi $userName 👋', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                Text('Kohli Store • Hi $userName ??', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
               ],
             ),
           ),
@@ -270,7 +275,7 @@ class _OfferBanner extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900, height: 1.1),
             ),
           ),
-          Text('🥬', style: TextStyle(fontSize: 54)),
+          Text('??', style: TextStyle(fontSize: 54)),
         ],
       ),
     );
@@ -345,19 +350,173 @@ class _FloatingCartBar extends StatelessWidget {
 }
 
 class _CategoriesPage extends StatelessWidget {
-  const _CategoriesPage();
+  const _CategoriesPage({super.key});
+
+  static const fallback = [
+    {'name': 'Fruits', 'icon': '??', 'subtitle': 'Fresh picks'},
+    {'name': 'Vegetables', 'icon': '??', 'subtitle': 'Daily fresh'},
+    {'name': 'Dairy', 'icon': '??', 'subtitle': 'Milk & more'},
+    {'name': 'Bakery', 'icon': '??', 'subtitle': 'Bread & buns'},
+    {'name': 'Eggs', 'icon': '??', 'subtitle': 'Protein'},
+    {'name': 'Rice', 'icon': '??', 'subtitle': 'Staples'},
+    {'name': 'Snacks', 'icon': '??', 'subtitle': 'Quick bites'},
+    {'name': 'Drinks', 'icon': '??', 'subtitle': 'Cold drinks'},
+  ];
+
+  String _emoji(String name) {
+    final n = name.toLowerCase();
+    if (n.contains('fruit')) return '??';
+    if (n.contains('vegetable')) return '??';
+    if (n.contains('milk') || n.contains('dairy')) return '??';
+    if (n.contains('bread') || n.contains('bakery')) return '??';
+    if (n.contains('egg')) return '??';
+    if (n.contains('rice')) return '??';
+    if (n.contains('snack')) return '??';
+    if (n.contains('drink')) return '??';
+    return '??';
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<ProductProvider>();
+    final items = provider.categories.isEmpty ? fallback : provider.categories;
 
     return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text('Categories', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          ...provider.categories.map((c) => ListTile(title: Text(c.name))),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Categories',
+                    style: TextStyle(
+                      fontSize: 30,
+                      height: 1,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xff111827),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Shop daily essentials by section',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    height: 48,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: const Color(0xffeeeeee)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.search_rounded, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text(
+                          'Search categories',
+                          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 110),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 210,
+                mainAxisExtent: 132,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, i) {
+                  final c = items[i];
+                  String name;
+                  String subtitle = 'Explore items';
+                  String icon;
+
+                  if (c is Map) {
+                    name = (c['name'] ?? '').toString();
+                    subtitle = (c['subtitle'] ?? subtitle).toString();
+                    icon = (c['icon'] ?? _emoji(name)).toString();
+                  } else {
+                    try {
+                      name = (c as dynamic).name.toString();
+                    } catch (_) {
+                      name = 'Category';
+                    }
+                    icon = _emoji(name);
+                  }
+
+                  return Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: const Color(0xffeeeeee)),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0d000000),
+                              blurRadius: 22,
+                              spreadRadius: -5,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(icon, style: const TextStyle(fontSize: 34)),
+                            const Spacer(),
+                            Text(
+                              name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xff111827),
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                childCount: items.length,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -422,6 +581,14 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
 
 
 

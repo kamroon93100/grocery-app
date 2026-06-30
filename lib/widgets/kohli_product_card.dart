@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:grocery_local/app/theme/app_colors.dart';
@@ -221,11 +221,11 @@ class _KohliProductCardState extends State<KohliProductCard>
             borderRadius: BorderRadius.circular(AppRadius.productCardImage),
           ),
         ),
-        errorWidget: (_, __, ___) => Text(p.displayImage.isNotEmpty ? p.displayImage : '🛒',
+        errorWidget: (_, __, ___) => Text(p.displayImage.isNotEmpty ? p.displayImage : 'ðŸ›’',
           style: const TextStyle(fontSize: 40)),
       );
     }
-    return Text(p.displayImage.isNotEmpty ? p.displayImage : '🛒',
+    return Text(p.displayImage.isNotEmpty ? p.displayImage : 'ðŸ›’',
       style: const TextStyle(fontSize: 40));
   }
 }
@@ -312,3 +312,4 @@ class _AddStepper extends StatelessWidget {
     );
   }
 }
+

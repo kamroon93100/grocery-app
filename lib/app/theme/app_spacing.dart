@@ -1,4 +1,4 @@
-class AppSpacing {
+﻿class AppSpacing {
   static const double screenPadding = 16.0;
   static const double sectionGap = 28.0;
   static const double cardGap = 12.0;
@@ -20,3 +20,4 @@ class AppSpacing {
   static const double x40  = 40;
   static const double x48  = 48;
 }
+

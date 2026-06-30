@@ -576,3 +576,4 @@ class BrandCategoryChip extends StatelessWidget {
   }
 }
 
+

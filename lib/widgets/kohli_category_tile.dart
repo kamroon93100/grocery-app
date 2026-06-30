@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:grocery_local/app/theme/app_radius.dart';
 import 'package:grocery_local/app/theme/color_scheme_ext.dart';
 
@@ -52,3 +52,4 @@ class KohliCategoryTile extends StatelessWidget {
     );
   }
 }
+

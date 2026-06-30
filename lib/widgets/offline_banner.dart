@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/connectivity_service.dart';
 import '../constants/app_colors.dart';
@@ -42,3 +42,4 @@ class OfflineBanner extends StatelessWidget {
     );
   }
 }
+

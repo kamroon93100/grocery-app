@@ -202,3 +202,4 @@ class _RecommendedProductsState extends State<RecommendedProducts> {
     );
   }
 }
+

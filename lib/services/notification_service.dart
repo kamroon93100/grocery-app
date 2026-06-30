@@ -1,4 +1,4 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+﻿import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -62,7 +62,7 @@ class NotificationService {
   Future<void> showOrderNotification(String orderNumber, String status) async {
     await showNotification(
       id:    DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: '📦 Order Update',
+      title: 'ðŸ“¦ Order Update',
       body:  'Order #$orderNumber is now $status',
     );
   }
@@ -70,7 +70,7 @@ class NotificationService {
   Future<void> showWelcomeNotification(String name) async {
     await showNotification(
       id:    1,
-      title: '🛒 Welcome to Local Grocery!',
+      title: 'ðŸ›’ Welcome to Local Grocery!',
       body:  'Hi $name, browse fresh groceries and get free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}',
     );
   }
@@ -78,15 +78,15 @@ class NotificationService {
   Future<void> showOrderPlacedNotification(String orderNumber, double amount) async {
     await showNotification(
       id:    DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: '✅ Order Placed Successfully!',
-      body:  'Order #$orderNumber  •  ${AppConstants.currency}${amount.toStringAsFixed(2)}  •  Cash on Delivery',
+      title: 'âœ… Order Placed Successfully!',
+      body:  'Order #$orderNumber  â€¢  ${AppConstants.currency}${amount.toStringAsFixed(2)}  â€¢  Cash on Delivery',
     );
   }
 
   Future<void> showPromoNotification(String title, String message) async {
     await showNotification(
       id:    DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: '🎉 $title',
+      title: 'ðŸŽ‰ $title',
       body:  message,
     );
   }
@@ -143,3 +143,4 @@ class NotificationService {
     await _notifications.cancelAll();
   }
 }
+

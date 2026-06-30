@@ -114,3 +114,4 @@ class SimilarProductsSection extends StatelessWidget {
     );
   }
 }
+

@@ -19,3 +19,4 @@ class CartItemModel {
       quantity: (json['quantity'] as num?)?.toInt() ?? 1,
     );
 }
+

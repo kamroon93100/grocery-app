@@ -54,3 +54,4 @@ class ImageUploadService {
     return await uploadToImgur(file);
   }
 }
+

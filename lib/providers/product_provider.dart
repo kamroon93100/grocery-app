@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../models/category_model.dart';
 import '../services/product_service.dart';
@@ -144,3 +144,4 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+

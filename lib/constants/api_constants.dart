@@ -1,6 +1,6 @@
-class ApiConstants {
+﻿class ApiConstants {
   // ========================================
-  // 🌐 PRODUCTION URL - Railway Cloud
+  // ðŸŒ PRODUCTION URL - Railway Cloud
   // ========================================
   static const String baseUrl   = 'http://127.0.0.1:3001/api';
   static const String socketUrl = 'http://127.0.0.1:3001';
@@ -82,4 +82,5 @@ class ApiConstants {
   static const int connectTimeout     = 30;
   static const int receiveTimeout     = 30;
 }
+
 

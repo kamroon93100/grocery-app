@@ -28,3 +28,4 @@
         createdAt: json['createdAt'] ?? '',
       );
 }
+

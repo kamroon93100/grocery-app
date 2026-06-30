@@ -1,4 +1,4 @@
-import 'package:google_sign_in/google_sign_in.dart';
+﻿import 'package:google_sign_in/google_sign_in.dart';
 import 'api_service.dart';
 import 'auth_service.dart';
 import '../constants/api_constants.dart';
@@ -57,3 +57,4 @@ class GoogleAuthService {
     return await _googleSignIn.isSignedIn();
   }
 }
+

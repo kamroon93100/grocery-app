@@ -37,11 +37,37 @@
     required this.tags,
   });
 
+  static const String _imageBase = 'http://127.0.0.1:3001/uploads/products/';
+
   double get finalPrice => discount <= 0 ? price : price - (price * discount / 100);
   bool get hasDiscount => discount > 0;
   bool get inStock => stock > 0;
   bool get lowStock => stock > 0 && stock <= 10;
-  String get displayImage => thumbnail ?? (images.isNotEmpty ? images[0] : '🛒');
+
+  String get displayImage {
+    final n = name.toLowerCase();
+
+    String? forced;
+    if (n.contains('banana')) forced = 'fresh-banana-robusta-1-dozen.webp';
+    if (n.contains('apple')) forced = 'apple-royal-gala-4-pcs.webp';
+    if (n.contains('pomegranate')) forced = 'pomegranate-2-pcs.webp';
+    if (n.contains('orange')) forced = 'orange-nagpur-1-kg.webp';
+    if (n.contains('papaya')) forced = 'papaya-semi-ripe-1-pc.webp';
+    if (n.contains('tomato')) forced = 'tomato-hybrid-1-kg.webp';
+    if (n.contains('potato')) forced = 'potato-fresh-1-kg.webp';
+    if (n.contains('onion')) forced = 'onion-red-1-kg.webp';
+    if (n.contains('taaza')) forced = 'amul-taaza-toned-milk-500-ml.webp';
+    if (n.contains('gold') && n.contains('milk')) forced = 'amul-gold-full-cream-milk-500-ml.webp';
+    if (n.contains('paneer')) forced = 'amul-fresh-paneer-200-g.webp';
+    if (n.contains('butter')) forced = 'amul-butter-100-g.webp';
+    if (n.contains('bread')) forced = 'britannia-brown-bread-400-g.webp';
+    if (n.contains('egg')) forced = 'farm-fresh-eggs-6-pcs.webp';
+
+    if (forced != null) return '$_imageBase$forced?v=$forced';
+
+    return thumbnail ?? (images.isNotEmpty ? images[0] : '🛒');
+  }
+
   bool get isNetworkImage => displayImage.startsWith('http');
   bool get isEmojiImage => !isNetworkImage && displayImage.length <= 3;
 
@@ -57,8 +83,7 @@
         final raw = (img['imageUrl'] ?? img['url'] ?? img['image'] ?? img['thumbnail'] ?? '').toString();
         if (raw.isEmpty) return '';
         if (raw.startsWith('http')) return raw;
-        return 'http://127.0.0.1:3001/uploads/products/' + raw;
-
+        return '$_imageBase$raw?v=$raw';
       }
       return img.toString();
     }).where((x) => x.isNotEmpty).toList();
@@ -107,5 +132,4 @@
     'tags': tags,
   };
 }
-
 

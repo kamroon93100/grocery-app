@@ -47,3 +47,4 @@ class ProductNutritionCard extends StatelessWidget {
     );
   }
 }
+

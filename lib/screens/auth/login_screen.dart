@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
@@ -6,7 +6,7 @@ import '../../providers/product_provider.dart';
 import '../../constants/app_constants.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/smooth_text_field.dart';
-import '../home/home_screen.dart';
+import 'package:grocery_local/screens/home/home_screen.dart';
 import 'register_screen.dart';
 import 'otp_login_screen.dart';
 import '../../services/google_auth_service.dart';
@@ -335,3 +335,4 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 }
+

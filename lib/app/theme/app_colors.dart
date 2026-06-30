@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 // Extension to create MaterialColor from a single Color
 MaterialColor createMaterialColor(Color color) {
@@ -100,3 +100,4 @@ class AppColors {
   static const Color error         = Color(0xFFF04438);
   static const Color info          = Color(0xFF0BA5EC);
 }
+

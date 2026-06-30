@@ -84,3 +84,4 @@ class ProductService {
     return {'success': false, 'message': 'Reviews not connected yet'};
   }
 }
+

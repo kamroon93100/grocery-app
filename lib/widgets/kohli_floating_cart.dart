@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grocery_local/app/theme/app_radius.dart';
 import 'package:grocery_local/providers/cart_provider.dart';
@@ -83,7 +83,7 @@ class KohliFloatingCart extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(item.product.displayImage.isNotEmpty
-                              ? item.product.displayImage.substring(0, 1) : '🛒',
+                              ? item.product.displayImage.substring(0, 1) : 'ðŸ›’',
                             style: const TextStyle(fontSize: 12)),
                         ),
                       );
@@ -126,3 +126,4 @@ class KohliFloatingCart extends StatelessWidget {
     );
   }
 }
+

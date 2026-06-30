@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../widgets/smooth_text_field.dart';
-import '../home/home_screen.dart';
+import 'package:grocery_local/screens/home/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -233,3 +233,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+

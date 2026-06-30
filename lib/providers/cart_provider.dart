@@ -145,3 +145,4 @@ class CartProvider extends ChangeNotifier {
     return index >= 0 ? _items[index].quantity : 0;
   }
 }
+

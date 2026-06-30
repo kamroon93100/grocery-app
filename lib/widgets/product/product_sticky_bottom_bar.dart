@@ -71,3 +71,4 @@ class ProductStickyBottomBar extends StatelessWidget {
     );
   }
 }
+

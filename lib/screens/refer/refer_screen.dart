@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
@@ -16,15 +16,15 @@ class ReferScreen extends StatelessWidget {
 
   String _shareText(String code) {
     return '''
-🛒 Get FREE Grocery Delivery!
+ðŸ›’ Get FREE Grocery Delivery!
 
 I'm using ${AppConstants.storeName} for fresh groceries.
 Use my code: *$code* to get ${AppConstants.currency}10 off your first order!
 
-✅ Cash on Delivery
-✅ Fresh products
-✅ Express delivery (30-45 mins)
-✅ Free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}
+âœ… Cash on Delivery
+âœ… Fresh products
+âœ… Express delivery (30-45 mins)
+âœ… Free delivery above ${AppConstants.currency}${AppConstants.freeDeliveryAbove.toInt()}
 
 Download the app now!
     ''';
@@ -263,13 +263,13 @@ Download the app now!
                       style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
-                    _step('1', '📤', 'Share your code',
+                    _step('1', 'ðŸ“¤', 'Share your code',
                       'Send your referral code to friends'),
-                    _step('2', '🛍️', 'Friend uses your code',
+                    _step('2', 'ðŸ›ï¸', 'Friend uses your code',
                       'They get ${AppConstants.currency}10 off on first order'),
-                    _step('3', '💰', 'You earn ${AppConstants.currency}10',
+                    _step('3', 'ðŸ’°', 'You earn ${AppConstants.currency}10',
                       'Credit added to your wallet'),
-                    _step('4', '🎉', 'Both win!',
+                    _step('4', 'ðŸŽ‰', 'Both win!',
                       'Use credits on your next order'),
                   ],
                 ),
@@ -304,10 +304,10 @@ Download the app now!
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      '• Friend must place first order to earn reward\n'
-                      '• Reward credited after order delivery\n'
-                      '• Max 20 referrals per month\n'
-                      '• Rewards cannot be transferred to cash',
+                      'â€¢ Friend must place first order to earn reward\n'
+                      'â€¢ Reward credited after order delivery\n'
+                      'â€¢ Max 20 referrals per month\n'
+                      'â€¢ Rewards cannot be transferred to cash',
                       style: TextStyle(fontSize: 11, height: 1.5)),
                   ],
                 ),
@@ -404,3 +404,4 @@ Download the app now!
     );
   }
 }
+

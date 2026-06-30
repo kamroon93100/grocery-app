@@ -50,3 +50,4 @@ class ProductHighlights extends StatelessWidget {
     );
   }
 }
+

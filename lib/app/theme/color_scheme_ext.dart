@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:grocery_local/app/theme/app_colors.dart';
 
 extension CustomColorScheme on ColorScheme {
@@ -54,3 +54,4 @@ extension CustomColorScheme on ColorScheme {
       ? AppColors.lightCategoryBg
       : softSurface;
 }
+

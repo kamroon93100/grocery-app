@@ -1,4 +1,4 @@
-class AppRadius {
+﻿class AppRadius {
   static const double searchBar = 18.0;
   static const double productCardImage = 18.0;
   static const double banner = 22.0;
@@ -14,3 +14,4 @@ class AppRadius {
   static const double lg       = 14;
   static const double xl       = 20;
 }
+

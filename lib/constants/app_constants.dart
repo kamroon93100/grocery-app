@@ -41,3 +41,4 @@
   // Tax percentage
   static const double taxPercent = 5.0;
 }
+

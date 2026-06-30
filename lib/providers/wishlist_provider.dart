@@ -119,3 +119,4 @@ class WishlistProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+

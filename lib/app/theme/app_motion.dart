@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 class AppMotion {
   static const Duration fast   = Duration(milliseconds: 140);
@@ -8,3 +8,4 @@ class AppMotion {
   static const Curve smooth    = Curves.easeOutCubic;
   static const Curve bounce    = Curves.easeOutBack;
 }
+

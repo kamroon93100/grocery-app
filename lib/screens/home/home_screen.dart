@@ -17,6 +17,7 @@ import '../../widgets/home/kohli_banner_carousel.dart';
 import '../../widgets/categories/category_strip.dart';
 import '../../widgets/premium_search_overlay.dart';
 import '../../widgets/premium_hero_banner.dart';
+import '../../widgets/premium_skeletons.dart';
 import '../categories/kohli_categories_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -109,7 +110,7 @@ class _HomePage extends StatelessWidget {
             SliverToBoxAdapter(child: CategoryStrip(categories: productProvider.categories)),
             SliverToBoxAdapter(child: _SectionHeader(title: 'Fresh picks', action: 'See all')),
             if (productProvider.isLoading && productProvider.products.isEmpty)
-              const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+              const SliverFillRemaining(child: HomeShimmerSkeleton())
             else if (productProvider.products.isEmpty)
               const SliverFillRemaining(child: Center(child: Text('No products found')))
             else
@@ -586,6 +587,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

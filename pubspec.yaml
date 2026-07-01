@@ -37,6 +37,7 @@ dependencies:
   latlong2:           ^0.9.0
   connectivity_plus:  ^6.1.0
   flutter_secure_storage: ^9.2.4
+  lottie: ^3.4.0
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/lottie/shopping_cart.lottie
+
 
 flutter_launcher_icons:
   android: true

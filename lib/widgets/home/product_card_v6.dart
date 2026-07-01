@@ -51,14 +51,32 @@ class ProductCardV6 extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 12, left: 4, right: 4),
                           child: Image.network(
-                            product.displayImage,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.high,
-                            errorBuilder: (_, __, ___) => Text(product.displayImage, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 9, color: Colors.red)),
-                          ),
-                        ),
+  product.displayImage,
+  width: double.infinity,
+  height: double.infinity,
+  fit: BoxFit.contain,
+  filterQuality: FilterQuality.high,
+  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+    if (wasSynchronouslyLoaded) return child;
+    return AnimatedOpacity(
+      opacity: frame == null ? 0 : 1,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+      child: child,
+    );
+  },
+  loadingBuilder: (context, child, progress) {
+    if (progress == null) return child;
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xfff1f3f5),
+        borderRadius: BorderRadius.circular(18),
+      ),
+    );
+  },
+  errorBuilder: (_, __, ___) =>
+      const Text('🛒', style: TextStyle(fontSize: 42)),
+),                        ),
                       ),
                       if (product.discount > 0)
                         Positioned(
@@ -202,7 +220,6 @@ class ProductCardV6 extends StatelessWidget {
     );
   }
 }
-
 
 
 

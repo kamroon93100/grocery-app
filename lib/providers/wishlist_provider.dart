@@ -7,6 +7,10 @@ class WishlistProvider extends ChangeNotifier {
   List<ProductModel> get items => List.unmodifiable(_items);
   int get count => _items.length;
 
+  Future<void> loadWishlist() async {
+    notifyListeners();
+  }
+
   bool contains(String productId) => _items.any((p) => p.id == productId);
 
   void toggle(ProductModel product) {
@@ -15,6 +19,16 @@ class WishlistProvider extends ChangeNotifier {
     } else {
       _items.insert(0, product);
     }
+    notifyListeners();
+  }
+
+  Future<void> removeFromWishlist(String productId) async {
+    _items.removeWhere((p) => p.id == productId);
+    notifyListeners();
+  }
+
+  Future<void> clearWishlist() async {
+    _items.clear();
     notifyListeners();
   }
 

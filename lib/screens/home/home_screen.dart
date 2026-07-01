@@ -45,9 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final pages = [
       const _HomePage(),
-      const KohliCategoriesPage(),
-      const CartScreen(),
-      const ProfileScreen(),
+        const KohliCategoriesPage(),
+        const OffersScreen(),
+        const CartScreen(),
+        const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -585,6 +586,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

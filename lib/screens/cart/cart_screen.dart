@@ -403,55 +403,6 @@ class CartScreen extends StatelessWidget {
   }
 
   void _showSuccess(BuildContext context, String orderNum) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-      child: Padding(
-        padding: const EdgeInsets.all(26),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: .4, end: 1),
-              duration: const Duration(milliseconds: 520),
-              curve: Curves.elasticOut,
-              builder: (_, v, child) => Transform.scale(scale: v, child: child),
-              child: Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                  color: const Color(0xffe8f7ef),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: const Icon(Icons.check_circle_rounded, color: Color(0xff0c8f43), size: 64),
-              ),
-            ),
-            const SizedBox(height: 18),
-            const Text('Order Placed!', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 8),
-            Text('Order #$orderNum', style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff0c8f43),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                ),
-                child: const Text('Continue Shopping', style: TextStyle(fontWeight: FontWeight.w900)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
     showDialog(
       context: context,
       builder: (_) => AlertDialog(

@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -460,7 +461,7 @@ class _CartEmptyState extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: const Color(0xffeeeeee)),
               ),
-              child: const Icon(Icons.shopping_cart_outlined, size: 48, color: Colors.grey),
+             child: Lottie.asset('assets/lottie/shopping_cart.lottie', fit: BoxFit.contain),
             ),
             const SizedBox(height: 18),
             const Text('Your cart is empty', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),

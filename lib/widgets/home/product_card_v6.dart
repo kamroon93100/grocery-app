@@ -56,8 +56,7 @@ class ProductCardV6 extends StatelessWidget {
                             height: double.infinity,
                             fit: BoxFit.contain,
                             filterQuality: FilterQuality.high,
-                            errorBuilder: (_, __, ___) =>
-                                const Text('🛒', style: TextStyle(fontSize: 42)),
+                            errorBuilder: (_, __, ___) => Text(product.displayImage, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 9, color: Colors.red)),
                           ),
                         ),
                       ),
@@ -203,6 +202,7 @@ class ProductCardV6 extends StatelessWidget {
     );
   }
 }
+
 
 
 

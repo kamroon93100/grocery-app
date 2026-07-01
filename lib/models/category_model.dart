@@ -23,17 +23,18 @@
     id:           json['id']           ?? '',
     name:         json['name']         ?? '',
     description:  json['description']  ?? '',
-    image: json['image'] == null
-    ? null
-    : json['image'].toString().startsWith('http')
-        ? json['image']
-        : 'http://127.0.0.1:3001/uploads/categories/',
+    image: json['image'] == null || json['image'].toString().isEmpty
+        ? null
+        : json['image'].toString().startsWith('http')
+            ? json['image'].toString()
+            : 'https://kohli-store-api-4zh4.onrender.com/uploads/categories/',
     icon:         json['icon']         ?? '🛒',
     isActive:     json['isActive']     ?? true,
     sortOrder:    json['sortOrder']    ?? 0,
     productCount: json['productCount'],
   );
 }
+
 
 
 

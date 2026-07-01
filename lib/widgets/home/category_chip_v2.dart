@@ -12,8 +12,30 @@ class CategoryChipV2 extends StatelessWidget {
     required this.onTap,
   });
 
+  IconData _iconFor(String name) {
+    final n = name.toLowerCase();
+    if (n.contains('fruit') || n.contains('vegetable')) return Icons.eco_rounded;
+    if (n.contains('dairy') || n.contains('milk') || n.contains('bread') || n.contains('egg')) return Icons.local_drink_rounded;
+    if (n.contains('atta') || n.contains('rice') || n.contains('dal') || n.contains('staple')) return Icons.rice_bowl_rounded;
+    if (n.contains('oil') || n.contains('ghee')) return Icons.opacity_rounded;
+    if (n.contains('masala') || n.contains('spice')) return Icons.grain_rounded;
+    if (n.contains('snack') || n.contains('chip')) return Icons.fastfood_rounded;
+    if (n.contains('sweet') || n.contains('biscuit') || n.contains('chocolate')) return Icons.cookie_rounded;
+    if (n.contains('drink') || n.contains('beverage') || n.contains('juice')) return Icons.local_cafe_rounded;
+    if (n.contains('instant') || n.contains('noodle') || n.contains('food')) return Icons.ramen_dining_rounded;
+    if (n.contains('frozen')) return Icons.ac_unit_rounded;
+    if (n.contains('breakfast')) return Icons.free_breakfast_rounded;
+    if (n.contains('clean')) return Icons.cleaning_services_rounded;
+    if (n.contains('personal') || n.contains('care')) return Icons.spa_rounded;
+    if (n.contains('baby')) return Icons.child_care_rounded;
+    if (n.contains('pet')) return Icons.pets_rounded;
+    return Icons.shopping_bag_rounded;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasImage = image.trim().isNotEmpty && image.startsWith('http');
+
     return InkWell(
       borderRadius: BorderRadius.circular(22),
       onTap: onTap,
@@ -27,31 +49,23 @@ class CategoryChipV2 extends StatelessWidget {
               width: 70,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    Color(0xfff8fff9),
-                    Color(0xffeefcf2),
-                  ],
+                  colors: [Color(0xfff8fff9), Color(0xffeefcf2)],
                 ),
                 borderRadius: BorderRadius.circular(22),
-                border: Border.all(
-                  color: const Color(0xffe7f5eb),
-                ),
+                border: Border.all(color: const Color(0xffe7f5eb)),
                 boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x12000000),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  )
+                  BoxShadow(color: Color(0x12000000), blurRadius: 10, offset: Offset(0, 4))
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Image.network(
-                  image,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.shopping_basket_rounded),
-                ),
+                padding: const EdgeInsets.all(13),
+                child: hasImage
+                    ? Image.network(
+                        image,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) => Icon(_iconFor(title), color: const Color(0xff0c8f43), size: 34),
+                      )
+                    : Icon(_iconFor(title), color: const Color(0xff0c8f43), size: 34),
               ),
             ),
             const SizedBox(height: 8),
@@ -60,10 +74,7 @@ class CategoryChipV2 extends StatelessWidget {
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -71,5 +82,3 @@ class CategoryChipV2 extends StatelessWidget {
     );
   }
 }
-
-

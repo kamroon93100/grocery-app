@@ -175,8 +175,18 @@ class ProductCardV6 extends StatelessWidget {
                         width: double.infinity,
                         height: 38,
                         child: OutlinedButton(
-                          onPressed: () => cart.addItem(product),
-                          style: OutlinedButton.styleFrom(
+                          onPressed: () {
+  cart.addItem(product);
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('${product.name} added to cart'),
+      duration: const Duration(milliseconds: 700),
+      backgroundColor: const Color(0xff0c8f43),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+  );
+},                          style: OutlinedButton.styleFrom(
                             foregroundColor: const Color(0xff0c8f43),
                             side: const BorderSide(color: Color(0xff0c8f43), width: 1.3),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

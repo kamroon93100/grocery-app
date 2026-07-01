@@ -11,6 +11,7 @@ import '../../widgets/home/category_chip_v2.dart';
 import 'package:grocery_local/screens/cart/cart_screen.dart';
 import '../search/kohli_search_screen.dart';
 import '../profile/profile_screen.dart';
+import '../offers/offers_screen.dart';
 import '../orders/orders_screen.dart';
 import '../../widgets/home/kohli_banner_carousel.dart';
 import '../../widgets/categories/category_strip.dart';
@@ -72,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.grid_view_outlined), selectedIcon: Icon(Icons.grid_view), label: 'Categories'),
-          NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), selectedIcon: Icon(Icons.shopping_cart), label: 'Cart'),
+            NavigationDestination(icon: Icon(Icons.local_offer_outlined), selectedIcon: Icon(Icons.local_offer), label: 'Offers'),
+            NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), selectedIcon: Icon(Icons.shopping_cart), label: 'Cart'),
           NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Account'),
         ],
       ),
@@ -582,6 +584,8 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
+
 
 
 

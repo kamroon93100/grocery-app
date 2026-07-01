@@ -12,83 +12,56 @@ class CategoryChipV2 extends StatelessWidget {
     required this.onTap,
   });
 
-  IconData _iconFor(String name) {
+  String _emoji(String name) {
     final n = name.toLowerCase();
-    if (n.contains('fruit') || n.contains('vegetable')) return Icons.eco_rounded;
-    if (n.contains('dairy') || n.contains('milk') || n.contains('bread') || n.contains('egg')) return Icons.local_drink_rounded;
-    if (n.contains('atta') || n.contains('rice') || n.contains('dal') || n.contains('staple')) return Icons.rice_bowl_rounded;
-    if (n.contains('oil') || n.contains('ghee')) return Icons.opacity_rounded;
-    if (n.contains('masala') || n.contains('spice')) return Icons.grain_rounded;
-    if (n.contains('snack') || n.contains('chip')) return Icons.fastfood_rounded;
-    if (n.contains('sweet') || n.contains('biscuit') || n.contains('chocolate')) return Icons.cookie_rounded;
-    if (n.contains('drink') || n.contains('beverage') || n.contains('juice')) return Icons.local_cafe_rounded;
-    if (n.contains('instant') || n.contains('noodle') || n.contains('food')) return Icons.ramen_dining_rounded;
-    if (n.contains('frozen')) return Icons.ac_unit_rounded;
-    if (n.contains('breakfast')) return Icons.free_breakfast_rounded;
-    if (n.contains('clean')) return Icons.cleaning_services_rounded;
-    if (n.contains('personal') || n.contains('care')) return Icons.spa_rounded;
-    if (n.contains('baby')) return Icons.child_care_rounded;
-    if (n.contains('pet')) return Icons.pets_rounded;
-    if (n.contains('baby')) return Icons.child_care_rounded;
-    if (n.contains('personal')) return Icons.spa_rounded;
-    if (n.contains('laundry')) return Icons.local_laundry_service_rounded;
-    if (n.contains('breakfast')) return Icons.free_breakfast_rounded;
-    if (n.contains('frozen')) return Icons.ac_unit_rounded;
-    if (n.contains('instant')) return Icons.ramen_dining_rounded;
-    if (n.contains('dry fruit')) return Icons.eco_rounded;
-    if (n.contains('pet')) return Icons.pets_rounded;
-    if (n.contains('kitchen')) return Icons.kitchen_rounded;
-    return Icons.shopping_bag_rounded;
+    if (n.contains('baby')) return '🍼';
+    if (n.contains('personal')) return '🧴';
+    if (n.contains('clean')) return '🧽';
+    if (n.contains('laundry')) return '🧺';
+    if (n.contains('breakfast')) return '🥣';
+    if (n.contains('frozen')) return '❄️';
+    if (n.contains('instant')) return '🍜';
+    if (n.contains('drink') || n.contains('juice')) return '🥤';
+    if (n.contains('tea') || n.contains('coffee')) return '☕';
+    if (n.contains('biscuit') || n.contains('chocolate')) return '🍫';
+    if (n.contains('snack') || n.contains('munch')) return '🍿';
+    if (n.contains('masala') || n.contains('spice')) return '🌶️';
+    if (n.contains('oil') || n.contains('ghee')) return '🛢️';
+    if (n.contains('atta') || n.contains('rice') || n.contains('dal')) return '🌾';
+    if (n.contains('dairy') || n.contains('bread') || n.contains('egg')) return '🥛';
+    if (n.contains('fruit') || n.contains('vegetable')) return '🥦';
+    return '🛍️';
   }
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = image.trim().isNotEmpty && image.startsWith('http');
-
+    final hasImage = image.trim().startsWith('http');
     return InkWell(
       borderRadius: BorderRadius.circular(22),
       onTap: onTap,
       child: SizedBox(
-        width: 86,
+        width: 92,
         child: Column(
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+            Container(
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xfff8fff9), Color(0xffeefcf2)],
-                ),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: const Color(0xffe7f5eb)),
-                boxShadow: const [
-                  BoxShadow(color: Color(0x12000000), blurRadius: 10, offset: Offset(0, 4))
-                ],
+                boxShadow: const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 6))],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(13),
+              child: Center(
                 child: hasImage
-                    ? Image.network(
-                        image,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(_iconFor(title), color: const Color(0xff0c8f43), size: 34),
-                      )
-                    : Icon(_iconFor(title), color: const Color(0xff0c8f43), size: 34),
+                    ? Image.network(image, width: 42, height: 42, fit: BoxFit.contain, errorBuilder: (_, __, ___) => Text(_emoji(title), style: const TextStyle(fontSize: 32)))
+                    : Text(_emoji(title), style: const TextStyle(fontSize: 32)),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-            ),
+            const SizedBox(height: 7),
+            Text(title, maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, height: 1.05, fontWeight: FontWeight.w800)),
           ],
         ),
       ),
     );
   }
 }
-

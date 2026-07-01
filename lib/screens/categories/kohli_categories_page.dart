@@ -17,6 +17,20 @@ class KohliCategoriesPage extends StatefulWidget {
 class _KohliCategoriesPageState extends State<KohliCategoriesPage> {
   String query = '';
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = context.read<ProductProvider>();
+      if (provider.categories.isEmpty) {
+        await provider.loadCategories();
+      }
+      if (provider.products.isEmpty) {
+        await provider.loadProducts();
+      }
+    });
+  }
+
   String emoji(String name) {
     final n = name.toLowerCase();
     if (n.contains('fruit') || n.contains('vegetable')) return '🥦';
@@ -368,3 +382,4 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
     );
   }
 }
+

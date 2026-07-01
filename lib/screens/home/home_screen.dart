@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Positioned(
               left: 16,
               right: 16,
-              bottom: 86,
+              bottom: 76,
               child: _FloatingCartBar(cart: cart),
             ),
         ],
@@ -115,7 +115,7 @@ class _HomePage extends StatelessWidget {
               const SliverFillRemaining(child: Center(child: Text('No products found')))
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 110),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 170),
                 sliver: SliverLayoutBuilder(
                   builder: (context, constraints) {
                     final width = constraints.crossAxisExtent;
@@ -587,6 +587,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

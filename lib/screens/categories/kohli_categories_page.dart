@@ -41,8 +41,19 @@ class _KohliCategoriesPageState extends State<KohliCategoriesPage> {
     if (n.contains('snack') || n.contains('munch')) return '🍿';
     if (n.contains('tea') || n.contains('coffee')) return '☕';
     if (n.contains('drink') || n.contains('juice')) return '🥤';
-    if (n.contains('clean') || n.contains('laundry')) return '🧽';
-    return '🛒';
+    if (n.contains('clean')) return '🧽';
+    if (n.contains('laundry')) return '🧺';
+    if (n.contains('personal')) return '🧴';
+    if (n.contains('baby')) return '🍼';
+    if (n.contains('pet')) return '🐾';
+    if (n.contains('breakfast')) return '🥣';
+    if (n.contains('frozen')) return '❄️';
+    if (n.contains('instant')) return '🍜';
+    if (n.contains('biscuit') || n.contains('chocolate')) return '🍫';
+    if (n.contains('dry fruit')) return '🥜';
+    if (n.contains('kitchen')) return '🍳';
+    if (n.contains('pooja')) return '🪔';
+    return '🛍️';
   }
 
   int productCount(BuildContext context, dynamic category) {
@@ -382,4 +393,5 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
     );
   }
 }
+
 

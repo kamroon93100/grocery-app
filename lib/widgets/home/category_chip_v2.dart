@@ -29,6 +29,15 @@ class CategoryChipV2 extends StatelessWidget {
     if (n.contains('personal') || n.contains('care')) return Icons.spa_rounded;
     if (n.contains('baby')) return Icons.child_care_rounded;
     if (n.contains('pet')) return Icons.pets_rounded;
+    if (n.contains('baby')) return Icons.child_care_rounded;
+    if (n.contains('personal')) return Icons.spa_rounded;
+    if (n.contains('laundry')) return Icons.local_laundry_service_rounded;
+    if (n.contains('breakfast')) return Icons.free_breakfast_rounded;
+    if (n.contains('frozen')) return Icons.ac_unit_rounded;
+    if (n.contains('instant')) return Icons.ramen_dining_rounded;
+    if (n.contains('dry fruit')) return Icons.eco_rounded;
+    if (n.contains('pet')) return Icons.pets_rounded;
+    if (n.contains('kitchen')) return Icons.kitchen_rounded;
     return Icons.shopping_bag_rounded;
   }
 
@@ -82,3 +91,4 @@ class CategoryChipV2 extends StatelessWidget {
     );
   }
 }
+

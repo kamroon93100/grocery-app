@@ -2,8 +2,8 @@
   // ========================================
   // ðŸŒ PRODUCTION URL - Railway Cloud
   // ========================================
-  static const String baseUrl   = 'http://127.0.0.1:3001/api';
-  static const String socketUrl = 'http://127.0.0.1:3001';
+  static const String baseUrl   = 'https://kohli-store-api-4zh4.onrender.com/api';
+  static const String socketUrl = 'https://kohli-store-api-4zh4.onrender.com';
 
   // Auth
   static const String login           = '/auth/login';
@@ -82,6 +82,7 @@
   static const int connectTimeout     = 30;
   static const int receiveTimeout     = 30;
 }
+
 
 
 

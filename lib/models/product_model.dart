@@ -37,7 +37,7 @@
     required this.tags,
   });
 
-  static const String _imageBase = 'http://localhost:3001/uploads/products/';
+  static const String _imageBase = 'https://kohli-store-api-4zh4.onrender.com/uploads/products/';
 
   double get finalPrice => discount <= 0 ? price : price - (price * discount / 100);
   bool get hasDiscount => discount > 0;
@@ -132,6 +132,7 @@
     'tags': tags,
   };
 }
+
 
 
 

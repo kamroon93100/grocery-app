@@ -19,10 +19,38 @@ class ProductService {
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    final res = await http.get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.categories}'));
-    final body = jsonDecode(res.body);
-    final list = _items(body);
-    return list.map((c) => CategoryModel.fromJson(Map<String, dynamic>.from(c))).toList();
+    try {
+      final res = await http.get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.categories}?limit=100'))
+          .timeout(const Duration(seconds: 12));
+      final body = jsonDecode(res.body);
+      final list = _items(body);
+      if (list.isNotEmpty) {
+        return list.map((c) => CategoryModel.fromJson(Map<String, dynamic>.from(c))).toList();
+      }
+    } catch (_) {}
+
+    final result = await getProducts(limit: 100);
+    final products = List<ProductModel>.from(result['products'] ?? []);
+    final map = <String, CategoryModel>{};
+
+    for (final p in products) {
+      final id = p.categoryId;
+      final name = p.categoryName ?? 'Groceries';
+      if (!map.containsKey(id)) {
+        map[id] = CategoryModel(
+          id: id,
+          name: name,
+          description: '',
+          image: null,
+          icon: '🛒',
+          isActive: true,
+          sortOrder: map.length + 1,
+          productCount: products.where((x) => x.categoryId == id).length,
+        );
+      }
+    }
+
+    return map.values.toList();
   }
 
   Future<Map<String, dynamic>> getProducts({
@@ -42,7 +70,7 @@ class ProductService {
       },
     );
 
-    final res = await http.get(uri);
+    final res = await http.get(uri).timeout(const Duration(seconds: 15));
     final body = jsonDecode(res.body);
     final list = _items(body);
 
@@ -84,5 +112,3 @@ class ProductService {
     return {'success': false, 'message': 'Reviews not connected yet'};
   }
 }
-
-

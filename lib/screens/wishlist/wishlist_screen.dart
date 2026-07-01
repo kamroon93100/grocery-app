@@ -58,22 +58,45 @@ class _WishlistScreenState extends State<WishlistScreen> {
             ),
         ],
       ),
-      body: wishlist.items.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.favorite_border, size: 80, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
-                  Text('Your wishlist is empty',
-                    style: TextStyle(fontSize: 20, color: Colors.grey.shade500)),
-                  const SizedBox(height: 8),
-                  Text('Tap ❤️ on products to save them',
-                    style: TextStyle(color: Colors.grey.shade400)),
-                ],
-              ),
-            )
-          : GridView.builder(
+     body: wishlist.items.isEmpty
+    ? Center(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Container(
+            padding: const EdgeInsets.all(26),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: const [
+                BoxShadow(color: Color(0x11000000), blurRadius: 30, offset: Offset(0, 14)),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffffeef1),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Icon(Icons.favorite_rounded, size: 52, color: Colors.red),
+                ),
+                const SizedBox(height: 18),
+                const Text('Your wishlist is waiting',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 8),
+                Text(
+                  'Save your favourite groceries and quickly add them to cart later.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w700, height: 1.35),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )          : GridView.builder(
               padding: const EdgeInsets.all(12),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

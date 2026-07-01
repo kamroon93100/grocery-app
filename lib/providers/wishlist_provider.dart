@@ -13,6 +13,10 @@ class WishlistProvider extends ChangeNotifier {
 
   bool contains(String productId) => _items.any((p) => p.id == productId);
 
+  bool isInWishlist(String productId) => contains(productId);
+
+  Future<void> toggleWishlist(ProductModel product) async => toggle(product);
+
   void toggle(ProductModel product) {
     if (contains(product.id)) {
       _items.removeWhere((p) => p.id == product.id);
@@ -42,3 +46,4 @@ class WishlistProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+

@@ -1,17 +1,24 @@
-# grocery_local
+# Kohli Store Flutter App
 
-A new Flutter project.
+## Run
 
-## Getting Started
+flutter pub get
 
-This project is a starting point for a Flutter application.
+flutter run -d chrome --web-port=8000
 
-A few resources to get you started if this is your first Flutter project:
+## Build
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+flutter build web
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+flutter build apk --release
+
+## Backend
+
+Start the backend first:
+
+cd C:\GroceryApp\backend-nest
+
+npm run start:dev
+
+Backend API:
+http://127.0.0.1:3001/api

@@ -54,7 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xfff6f7f9),
-      body: Stack(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1280),
+          child: Stack(
         children: [
           pages[_tab],
           if (_tab == 0 && cart.itemCount > 0)
@@ -65,6 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: _FloatingCartBar(cart: cart),
             ),
         ],
+      ),          ),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
@@ -587,6 +592,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

@@ -93,10 +93,9 @@ class NotificationService {
 
   // Start polling for new notifications from backend
   void startPolling() {
+    // Disabled for demo/local mode to avoid unauthorized backend polling.
+    // Real push notifications can be enabled later with Firebase/Auth token.
     _pollingTimer?.cancel();
-    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
-      await _checkNewNotifications();
-    });
   }
 
   void stopPolling() {
@@ -143,5 +142,6 @@ class NotificationService {
     await _notifications.cancelAll();
   }
 }
+
 
 

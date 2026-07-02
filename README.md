@@ -1,24 +1,76 @@
-# Kohli Store Flutter App
+\# Kohli Store App
 
-## Run
+
+
+A production-style grocery delivery app built with Flutter.
+
+
+
+\## Features
+
+
+
+\- Flutter Web and Android support
+
+\- Live product catalog
+
+\- Category browsing
+
+\- Product search
+
+\- Product detail pages
+
+\- Cart and checkout flow
+
+\- Lottie animations
+
+\- Render backend integration
+
+\- Netlify deployment
+
+
+
+\## Tech Stack
+
+
+
+\- Flutter
+
+\- Dart
+
+\- Provider
+
+\- REST API
+
+\- Netlify
+
+\- Render
+
+
+
+\## Live Demo
+
+
+
+https://delightful-cajeta-9ed4a9.netlify.app
+
+
+
+\## Backend API
+
+
+
+https://kohli-store-api-4zh4.onrender.com/api/health
+
+
+
+\## Run Locally
+
+
+
+```powershell
 
 flutter pub get
 
-flutter run -d chrome --web-port=8000
+flutter run
 
-## Build
-
-flutter build web
-
-flutter build apk --release
-
-## Backend
-
-Start the backend first:
-
-cd C:\GroceryApp\backend-nest
-
-npm run start:dev
-
-Backend API:
-http://127.0.0.1:3001/api

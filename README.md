@@ -61,3 +61,8 @@
 | Deployment | Netlify + Render |
 
 ---
+# ?? Architecture
+
+<p align="center"><img src="docs/images/architecture.svg" width="100%"></p>
+
+The app uses a layered architecture separating UI, state management, API communication, backend services, ORM, and database storage.

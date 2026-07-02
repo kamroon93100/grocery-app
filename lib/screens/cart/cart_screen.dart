@@ -1,4 +1,4 @@
-ï»¿import 'package:lottie/lottie.dart';
+import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
@@ -51,7 +51,7 @@ class CartScreen extends StatelessWidget {
                           SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              'Your order will be delivered in 10â€“15 mins',
+                              'Your order will be delivered in 10–15 mins',
                               style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xff0c8f43)),
                             ),
                           ),
@@ -206,7 +206,7 @@ class CartScreen extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     googleMapsLink != null
-                                        ? 'Location captured ${accuracy == null ? "" : "â€¢ ${accuracy!.toStringAsFixed(0)}m"}'
+                                        ? 'Location captured ${accuracy == null ? "" : "• ${accuracy!.toStringAsFixed(0)}m"}'
                                         : 'Use live location for accurate delivery',
                                     style: const TextStyle(fontWeight: FontWeight.w900),
                                   ),
@@ -371,7 +371,7 @@ class CartScreen extends StatelessWidget {
                             ),
                             child: processing
                                 ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                                : Text('Place Order â€¢ â‚¹${cart.totalAmount.toStringAsFixed(0)}', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900)),
+                                : Text('Place Order • ?${cart.totalAmount.toStringAsFixed(0)}', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900)),
                           ),
                         );
                       },

@@ -1,0 +1,20 @@
+﻿<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+<rect width="1280" height="640" rx="36" fill="#ffffff"/>
+<text x="640" y="70" text-anchor="middle" font-family="Inter,Arial" font-size="42" font-weight="800" fill="#111827">API Request Flow</text>
+<text x="640" y="112" text-anchor="middle" font-family="Inter,Arial" font-size="20" fill="#6b7280">How the Flutter app communicates with the backend</text>
+<g font-family="Inter,Arial" font-size="21" font-weight="700" text-anchor="middle">
+<rect x="80" y="250" width="180" height="90" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/><text x="170" y="303" fill="#166534">Screen</text>
+<rect x="310" y="250" width="180" height="90" rx="22" fill="#f8fafc" stroke="#d1d5db" stroke-width="3"/><text x="400" y="303" fill="#111827">Provider</text>
+<rect x="540" y="250" width="180" height="90" rx="22" fill="#f8fafc" stroke="#d1d5db" stroke-width="3"/><text x="630" y="303" fill="#111827">Service</text>
+<rect x="770" y="250" width="180" height="90" rx="22" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/><text x="860" y="303" fill="#1e3a8a">HTTP</text>
+<rect x="1000" y="250" width="200" height="90" rx="22" fill="#fef2f2" stroke="#e0234e" stroke-width="3"/><text x="1100" y="303" fill="#991b1b">NestJS API</text>
+</g>
+<g stroke="#16a34a" stroke-width="5" stroke-linecap="round">
+<path d="M260 295 H310"/><path d="M490 295 H540"/><path d="M720 295 H770"/><path d="M950 295 H1000"/>
+</g>
+<text x="170" y="390" text-anchor="middle" font-family="Inter,Arial" font-size="15" fill="#6b7280">User action</text>
+<text x="400" y="390" text-anchor="middle" font-family="Inter,Arial" font-size="15" fill="#6b7280">State update</text>
+<text x="630" y="390" text-anchor="middle" font-family="Inter,Arial" font-size="15" fill="#6b7280">API method</text>
+<text x="860" y="390" text-anchor="middle" font-family="Inter,Arial" font-size="15" fill="#6b7280">REST call</text>
+<text x="1100" y="390" text-anchor="middle" font-family="Inter,Arial" font-size="15" fill="#6b7280">JSON response</text>
+</svg>

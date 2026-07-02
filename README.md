@@ -70,3 +70,7 @@ The app uses a layered architecture separating UI, state management, API communi
 # ?? API Flow
 
 <p align="center"><img src="docs/images/api-flow.svg" width="100%"></p>
+
+# ?? API Flow
+
+<p align="center"><img src="docs/images/api-flow.svg" width="100%"></p>

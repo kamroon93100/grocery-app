@@ -8,8 +8,8 @@ import '../../providers/order_provider.dart';
 import '../../services/whatsapp_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/location_service.dart';
-import '../../widgets/Cart_item_card.dart';
-import '../../widgets/Cart_bill_card.dart';
+import '../../widgets/cart_item_card.dart';
+import '../../widgets/cart_bill_card.dart';
 import '../../widgets/sticky_checkout_bar.dart';
 
 class CartScreen extends StatelessWidget {
@@ -473,3 +473,5 @@ class _CartEmptyState extends StatelessWidget {
     );
   }
 }
+
+

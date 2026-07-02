@@ -108,6 +108,7 @@ class _HomePage extends StatelessWidget {
             SliverToBoxAdapter(child: GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KohliSearchScreen())), child: const _SearchBar())),
             const SliverToBoxAdapter(child: KohliBannerCarousel()),
             SliverToBoxAdapter(child: CategoryStrip(categories: productProvider.categories)),
+const SliverToBoxAdapter(child: _TrustRow()),
             SliverToBoxAdapter(child: _SectionHeader(title: 'Fresh picks', action: 'See all')),
             if (productProvider.isLoading && productProvider.products.isEmpty)
               const SliverFillRemaining(child: HomeShimmerSkeleton())
@@ -142,6 +143,55 @@ class _HomePage extends StatelessWidget {
   }
 }
 
+
+class _TrustRow extends StatelessWidget {
+  const _TrustRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Row(
+        children: const [
+          Expanded(child: _TrustItem(icon: Icons.flash_on_rounded, title: '10 min', sub: 'delivery')),
+          SizedBox(width: 10),
+          Expanded(child: _TrustItem(icon: Icons.verified_rounded, title: 'Fresh', sub: 'quality')),
+          SizedBox(width: 10),
+          Expanded(child: _TrustItem(icon: Icons.local_offer_rounded, title: 'Best', sub: 'prices')),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrustItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String sub;
+
+  const _TrustItem({required this.icon, required this.title, required this.sub});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Color(0xffeeeeee)),
+        boxShadow: const [BoxShadow(color: Color(0x08000000), blurRadius: 12, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: Color(0xff0c8f43), size: 20),
+          SizedBox(height: 4),
+          Text(title, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
+          Text(sub, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 11)),
+        ],
+      ),
+    );
+  }
+}
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -587,6 +637,7 @@ class _ProductRowSection extends StatelessWidget {
     );
   }
 }
+
 
 
 

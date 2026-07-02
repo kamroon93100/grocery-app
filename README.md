@@ -1,6 +1,8 @@
-﻿# Kohli Store App
+ # Kohli Store
 
-Production-style grocery delivery app built with Flutter.
+![Kohli Store](docs/images/kohli-store-hero-banner.png)
+
+Production-ready Flutter grocery delivery application.
 
 ## Features
 - Responsive Flutter Web and Android app

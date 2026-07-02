@@ -74,3 +74,53 @@ The app uses a layered architecture separating UI, state management, API communi
 # ?? API Flow
 
 <p align="center"><img src="docs/images/api-flow.svg" width="100%"></p>
+
+# ?? Project Structure
+
+```text
+lib/
++-- constants/
++-- models/
++-- providers/
++-- screens/
++-- services/
++-- widgets/
+
+assets/
+docs/
+android/
+ios/
+web/
+```
+
+# ?? Getting Started
+
+```powershell
+flutter pub get
+flutter run
+```
+
+# ?? Build
+
+```powershell
+flutter build web --no-wasm-dry-run
+flutter build apk --release
+```
+
+# ?? Deployment
+
+- Frontend: Netlify
+- Backend: Render
+- Database: PostgreSQL
+
+# ?? Roadmap
+
+- Payment gateway
+- Real SMS OTP provider
+- Admin inventory dashboard
+- Push notifications
+- Play Store release
+
+# ?? License
+
+MIT License

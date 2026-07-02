@@ -1,76 +1,40 @@
-\# Kohli Store App
+﻿# Kohli Store App
 
+Production-style grocery delivery app built with Flutter.
 
+## Features
+- Responsive Flutter Web and Android app
+- Product catalog and categories
+- Cart and checkout flow
+- Offers and coupons
+- Profile and order flow
+- Live NestJS backend integration
+- Netlify deployment
+- GitHub Actions build check
 
-A production-style grocery delivery app built with Flutter.
+## Tech Stack
+- Flutter
+- Dart
+- Provider
+- REST API
+- Netlify
+- Render
 
-
-
-\## Features
-
-
-
-\- Flutter Web and Android support
-
-\- Live product catalog
-
-\- Category browsing
-
-\- Product search
-
-\- Product detail pages
-
-\- Cart and checkout flow
-
-\- Lottie animations
-
-\- Render backend integration
-
-\- Netlify deployment
-
-
-
-\## Tech Stack
-
-
-
-\- Flutter
-
-\- Dart
-
-\- Provider
-
-\- REST API
-
-\- Netlify
-
-\- Render
-
-
-
-\## Live Demo
-
-
-
+## Live Demo
 https://delightful-cajeta-9ed4a9.netlify.app
 
+## Backend API
+https://kohli-store-api-4zh4.onrender.com/api
 
-
-\## Backend API
-
-
-
-https://kohli-store-api-4zh4.onrender.com/api/health
-
-
-
-\## Run Locally
-
-
-
-```powershell
-
+## Build
+`powershell
 flutter pub get
+flutter build web --no-wasm-dry-run
+flutter build apk --release
+`",
+",
 
-flutter run
+Core grocery MVP is working: home, categories, products, cart, checkout, orders, offers, profile, and Android APK build.
 
+## License
+MIT

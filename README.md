@@ -1,42 +1,63 @@
- # Kohli Store
+# 🛒 Kohli Store
 
-![Kohli Store](docs/images/kohli-store-hero-banner.png)
+> Production-ready grocery delivery platform built with **Flutter**, **NestJS**, **Prisma**, and **PostgreSQL**.
 
-Production-ready Flutter grocery delivery application.
+<p align="center">
+  <img src="docs/images/kohli-store-hero-banner.png" width="100%">
+</p>
 
-## Features
-- Responsive Flutter Web and Android app
-- Product catalog and categories
-- Cart and checkout flow
-- Offers and coupons
-- Profile and order flow
-- Live NestJS backend integration
-- Netlify deployment
-- GitHub Actions build check
+<p align="center">
 
-## Tech Stack
-- Flutter
-- Dart
-- Provider
-- REST API
-- Netlify
-- Render
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
+![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart)
+![NestJS](https://img.shields.io/badge/NestJS-Backend-E0234E?logo=nestjs)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## Live Demo
-https://delightful-cajeta-9ed4a9.netlify.app
+</p>
 
-## Backend API
-https://kohli-store-api-4zh4.onrender.com/api
+---
 
-## Build
-`powershell
-flutter pub get
-flutter build web --no-wasm-dry-run
-flutter build apk --release
-`",
-",
+# 📱 Application Preview
 
-Core grocery MVP is working: home, categories, products, cart, checkout, orders, offers, profile, and Android APK build.
+| Home | Categories |
+|------|------------|
+| ![](docs/showcase/screens/home.png) | ![](docs/showcase/screens/categories.png) |
 
-## License
-MIT
+| Product | Cart |
+|---------|------|
+| ![](docs/showcase/screens/product-detail-1.png) | ![](docs/showcase/screens/cart.png) |
+
+---
+
+# ✨ Features
+
+- ✅ OTP Authentication
+- ✅ Product Categories
+- ✅ Product Search
+- ✅ Product Details
+- ✅ Shopping Cart
+- ✅ Checkout Flow
+- ✅ Offers
+- ✅ User Profile
+- ✅ Responsive Web
+- ✅ Android Support
+- ✅ Production Backend
+- ✅ Docker Deployment
+
+---
+
+# 🛠 Tech Stack
+
+| Layer | Technology |
+|--------|------------|
+| Mobile | Flutter |
+| Backend | NestJS |
+| Language | Dart + TypeScript |
+| Database | PostgreSQL |
+| ORM | Prisma |
+| State Management | Provider |
+| Deployment | Netlify + Render |
+
+---
